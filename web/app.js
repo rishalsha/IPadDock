@@ -138,9 +138,9 @@ function renderComputers() {
       '<div class="ws-sub">Wake-on-LAN Ready</div>' +
       '</div>' +
       '<div class="ws-action-bar">' +
-      '<button class="ws-btn wake-btn" onclick="pcAction(\'' + comp.id + '\', \'wake\')">⚡ Wake</button>' +
-      '<button class="ws-btn sleep-btn" onclick="pcAction(\'' + comp.id + '\', \'sleep\')">💤 Sleep</button>' +
-      '<button class="ws-btn off-btn" onclick="pcAction(\'' + comp.id + '\', \'shutdown\')">⏻ Off</button>' +
+      '<button class="ws-btn wake-btn" onclick="pcAction(\'' + comp.id + '\', \'wake\', this)">⚡ Wake</button>' +
+      '<button class="ws-btn sleep-btn" onclick="pcAction(\'' + comp.id + '\', \'sleep\', this)">💤 Sleep</button>' +
+      '<button class="ws-btn off-btn" onclick="pcAction(\'' + comp.id + '\', \'shutdown\', this)">⏻ Off</button>' +
       '</div>';
 
     card.innerHTML = html;
@@ -339,7 +339,43 @@ function toggleDevice(deviceId) {
   publish('cmnd/' + dev.topic + '/' + ch, 'TOGGLE');
 }
 
-function pcAction(compId, action) {
+function animateButtonPress(btnEl, action, compId) {
+  if (!btnEl && compId) {
+    var cls = action === 'shutdown' ? 'off' : action;
+    var tile = document.getElementById('comp-' + compId);
+    if (tile) btnEl = tile.querySelector('.' + cls + '-btn');
+  }
+  if (!btnEl) return;
+
+  // Add animating class for spring bounce + glow
+  btnEl.className = btnEl.className.replace(/\s*animating/g, '') + ' animating';
+
+  // Pulse the workstation card
+  var card = document.getElementById('comp-' + compId);
+  if (card) {
+    card.className = card.className.replace(/\s*dispatched/g, '') + ' dispatched';
+    setTimeout(function () {
+      if (card) card.className = card.className.replace(/\s*dispatched/g, '');
+    }, 850);
+  }
+
+  // Temporary feedback text
+  var origHtml = btnEl.innerHTML;
+  if (action === 'wake') {
+    btnEl.innerHTML = '⚡ Sent!';
+  } else if (action === 'sleep') {
+    btnEl.innerHTML = '💤 Sent!';
+  } else if (action === 'shutdown') {
+    btnEl.innerHTML = '⏻ Sent!';
+  }
+
+  setTimeout(function () {
+    btnEl.className = btnEl.className.replace(/\s*animating/g, '');
+    btnEl.innerHTML = origHtml;
+  }, 950);
+}
+
+function pcAction(compId, action, btnEl) {
   var comp = null;
   for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
     if (DOCK_CONFIG.computers[i].id === compId) {
@@ -349,6 +385,14 @@ function pcAction(compId, action) {
   }
   if (!comp) return;
 
+  if (action === 'shutdown') {
+    if (!confirm('Shut down ' + comp.name + '?')) {
+      return;
+    }
+  }
+
+  animateButtonPress(btnEl, action, compId);
+
   if (action === 'wake') {
     var wolTopic = comp.wolDeviceTopic || 'room_light';
     publish('cmnd/' + wolTopic + '/WakeOnLan', comp.mac);
@@ -356,9 +400,7 @@ function pcAction(compId, action) {
   } else if (action === 'sleep') {
     publish('cmnd/' + comp.topic + '/power', 'sleep');
   } else if (action === 'shutdown') {
-    if (confirm('Shut down ' + comp.name + '?')) {
-      publish('cmnd/' + comp.topic + '/power', 'shutdown');
-    }
+    publish('cmnd/' + comp.topic + '/power', 'shutdown');
   }
 }
 
@@ -483,6 +525,9 @@ function closeFullscreenModal() {
 // App Initialization
 // -------------------------------------------------------------
 window.onload = function () {
+  // Enable instant :active and touch responses on iOS Safari
+  document.addEventListener('touchstart', function () {}, false);
+
   updateClock();
   setInterval(updateClock, 1000);
 

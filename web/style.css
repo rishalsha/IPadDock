@@ -506,13 +506,21 @@ html, body {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: #ffffff;
-  padding: 10px 6px;
+  padding: 10px 4px;
   border-radius: 12px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   text-align: center;
   margin-right: 8px;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-transition: background 0.15s, border-color 0.15s, -webkit-transform 0.12s, box-shadow 0.15s;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
 }
 
 .ws-btn:last-child {
@@ -520,9 +528,8 @@ html, body {
 }
 
 .ws-btn:active {
-  transform: scale(0.96);
-  -webkit-transform: scale(0.96);
-  background: rgba(255, 255, 255, 0.2);
+  -webkit-transform: scale(0.90);
+  transform: scale(0.90);
 }
 
 .ws-btn.wake-btn {
@@ -542,6 +549,96 @@ html, body {
   color: #fca5a5;
   border-color: rgba(239, 68, 68, 0.25);
 }
+
+/* Response Animations */
+@-webkit-keyframes wsBtnSpring {
+  0% {
+    -webkit-transform: scale(1);
+  }
+  30% {
+    -webkit-transform: scale(0.88);
+  }
+  65% {
+    -webkit-transform: scale(1.08);
+  }
+  100% {
+    -webkit-transform: scale(1);
+  }
+}
+
+@keyframes wsBtnSpring {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(0.88);
+  }
+  65% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.ws-btn.animating {
+  -webkit-animation: wsBtnSpring 0.45s ease-out;
+  animation: wsBtnSpring 0.45s ease-out;
+}
+
+.ws-btn.wake-btn.animating {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border-color: #34d399 !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.85) !important;
+}
+
+.ws-btn.sleep-btn.animating {
+  background: #f59e0b !important;
+  color: #0d121c !important;
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.85) !important;
+}
+
+.ws-btn.off-btn.animating {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  border-color: #f87171 !important;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.85) !important;
+}
+
+/* Tile Feedback Pulse */
+@-webkit-keyframes wsTilePulse {
+  0% {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  50% {
+    border-color: rgba(56, 189, 248, 0.7);
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.25);
+  }
+  100% {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+@keyframes wsTilePulse {
+  0% {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  50% {
+    border-color: rgba(56, 189, 248, 0.7);
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.25);
+  }
+  100% {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.workstation-tile.dispatched {
+  -webkit-animation: wsTilePulse 0.8s ease-out;
+  animation: wsTilePulse 0.8s ease-out;
+}
+
 
 /* -------------------------------------------------------------
    SETTINGS MODAL
