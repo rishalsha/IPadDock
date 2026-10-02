@@ -2,152 +2,131 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Home Dock</title>
+  <title>Home</title>
   
   <!-- Apple Fullscreen Kiosk Mode Meta Tags for iOS 10 Safari -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Home Dock">
+  <meta name="apple-mobile-web-app-title" content="Home">
   <meta name="format-detection" content="telephone=no">
-  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" content="#000000">
   
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="dock-container">
+  <div class="home-app">
     
-    <!-- LEFT SIDEBAR: Clock, Status, and Quick Modes -->
-    <aside class="dock-sidebar">
-      <div class="sidebar-top">
-        <div class="greeting-tag" id="live-greeting">WELCOME HOME</div>
-        <div class="clock-display">
-          <div class="time-row">
-            <span id="live-time" class="time-text">12:00</span>
-            <span id="live-ampm" class="ampm-text">PM</span>
-          </div>
-          <div id="live-date" class="date-text">Friday, October 2</div>
+    <!-- TOP NAVIGATION & STATUS BAR -->
+    <header class="home-header">
+      <div class="header-left">
+        <div class="header-time-group">
+          <span id="live-time" class="home-clock">12:00</span>
+          <span id="live-ampm" class="home-ampm">PM</span>
         </div>
-
-        <div class="status-summary-card">
-          <div class="status-summary-header">
-            <span class="status-dot" id="mqtt-dot"></span>
-            <span class="status-title" id="mqtt-label">Connecting...</span>
-          </div>
-          <div class="status-summary-sub" id="device-summary-text">3 Relays Connected</div>
+        <div class="header-title-group">
+          <div id="live-date" class="home-date">Friday, October 2</div>
+          <h1 class="room-title">Living Room</h1>
         </div>
       </div>
 
-      <div class="sidebar-scenes">
-        <div class="sidebar-section-label">QUICK SCENES</div>
-        <div class="scenes-list">
-          <button class="scene-tile" onclick="triggerScene('all_off')">
-            <div class="scene-icon-box">🌙</div>
-            <div class="scene-info">
-              <span class="scene-name">All Off</span>
-              <span class="scene-desc">Sleep & turn off</span>
-            </div>
-          </button>
-          <button class="scene-tile" onclick="triggerScene('work_mode')">
-            <div class="scene-icon-box">💼</div>
-            <div class="scene-info">
-              <span class="scene-name">Work Mode</span>
-              <span class="scene-desc">Lights on, wake PC</span>
-            </div>
-          </button>
-          <button class="scene-tile" onclick="triggerScene('relax_mode')">
-            <div class="scene-icon-box">🛋️</div>
-            <div class="scene-info">
-              <span class="scene-name">Relax Mode</span>
-              <span class="scene-desc">Fan & soft lights</span>
-            </div>
-          </button>
+      <div class="header-right">
+        <div class="home-status-chip">
+          <span class="status-indicator-dot" id="mqtt-dot"></span>
+          <span id="mqtt-label" class="status-chip-text">Connecting...</span>
         </div>
-      </div>
-
-      <div class="sidebar-footer">
-        <button class="settings-trigger-btn" onclick="openSettings()">
-          <span class="settings-icon">⚙️</span>
-          <span>Broker Settings</span>
+        <button class="settings-circle-btn" onclick="openSettings()" title="Settings">
+          <span class="gear-icon">⚙️</span>
         </button>
       </div>
-    </aside>
+    </header>
 
-    <!-- MAIN DASHBOARD CONTENT -->
-    <main class="dock-main">
-      <!-- Section 1: Room Relays -->
-      <section class="dashboard-section">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title">Room Relays</h2>
-            <div class="section-subtitle">Tasmota Multi-Channel Control</div>
-          </div>
-          <div class="section-badge" id="relays-active-count">0 ACTIVE</div>
+    <!-- SCENES CHIPS ROW (Apple Home Style) -->
+    <div class="scenes-scroller">
+      <button class="scene-chip" onclick="triggerScene('all_off')">
+        <span class="scene-chip-icon">🌙</span>
+        <span class="scene-chip-title">All Off</span>
+      </button>
+      <button class="scene-chip" onclick="triggerScene('work_mode')">
+        <span class="scene-chip-icon">💼</span>
+        <span class="scene-chip-title">Work Mode</span>
+      </button>
+      <button class="scene-chip" onclick="triggerScene('relax_mode')">
+        <span class="scene-chip-icon">🛋️</span>
+        <span class="scene-chip-title">Relax</span>
+      </button>
+    </div>
+
+    <!-- MAIN HOMEKIT GRID -->
+    <div class="home-content">
+      
+      <!-- Section: Room Accessories -->
+      <section class="home-section">
+        <div class="section-title-row">
+          <h2 class="section-heading">Accessories</h2>
+          <span class="section-status-sub" id="relays-active-count">0 of 3 On</span>
         </div>
-
-        <div id="devices-grid" class="cards-grid">
+        <div id="devices-grid" class="homekit-grid">
           <!-- Rendered dynamically via app.js -->
         </div>
       </section>
 
-      <!-- Section 2: Workstations & PCs -->
-      <section class="dashboard-section">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title">Workstations</h2>
-            <div class="section-subtitle">Power & Wake-on-LAN</div>
-          </div>
+      <!-- Section: Workstations & PCs -->
+      <section class="home-section">
+        <div class="section-title-row">
+          <h2 class="section-heading">Workstations</h2>
         </div>
-
-        <div id="computers-grid" class="computers-grid">
+        <div id="computers-grid" class="workstations-grid">
           <!-- Rendered dynamically via app.js -->
         </div>
       </section>
-    </main>
 
+    </div>
   </div>
 
   <!-- Settings Modal -->
   <div id="settings-modal" class="modal-overlay">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Broker Configuration</h3>
-        <button class="icon-btn-close" onclick="closeSettings()">✕</button>
+    <div class="modal-box">
+      <div class="modal-top">
+        <h3 class="modal-heading">Broker Settings</h3>
+        <button class="modal-close-btn" onclick="closeSettings()">✕</button>
       </div>
       
-      <div class="form-group">
-        <label for="cfg-host">Azure MQTT Broker Host / IP</label>
-        <input type="text" id="cfg-host" placeholder="e.g. 20.244.45.142">
-      </div>
-      
-      <div class="form-group">
-        <label for="cfg-port">WebSocket Port</label>
-        <input type="number" id="cfg-port" placeholder="80 (or 9001)">
+      <div class="modal-fields">
+        <div class="field-item">
+          <label for="cfg-host">Azure Host / IP</label>
+          <input type="text" id="cfg-host" placeholder="20.244.45.142">
+        </div>
+        
+        <div class="field-item">
+          <label for="cfg-port">WebSocket Port</label>
+          <input type="number" id="cfg-port" placeholder="80">
+        </div>
+
+        <div class="field-item">
+          <label for="cfg-path">WebSocket Path</label>
+          <input type="text" id="cfg-path" placeholder="/mqtt">
+        </div>
+
+        <div class="field-item">
+          <label for="cfg-user">Username</label>
+          <input type="text" id="cfg-user" placeholder="Optional">
+        </div>
+
+        <div class="field-item">
+          <label for="cfg-pass">Password</label>
+          <input type="password" id="cfg-pass" placeholder="Optional">
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="cfg-path">WebSocket Path</label>
-        <input type="text" id="cfg-path" placeholder="/mqtt">
-      </div>
-
-      <div class="form-group">
-        <label for="cfg-user">Username (Optional)</label>
-        <input type="text" id="cfg-user" placeholder="Leave blank if none">
-      </div>
-
-      <div class="form-group">
-        <label for="cfg-pass">Password (Optional)</label>
-        <input type="password" id="cfg-pass" placeholder="Leave blank if none">
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn-secondary" onclick="closeSettings()">Cancel</button>
-        <button class="btn-primary" onclick="saveSettings()">Save & Reconnect</button>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
+        <button class="btn-save" onclick="saveSettings()">Save & Reconnect</button>
       </div>
     </div>
   </div>
 
-  <!-- Scripts: Paho MQTT, Configuration, and Application Logic -->
+  <!-- Scripts -->
   <script src="paho-mqtt.js"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>

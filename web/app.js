@@ -1,4 +1,4 @@
-// iPad Dock Application Controller 2.0
+// Apple HomeKit Style iPad Dock Controller
 // Pure ES5 / 100% Compatible with iOS 10 Safari
 
 var mqttClient = null;
@@ -29,25 +29,12 @@ function getSettings() {
 }
 
 // -------------------------------------------------------------
-// Live Clock & Dynamic Greeting
+// Live Clock & Date
 // -------------------------------------------------------------
 function updateClock() {
   var now = new Date();
   var hours = now.getHours();
   var minutes = now.getMinutes();
-
-  var greetingElem = document.getElementById('live-greeting');
-  if (greetingElem) {
-    if (hours >= 5 && hours < 12) {
-      greetingElem.innerHTML = 'GOOD MORNING';
-    } else if (hours >= 12 && hours < 17) {
-      greetingElem.innerHTML = 'GOOD AFTERNOON';
-    } else if (hours >= 17 && hours < 22) {
-      greetingElem.innerHTML = 'GOOD EVENING';
-    } else {
-      greetingElem.innerHTML = 'GOOD NIGHT';
-    }
-  }
 
   var ampm = 'AM';
   if (!DOCK_CONFIG.clockFormat24h) {
@@ -75,7 +62,7 @@ function updateClock() {
 }
 
 // -------------------------------------------------------------
-// Dynamic Rendering: Devices & Summary Counters
+// HomeKit Dynamic Accessories & Status Counters
 // -------------------------------------------------------------
 function updateActiveCounters() {
   var activeCount = 0;
@@ -85,18 +72,9 @@ function updateActiveCounters() {
     }
   }
 
-  var badgeElem = document.getElementById('relays-active-count');
-  if (badgeElem) {
-    badgeElem.innerHTML = activeCount + ' ACTIVE';
-  }
-
-  var subElem = document.getElementById('device-summary-text');
-  if (subElem) {
-    if (activeCount === 0) {
-      subElem.innerHTML = 'All Relays OFF';
-    } else {
-      subElem.innerHTML = activeCount + ' of ' + DOCK_CONFIG.devices.length + ' Relays ON';
-    }
+  var countElem = document.getElementById('relays-active-count');
+  if (countElem) {
+    countElem.innerHTML = activeCount + ' of ' + DOCK_CONFIG.devices.length + ' On';
   }
 }
 
@@ -112,24 +90,23 @@ function renderDevices() {
 
     var card = document.createElement('div');
     card.id = 'tile-' + dev.id;
-    card.className = 'device-tile' + (isFan ? ' fan-tile' : '') + (isOn ? ' active' : '');
+    card.className = 'homekit-tile' + (isFan ? ' fan-tile' : '') + (isOn ? ' active' : '');
     card.setAttribute('onclick', 'toggleDevice(\'' + dev.id + '\')');
 
     var channelLabel = dev.channel || 'RELAY';
-    channelLabel = channelLabel.replace('POWER', 'RELAY ');
+    channelLabel = channelLabel.replace('POWER', 'Relay ');
 
-    var topHtml = '<div class="tile-top">' +
-      '<div class="tile-icon-box">' + dev.icon + '</div>' +
-      '<div class="ios-switch"><div class="ios-switch-knob"></div></div>' +
+    var html = '<div class="tile-header">' +
+      '<div class="tile-icon-circle">' + dev.icon + '</div>' +
+      '<div class="tile-state-dot"></div>' +
+      '</div>' +
+      '<div class="tile-details">' +
+      '<div class="tile-name">' + dev.name + '</div>' +
+      '<div class="tile-channel">' + channelLabel + '</div>' +
+      '<div class="tile-status" id="status-' + dev.id + '">' + dev.powerState + '</div>' +
       '</div>';
 
-    var bottomHtml = '<div class="tile-bottom">' +
-      '<div class="tile-tag">' + channelLabel + '</div>' +
-      '<div class="tile-title">' + dev.name + '</div>' +
-      '<div class="tile-state" id="state-text-' + dev.id + '">' + dev.powerState + '</div>' +
-      '</div>';
-
-    card.innerHTML = topHtml + bottomHtml;
+    card.innerHTML = html;
     container.appendChild(card);
   }
 
@@ -145,25 +122,25 @@ function renderComputers() {
     var comp = DOCK_CONFIG.computers[i];
     var card = document.createElement('div');
     card.id = 'comp-' + comp.id;
-    card.className = 'computer-tile' + (comp.state === 'online' ? ' active' : '');
+    card.className = 'workstation-tile' + (comp.state === 'online' ? ' active' : '');
 
     var badgeClass = comp.state === 'online' ? 'online' : (comp.state === 'sleep' ? 'sleep' : 'offline');
     var badgeLabel = comp.state.toUpperCase();
 
-    var html = '<div class="comp-header">' +
-      '<div class="tile-icon-box">' + comp.icon + '</div>' +
-      '<div class="comp-badge ' + badgeClass + '" id="comp-badge-' + comp.id + '">' +
+    var html = '<div class="ws-top">' +
+      '<div class="tile-icon-circle">' + comp.icon + '</div>' +
+      '<div class="ws-badge ' + badgeClass + '" id="ws-badge-' + comp.id + '">' +
       '<span>●</span> <span>' + badgeLabel + '</span>' +
       '</div>' +
       '</div>' +
       '<div>' +
-      '<div class="comp-name">' + comp.name + '</div>' +
-      '<div class="comp-desc">Wake-on-LAN Ready</div>' +
+      '<div class="ws-name">' + comp.name + '</div>' +
+      '<div class="ws-sub">Wake-on-LAN Ready</div>' +
       '</div>' +
-      '<div class="comp-btn-group">' +
-      '<button class="comp-btn wake" onclick="pcAction(\'' + comp.id + '\', \'wake\')">⚡ Wake</button>' +
-      '<button class="comp-btn sleep" onclick="pcAction(\'' + comp.id + '\', \'sleep\')">💤 Sleep</button>' +
-      '<button class="comp-btn off" onclick="pcAction(\'' + comp.id + '\', \'shutdown\')">⏻ Off</button>' +
+      '<div class="ws-action-bar">' +
+      '<button class="ws-btn wake-btn" onclick="pcAction(\'' + comp.id + '\', \'wake\')">⚡ Wake</button>' +
+      '<button class="ws-btn sleep-btn" onclick="pcAction(\'' + comp.id + '\', \'sleep\')">💤 Sleep</button>' +
+      '<button class="ws-btn off-btn" onclick="pcAction(\'' + comp.id + '\', \'shutdown\')">⏻ Off</button>' +
       '</div>';
 
     card.innerHTML = html;
@@ -172,12 +149,12 @@ function renderComputers() {
 }
 
 // -------------------------------------------------------------
-// MQTT Connection & Subscription (Paho MQTT)
+// MQTT Handlers (Paho MQTT)
 // -------------------------------------------------------------
 function setStatus(status, text) {
   var dot = document.getElementById('mqtt-dot');
   var label = document.getElementById('mqtt-label');
-  if (dot) dot.className = 'status-dot ' + status;
+  if (dot) dot.className = 'status-indicator-dot ' + status;
   if (label) label.innerHTML = text;
 }
 
@@ -214,7 +191,7 @@ function connectMqtt() {
     useSSL: cfg.useSSL,
     onSuccess: function () {
       isConnected = true;
-      setStatus('connected', 'System Online');
+      setStatus('connected', 'Live');
       console.log('Connected to MQTT broker at ' + cfg.host + ':' + cfg.port);
       subscribeAll();
     },
@@ -272,7 +249,7 @@ function publish(topic, message) {
 }
 
 // -------------------------------------------------------------
-// Message Routing & Live Feedback
+// Message Routing & State
 // -------------------------------------------------------------
 function handleIncomingMessage(topic, payload) {
   for (var i = 0; i < DOCK_CONFIG.devices.length; i++) {
@@ -317,7 +294,6 @@ function updateDevicePowerState(deviceId, state) {
   }
 }
 
-
 function updateComputerStatus(compId, status) {
   var comp = null;
   for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
@@ -330,20 +306,20 @@ function updateComputerStatus(compId, status) {
 
   comp.state = status;
   var card = document.getElementById('comp-' + comp.id);
-  var badge = document.getElementById('comp-badge-' + comp.id);
+  var badge = document.getElementById('ws-badge-' + comp.id);
 
   if (card) {
-    card.className = 'computer-tile' + (status === 'online' ? ' active' : '');
+    card.className = 'workstation-tile' + (status === 'online' ? ' active' : '');
   }
   if (badge) {
     var badgeClass = status === 'online' ? 'online' : (status === 'sleep' ? 'sleep' : 'offline');
-    badge.className = 'comp-badge ' + badgeClass;
+    badge.className = 'ws-badge ' + badgeClass;
     badge.innerHTML = '<span>●</span> <span>' + status.toUpperCase() + '</span>';
   }
 }
 
 // -------------------------------------------------------------
-// User Interaction Handlers
+// User Interaction
 // -------------------------------------------------------------
 function toggleDevice(deviceId) {
   var dev = null;
@@ -362,7 +338,6 @@ function toggleDevice(deviceId) {
 
   publish('cmnd/' + dev.topic + '/' + ch, 'TOGGLE');
 }
-
 
 function pcAction(compId, action) {
   var comp = null;
