@@ -65,7 +65,7 @@ var DOCK_CONFIG = {
       type: 'laptop',
       icon: '💻',
       topic: 'work_laptop',
-      mac: '66:77:88:99:AA:BB',
+      mac: '30:e3:a4:8e:ff:ee',
       wolDeviceTopic: 'room_light',
       state: 'offline'
     }
