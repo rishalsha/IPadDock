@@ -222,6 +222,7 @@ function subscribeAll() {
   mqttClient.subscribe('stat/+/POWER4', { qos: 0 });
   mqttClient.subscribe('stat/+/RESULT', { qos: 0 });
   mqttClient.subscribe('tele/+/STATE', { qos: 0 });
+  mqttClient.subscribe('cmnd/ipaddock/reload', { qos: 0 });
 
   for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
     var comp = DOCK_CONFIG.computers[i];
@@ -252,6 +253,13 @@ function publish(topic, message) {
 // Message Routing & State
 // -------------------------------------------------------------
 function handleIncomingMessage(topic, payload) {
+  // Remote reload command via MQTT
+  if (topic === 'cmnd/ipaddock/reload') {
+    console.log('Received remote reload command via MQTT. Reloading UI...');
+    window.location.reload(true);
+    return;
+  }
+
   for (var i = 0; i < DOCK_CONFIG.devices.length; i++) {
     var dev = DOCK_CONFIG.devices[i];
     var ch = dev.channel || 'POWER';
@@ -452,6 +460,8 @@ function openSettings() {
   document.getElementById('cfg-path').value = cfg.path;
   document.getElementById('cfg-user').value = cfg.username || '';
   document.getElementById('cfg-pass').value = cfg.password || '';
+  var storedReload = localStorage.getItem('dock_refresh_mins');
+  document.getElementById('cfg-reload').value = storedReload !== null ? storedReload : (DOCK_CONFIG.autoRefreshIntervalMinutes !== undefined ? DOCK_CONFIG.autoRefreshIntervalMinutes : 30);
   document.getElementById('settings-modal').className = 'modal-overlay open';
 }
 
@@ -465,14 +475,19 @@ function saveSettings() {
   var path = document.getElementById('cfg-path').value.trim();
   var user = document.getElementById('cfg-user').value.trim();
   var pass = document.getElementById('cfg-pass').value.trim();
+  var reload = document.getElementById('cfg-reload').value.trim();
 
   localStorage.setItem('dock_mqtt_host', host);
   localStorage.setItem('dock_mqtt_port', port);
   localStorage.setItem('dock_mqtt_path', path);
   localStorage.setItem('dock_mqtt_user', user);
   localStorage.setItem('dock_mqtt_pass', pass);
+  if (reload !== '') {
+    localStorage.setItem('dock_refresh_mins', reload);
+  }
 
   closeSettings();
+  initAutoRefresh();
 
   if (mqttClient && isConnected) {
     try { mqttClient.disconnect(); } catch (e) {}
@@ -523,6 +538,112 @@ function closeFullscreenModal() {
 }
 
 // -------------------------------------------------------------
+// Auto-Refresh & Watchdog System
+// -------------------------------------------------------------
+var currentAppVersion = null;
+var versionCheckTimer = null;
+var autoSyncTimer = null;
+var scheduledReloadTimer = null;
+
+function initAutoRefresh() {
+  var cfg = DOCK_CONFIG;
+  var storedReload = localStorage.getItem('dock_refresh_mins');
+  var refreshMins = Number(storedReload !== null ? storedReload : (cfg.autoRefreshIntervalMinutes !== undefined ? cfg.autoRefreshIntervalMinutes : 30));
+  var syncSecs = Number(cfg.autoSyncIntervalSeconds || 15);
+  var verSecs = Number(cfg.checkVersionIntervalSeconds || 15);
+
+  // 1. Periodic background state sync (pings computers and queries relays)
+  if (syncSecs > 0) {
+    if (autoSyncTimer) clearInterval(autoSyncTimer);
+    autoSyncTimer = setInterval(function () {
+      if (isConnected && mqttClient) {
+        requestStatusSync();
+      } else {
+        connectMqtt();
+      }
+    }, syncSecs * 1000);
+  }
+
+  // 2. Scheduled page reload to prevent iOS 10 WebKit memory leaks
+  if (refreshMins > 0) {
+    if (scheduledReloadTimer) clearTimeout(scheduledReloadTimer);
+    scheduledReloadTimer = setTimeout(function () {
+      console.log('Performing scheduled kiosk auto-reload (' + refreshMins + 'm)...');
+      window.location.reload(true);
+    }, refreshMins * 60 * 1000);
+  }
+
+  // 3. Auto-update watcher (reloads when version.json changes on server)
+  if (verSecs > 0) {
+    checkAppVersion();
+    if (versionCheckTimer) clearInterval(versionCheckTimer);
+    versionCheckTimer = setInterval(checkAppVersion, verSecs * 1000);
+  }
+
+  // 4. iOS 10 Screen Wake / Visibility handler
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') {
+      console.log('Dock returned to visibility - refreshing state...');
+      if (!isConnected) {
+        connectMqtt();
+      } else {
+        requestStatusSync();
+      }
+      checkAppVersion();
+    }
+  });
+
+  window.addEventListener('focus', function () {
+    if (!isConnected) {
+      connectMqtt();
+    } else {
+      requestStatusSync();
+    }
+  });
+}
+
+function requestStatusSync() {
+  if (!isConnected || !mqttClient) return;
+
+  // Poll computers
+  for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
+    var comp = DOCK_CONFIG.computers[i];
+    publish('cmnd/' + comp.topic + '/ping', '1');
+  }
+
+  // Poll relays
+  for (var j = 0; j < DOCK_CONFIG.devices.length; j++) {
+    var dev = DOCK_CONFIG.devices[j];
+    var ch = dev.channel || 'POWER';
+    publish('cmnd/' + dev.topic + '/' + ch, '');
+  }
+}
+
+function checkAppVersion() {
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'version.json?_t=' + new Date().getTime(), true);
+    xhr.timeout = 4000;
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        try {
+          var data = JSON.parse(xhr.responseText);
+          if (data && data.version) {
+            if (currentAppVersion === null) {
+              currentAppVersion = data.version;
+            } else if (currentAppVersion !== data.version) {
+              console.log('New version detected (' + data.version + ' != ' + currentAppVersion + '). Auto-refreshing UI...');
+              window.location.reload(true);
+            }
+          }
+        } catch (e) {}
+      }
+    };
+    xhr.send();
+  } catch (err) {}
+}
+
+// -------------------------------------------------------------
 // App Initialization
 // -------------------------------------------------------------
 window.onload = function () {
@@ -536,4 +657,5 @@ window.onload = function () {
   renderComputers();
 
   connectMqtt();
+  initAutoRefresh();
 };

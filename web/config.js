@@ -16,6 +16,12 @@ var DOCK_CONFIG = {
   clockFormat24h: false,
   showSeconds: true,
 
+  // Auto-Refresh & Watchdog Settings
+  autoRefreshEnabled: true,
+  autoRefreshIntervalMinutes: 30, // Scheduled page reload to prevent iOS 10 memory leaks (0 to disable)
+  autoSyncIntervalSeconds: 15,    // Automatic background state re-polling
+  checkVersionIntervalSeconds: 15, // Check for code/dashboard updates from server
+
   // Tasmota Devices (Relay 1 = Fan, Relay 2 = Light, Relay 3 = Bulb)
   devices: [
     {
