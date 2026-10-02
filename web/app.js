@@ -405,6 +405,11 @@ function pcAction(compId, action, btnEl) {
     publish('cmnd/' + comp.topic + '/wake', comp.mac);
     var wolTopic = comp.wolDeviceTopic || 'room_light';
     publish('cmnd/' + wolTopic + '/WakeOnLan', comp.mac);
+    // Send second burst after 500ms to guarantee packet delivery
+    setTimeout(function () {
+      publish('cmnd/' + comp.topic + '/wake', comp.mac);
+      publish('cmnd/' + wolTopic + '/WakeOnLan', comp.mac);
+    }, 500);
     console.log('Published WoL request for ' + comp.name + ':', comp.mac);
   } else if (action === 'sleep') {
     publish('cmnd/' + comp.topic + '/power', 'sleep');
@@ -422,9 +427,11 @@ function triggerScene(sceneName, chipEl) {
   }
 
   if (sceneName === 'wake_day') {
-    // 1. Wake Desktop PC & Work Laptop
+    // 1. Wake Desktop PC & Work Laptop with stagger
     pcAction('desktop_pc', 'wake');
-    pcAction('work_laptop', 'wake');
+    setTimeout(function () {
+      pcAction('work_laptop', 'wake');
+    }, 250);
 
     // 2. Fan ON, Lights OFF (Daylight)
     for (var d_idx = 0; d_idx < DOCK_CONFIG.devices.length; d_idx++) {
@@ -441,9 +448,11 @@ function triggerScene(sceneName, chipEl) {
     renderDevices();
 
   } else if (sceneName === 'wake_night') {
-    // 1. Wake Desktop PC & Work Laptop
+    // 1. Wake Desktop PC & Work Laptop with stagger
     pcAction('desktop_pc', 'wake');
-    pcAction('work_laptop', 'wake');
+    setTimeout(function () {
+      pcAction('work_laptop', 'wake');
+    }, 250);
 
     // 2. Fan ON + Light ON (Night)
     for (var n_idx = 0; n_idx < DOCK_CONFIG.devices.length; n_idx++) {
