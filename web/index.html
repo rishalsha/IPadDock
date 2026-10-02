@@ -35,6 +35,9 @@
           <span class="status-indicator-dot" id="mqtt-dot"></span>
           <span id="mqtt-label" class="status-chip-text">Connecting...</span>
         </div>
+        <button class="settings-circle-btn" onclick="toggleFullscreen()" title="Fullscreen" style="margin-right: 8px;">
+          <span>⛶</span>
+        </button>
         <button class="settings-circle-btn" onclick="openSettings()" title="Settings">
           <span class="gear-icon">⚙️</span>
         </button>
@@ -122,6 +125,27 @@
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
         <button class="btn-save" onclick="saveSettings()">Save & Reconnect</button>
+      </div>
+  </div>
+
+  <!-- Fullscreen / Kiosk Instructions Modal -->
+  <div id="fullscreen-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-top">
+        <h3 class="modal-heading">Fullscreen Kiosk Mode</h3>
+        <button class="modal-close-btn" onclick="closeFullscreenModal()">✕</button>
+      </div>
+      <div style="font-size: 0.95rem; line-height: 1.6; color: #e5e5ea; margin-bottom: 20px;">
+        <p style="margin-bottom: 12px;">Apple iOS restrictions prevent regular Safari webpages from hiding the URL bar programmatically. To hide all browser bars permanently:</p>
+        <div style="background: rgba(255, 255, 255, 0.06); padding: 14px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.1);">
+          <p style="margin-bottom: 8px;">1. Tap Safari's <strong>Share button</strong> (square with arrow ⎋ at top of screen).</p>
+          <p style="margin-bottom: 8px;">2. Tap <strong>"Add to Home Screen"</strong>.</p>
+          <p>3. Tap <strong>Add</strong>, then open the new <strong>Home</strong> icon on your iPad home screen.</p>
+        </div>
+        <p style="margin-top: 14px; font-size: 0.85rem; color: #8e8e93;">It will now launch as a true standalone fullscreen app with zero URL bars, tabs, or buttons!</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-save" onclick="closeFullscreenModal()">Got It</button>
       </div>
     </div>
   </div>

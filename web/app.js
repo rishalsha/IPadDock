@@ -438,6 +438,48 @@ function saveSettings() {
 }
 
 // -------------------------------------------------------------
+// Fullscreen / Kiosk Handlers
+// -------------------------------------------------------------
+function toggleFullscreen() {
+  var doc = window.document;
+  var docEl = doc.documentElement;
+
+  var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+  var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+  if (window.navigator.standalone) {
+    alert('Already running in standalone fullscreen mode!');
+    return;
+  }
+
+  if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+    if (requestFullScreen) {
+      try {
+        requestFullScreen.call(docEl);
+      } catch (err) {
+        openFullscreenModal();
+      }
+    } else {
+      openFullscreenModal();
+    }
+  } else {
+    if (cancelFullScreen) {
+      cancelFullScreen.call(doc);
+    }
+  }
+}
+
+function openFullscreenModal() {
+  var modal = document.getElementById('fullscreen-modal');
+  if (modal) modal.className = 'modal-overlay open';
+}
+
+function closeFullscreenModal() {
+  var modal = document.getElementById('fullscreen-modal');
+  if (modal) modal.className = 'modal-overlay';
+}
+
+// -------------------------------------------------------------
 // App Initialization
 // -------------------------------------------------------------
 window.onload = function () {
