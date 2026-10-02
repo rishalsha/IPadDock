@@ -413,8 +413,22 @@ function pcAction(compId, action, btnEl) {
   }
 }
 
-function triggerScene(sceneName) {
-  if (sceneName === 'all_off') {
+function triggerScene(sceneName, chipEl) {
+  if (chipEl) {
+    chipEl.className = chipEl.className + ' animating';
+    setTimeout(function () {
+      chipEl.className = chipEl.className.replace(/\s*animating/g, '');
+    }, 450);
+  }
+
+  if (sceneName === 'shutdown') {
+    // 1. Directly power off Desktop PC
+    publish('cmnd/desktop_pc/power', 'shutdown');
+
+    // 2. Put Work Laptop to sleep
+    publish('cmnd/work_laptop/power', 'sleep');
+
+    // 3. Turn off all lights and fan
     for (var i = 0; i < DOCK_CONFIG.devices.length; i++) {
       var d = DOCK_CONFIG.devices[i];
       d.powerState = 'OFF';
@@ -422,28 +436,55 @@ function triggerScene(sceneName) {
       publish('cmnd/' + d.topic + '/' + ch, 'OFF');
     }
     renderDevices();
-    for (var j = 0; j < DOCK_CONFIG.computers.length; j++) {
-      publish('cmnd/' + DOCK_CONFIG.computers[j].topic + '/power', 'sleep');
-    }
-  } else if (sceneName === 'work_mode') {
-    for (var k = 0; k < DOCK_CONFIG.devices.length; k++) {
-      var d2 = DOCK_CONFIG.devices[k];
-      d2.powerState = 'ON';
+
+  } else if (sceneName === 'suspend' || sceneName === 'all_off') {
+    // 1. Put Desktop PC to sleep
+    publish('cmnd/desktop_pc/power', 'sleep');
+
+    // 2. Put Work Laptop to sleep
+    publish('cmnd/work_laptop/power', 'sleep');
+
+    // 3. Turn off all lights and fan
+    for (var j = 0; j < DOCK_CONFIG.devices.length; j++) {
+      var d2 = DOCK_CONFIG.devices[j];
+      d2.powerState = 'OFF';
       var ch2 = d2.channel || 'POWER';
-      publish('cmnd/' + d2.topic + '/' + ch2, 'ON');
+      publish('cmnd/' + d2.topic + '/' + ch2, 'OFF');
     }
     renderDevices();
-    pcAction('desktop_pc', 'wake');
-  } else if (sceneName === 'relax_mode') {
-    for (var m = 0; m < DOCK_CONFIG.devices.length; m++) {
-      var d3 = DOCK_CONFIG.devices[m];
+
+  } else if (sceneName === 'work_mode') {
+    // 1. Turn on all devices
+    for (var k = 0; k < DOCK_CONFIG.devices.length; k++) {
+      var d3 = DOCK_CONFIG.devices[k];
+      d3.powerState = 'ON';
       var ch3 = d3.channel || 'POWER';
-      if (d3.type === 'fan') {
-        d3.powerState = 'ON';
-        publish('cmnd/' + d3.topic + '/' + ch3, 'ON');
+      publish('cmnd/' + d3.topic + '/' + ch3, 'ON');
+    }
+    renderDevices();
+    // 2. Wake Desktop PC
+    pcAction('desktop_pc', 'wake');
+
+  } else if (sceneName === 'all_on') {
+    // Turn on all room devices
+    for (var m = 0; m < DOCK_CONFIG.devices.length; m++) {
+      var d4 = DOCK_CONFIG.devices[m];
+      d4.powerState = 'ON';
+      var ch4 = d4.channel || 'POWER';
+      publish('cmnd/' + d4.topic + '/' + ch4, 'ON');
+    }
+    renderDevices();
+
+  } else if (sceneName === 'relax_mode') {
+    for (var n = 0; n < DOCK_CONFIG.devices.length; n++) {
+      var d5 = DOCK_CONFIG.devices[n];
+      var ch5 = d5.channel || 'POWER';
+      if (d5.type === 'fan') {
+        d5.powerState = 'ON';
+        publish('cmnd/' + d5.topic + '/' + ch5, 'ON');
       } else {
-        d3.powerState = 'OFF';
-        publish('cmnd/' + d3.topic + '/' + ch3, 'OFF');
+        d5.powerState = 'OFF';
+        publish('cmnd/' + d5.topic + '/' + ch5, 'OFF');
       }
     }
     renderDevices();
