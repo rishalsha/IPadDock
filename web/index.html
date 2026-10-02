@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Home Dock</title>
+  
+  <!-- Apple Fullscreen Kiosk Mode Meta Tags for iOS 10 Safari -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Home Dock">
+  <meta name="format-detection" content="telephone=no">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="dock-app">
+    <!-- Header with Live Clock and Status -->
+    <header class="header-bar">
+      <div class="clock-widget">
+        <div id="live-time" class="time">12:00 PM</div>
+        <div id="live-date" class="date">Friday, October 2</div>
+      </div>
+      
+      <div class="header-status">
+        <div id="mqtt-status-pill" class="mqtt-pill">
+          <span id="mqtt-dot" class="status-dot"></span>
+          <span id="mqtt-label">Connecting...</span>
+        </div>
+        <button id="btn-settings" class="icon-btn" title="Settings">⚙️</button>
+      </div>
+    </header>
+
+    <!-- Quick Scenes -->
+    <div class="scenes-bar">
+      <button class="scene-btn" onclick="triggerScene('all_off')">
+        <span>🌙</span> All Off
+      </button>
+      <button class="scene-btn" onclick="triggerScene('work_mode')">
+        <span>💼</span> Work Mode
+      </button>
+      <button class="scene-btn" onclick="triggerScene('relax_mode')">
+        <span>🛋️</span> Relax Mode
+      </button>
+    </div>
+
+    <!-- Tasmota Devices Section -->
+    <section>
+      <h2 class="section-title">Home Devices</h2>
+      <div id="devices-grid" class="grid-container">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- PC & Laptop Section -->
+    <section>
+      <h2 class="section-title">Computers & Workstations</h2>
+      <div id="computers-grid" class="grid-container">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Broker Settings</h3>
+        <button class="icon-btn" onclick="closeSettings()">✕</button>
+      </div>
+      
+      <div class="form-group">
+        <label for="cfg-host">Azure MQTT Broker Host / IP</label>
+        <input type="text" id="cfg-host" placeholder="e.g. 20.xx.xx.xx or domain">
+      </div>
+      
+      <div class="form-group">
+        <label for="cfg-port">WebSocket Port</label>
+        <input type="number" id="cfg-port" placeholder="9001">
+      </div>
+
+      <div class="form-group">
+        <label for="cfg-user">Username (Optional)</label>
+        <input type="text" id="cfg-user" placeholder="Leave blank if none">
+      </div>
+
+      <div class="form-group">
+        <label for="cfg-pass">Password (Optional)</label>
+        <input type="password" id="cfg-pass" placeholder="Leave blank if none">
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeSettings()">Cancel</button>
+        <button class="btn-primary" onclick="saveSettings()">Save & Reconnect</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts: Paho MQTT, Configuration, and Application Logic -->
+  <script src="paho-mqtt.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

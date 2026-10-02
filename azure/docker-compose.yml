@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # MQTT Broker for Tasmota, PC Agents, and iPad WebSocket Dock
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: ipaddock_mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"   # Standard MQTT for Tasmota & PC/Laptop agents
+      - "9001:9001"   # MQTT over WebSockets for iPad Safari
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+
+  # Web server serving the iPad Dock UI
+  web:
+    image: nginx:alpine
+    container_name: ipaddock_web
+    restart: unless-stopped
+    ports:
+      - "8080:80"     # Web dashboard accessible at http://<azure-ip>:8080
+    volumes:
+      - ../web:/usr/share/nginx/html:ro
+
+volumes:
+  mosquitto_data:
+  mosquitto_log:

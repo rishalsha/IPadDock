@@ -1,0 +1,14 @@
+[Unit]
+Description=iPad Dock Workstation MQTT Agent
+After=network.target network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=%I
+ExecStart=/usr/bin/python3 /opt/ipad-dock/pc_agent.py --host YOUR_AZURE_IP --topic desktop_pc
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
