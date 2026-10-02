@@ -1,0 +1,22 @@
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+agents/.venv/
+__pycache__/
+*.py[cod]
+
+# Logs & Temp files
+*.log
+*.tmp
+scratch/
+
+# OS Specific
+.DS_Store
+Thumbs.db
+
+# Sensitive Keys & Environment Files
+*.pem
+*.key
+.env
