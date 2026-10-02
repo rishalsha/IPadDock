@@ -46,6 +46,14 @@
 
     <!-- SCENES CHIPS ROW (Apple Home Style) -->
     <div class="scenes-scroller">
+      <button class="scene-chip" onclick="triggerScene('wake_day', this)">
+        <span class="scene-chip-icon">☀️</span>
+        <span class="scene-chip-title">Wake Day</span>
+      </button>
+      <button class="scene-chip" onclick="triggerScene('wake_night', this)">
+        <span class="scene-chip-icon">🌙</span>
+        <span class="scene-chip-title">Wake Night</span>
+      </button>
       <button class="scene-chip" onclick="triggerScene('suspend', this)">
         <span class="scene-chip-icon">💤</span>
         <span class="scene-chip-title">Suspend</span>
@@ -54,17 +62,13 @@
         <span class="scene-chip-icon">⏻</span>
         <span class="scene-chip-title">Shutdown</span>
       </button>
-      <button class="scene-chip" onclick="triggerScene('work_mode', this)">
-        <span class="scene-chip-icon">💼</span>
-        <span class="scene-chip-title">Work Mode</span>
-      </button>
-      <button class="scene-chip" onclick="triggerScene('all_on', this)">
-        <span class="scene-chip-icon">☀️</span>
-        <span class="scene-chip-title">All On</span>
-      </button>
       <button class="scene-chip" onclick="triggerScene('relax_mode', this)">
         <span class="scene-chip-icon">🛋️</span>
         <span class="scene-chip-title">Relax</span>
+      </button>
+      <button class="scene-chip" onclick="triggerScene('all_on', this)">
+        <span class="scene-chip-icon">💡</span>
+        <span class="scene-chip-title">All On</span>
       </button>
     </div>
 

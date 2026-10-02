@@ -421,7 +421,48 @@ function triggerScene(sceneName, chipEl) {
     }, 450);
   }
 
-  if (sceneName === 'shutdown') {
+  if (sceneName === 'wake_day') {
+    // 1. Wake Desktop PC & Work Laptop
+    pcAction('desktop_pc', 'wake');
+    pcAction('work_laptop', 'wake');
+
+    // 2. Fan ON, Lights OFF (Daylight)
+    for (var d_idx = 0; d_idx < DOCK_CONFIG.devices.length; d_idx++) {
+      var dev_d = DOCK_CONFIG.devices[d_idx];
+      var ch_d = dev_d.channel || 'POWER';
+      if (dev_d.type === 'fan' || dev_d.id === 'room_fan' || ch_d === 'POWER1') {
+        dev_d.powerState = 'ON';
+        publish('cmnd/' + dev_d.topic + '/' + ch_d, 'ON');
+      } else {
+        dev_d.powerState = 'OFF';
+        publish('cmnd/' + dev_d.topic + '/' + ch_d, 'OFF');
+      }
+    }
+    renderDevices();
+
+  } else if (sceneName === 'wake_night') {
+    // 1. Wake Desktop PC & Work Laptop
+    pcAction('desktop_pc', 'wake');
+    pcAction('work_laptop', 'wake');
+
+    // 2. Fan ON + Light ON (Night)
+    for (var n_idx = 0; n_idx < DOCK_CONFIG.devices.length; n_idx++) {
+      var dev_n = DOCK_CONFIG.devices[n_idx];
+      var ch_n = dev_n.channel || 'POWER';
+      if (dev_n.type === 'fan' || dev_n.id === 'room_fan' || ch_n === 'POWER1') {
+        dev_n.powerState = 'ON';
+        publish('cmnd/' + dev_n.topic + '/' + ch_n, 'ON');
+      } else if (dev_n.id === 'room_light' || ch_n === 'POWER2') {
+        dev_n.powerState = 'ON';
+        publish('cmnd/' + dev_n.topic + '/' + ch_n, 'ON');
+      } else {
+        dev_n.powerState = 'OFF';
+        publish('cmnd/' + dev_n.topic + '/' + ch_n, 'OFF');
+      }
+    }
+    renderDevices();
+
+  } else if (sceneName === 'shutdown') {
     // 1. Directly power off Desktop PC
     publish('cmnd/desktop_pc/power', 'shutdown');
 
