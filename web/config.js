@@ -1,9 +1,9 @@
 // iPad Dock Configuration
-// All settings can be customized here or adjusted live in the Settings modal
+// Customized for your 3-channel Tasmota device (Tube, Fan, Light)
 
 var DOCK_CONFIG = {
   // MQTT Connection Settings
-  // Leave host as '' to automatically use the host serving this webpage
+  // Leave host as '' to automatically connect via current webpage host
   mqttHost: '',
   mqttPort: 9001,
   mqttPath: '/mqtt',
@@ -15,33 +15,35 @@ var DOCK_CONFIG = {
   clockFormat24h: false,
   showSeconds: true,
 
-  // Tasmota Devices
+  // Tasmota Devices (configured to match your 3 relays on 'room_light')
   devices: [
     {
-      id: 'room_light',
-      name: 'Ceiling Light',
-      type: 'switch', // switch, fan, dimmer
+      id: 'room_tube',
+      name: 'Tube Light',
+      type: 'switch',
       icon: '💡',
       topic: 'room_light',
+      channel: 'POWER1',
       powerState: 'OFF'
     },
     {
-      id: 'desk_lamp',
-      name: 'Desk Bulb',
-      type: 'dimmer',
-      icon: '🏮',
-      topic: 'desk_bulb',
-      powerState: 'OFF',
-      brightness: 100
-    },
-    {
-      id: 'ceiling_fan',
+      id: 'room_fan',
       name: 'Ceiling Fan',
       type: 'fan',
       icon: '💨',
-      topic: 'ceiling_fan',
+      topic: 'room_light',
+      channel: 'POWER2',
       powerState: 'OFF',
-      speed: 1 // 1 to 4
+      speed: 1
+    },
+    {
+      id: 'room_light',
+      name: 'Main Light',
+      type: 'switch',
+      icon: '🏮',
+      topic: 'room_light',
+      channel: 'POWER3',
+      powerState: 'OFF'
     }
   ],
 
@@ -54,7 +56,7 @@ var DOCK_CONFIG = {
       icon: '🖥️',
       topic: 'desktop_pc',
       mac: '00:11:22:33:44:55',
-      wolDeviceTopic: 'room_light', // Tasmota device that broadcasts the WoL packet
+      wolDeviceTopic: 'room_light', // Tasmota device that broadcasts WoL packet
       state: 'offline' // 'online', 'offline', 'sleep'
     },
     {

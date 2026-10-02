@@ -210,6 +210,9 @@ function subscribeAll() {
   // Subscribe to all Tasmota telemetry and status topics
   mqttClient.subscribe('stat/+/POWER', { qos: 0 });
   mqttClient.subscribe('stat/+/POWER1', { qos: 0 });
+  mqttClient.subscribe('stat/+/POWER2', { qos: 0 });
+  mqttClient.subscribe('stat/+/POWER3', { qos: 0 });
+  mqttClient.subscribe('stat/+/POWER4', { qos: 0 });
   mqttClient.subscribe('stat/+/RESULT', { qos: 0 });
   mqttClient.subscribe('tele/+/STATE', { qos: 0 });
 
@@ -217,14 +220,14 @@ function subscribeAll() {
   for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
     var comp = DOCK_CONFIG.computers[i];
     mqttClient.subscribe('stat/' + comp.topic + '/status', { qos: 0 });
-    // Request initial ping from computer
     publish('cmnd/' + comp.topic + '/ping', '1');
   }
 
-  // Query state for all Tasmota devices
+  // Query initial state for all Tasmota devices
   for (var j = 0; j < DOCK_CONFIG.devices.length; j++) {
     var dev = DOCK_CONFIG.devices[j];
-    publish('cmnd/' + dev.topic + '/POWER', '');
+    var ch = dev.channel || 'POWER';
+    publish('cmnd/' + dev.topic + '/' + ch, '');
   }
 }
 
@@ -246,7 +249,8 @@ function handleIncomingMessage(topic, payload) {
   // Check Tasmota device states
   for (var i = 0; i < DOCK_CONFIG.devices.length; i++) {
     var dev = DOCK_CONFIG.devices[i];
-    var powerTopic = 'stat/' + dev.topic + '/POWER';
+    var ch = dev.channel || 'POWER';
+    var powerTopic = 'stat/' + dev.topic + '/' + ch;
     var resultTopic = 'stat/' + dev.topic + '/RESULT';
 
     if (topic === powerTopic) {
@@ -254,9 +258,9 @@ function handleIncomingMessage(topic, payload) {
     } else if (topic === resultTopic) {
       try {
         var json = JSON.parse(payload);
-        if (json.POWER !== undefined) updateDevicePowerState(dev.id, json.POWER);
-        if (json.POWER1 !== undefined) updateDevicePowerState(dev.id, json.POWER1);
-        if (json.Fanspeed !== undefined) updateFanSpeedState(dev.id, json.Fanspeed);
+        if (json[ch] !== undefined) updateDevicePowerState(dev.id, json[ch]);
+        if (!dev.channel && json.POWER !== undefined) updateDevicePowerState(dev.id, json.POWER);
+        if (dev.type === 'fan' && json.Fanspeed !== undefined) updateFanSpeedState(dev.id, json.Fanspeed);
       } catch (e) {}
     }
   }
@@ -344,7 +348,8 @@ function toggleDevice(deviceId) {
     }
   }
   if (!dev) return;
-  publish('cmnd/' + dev.topic + '/POWER', 'TOGGLE');
+  var ch = dev.channel || 'POWER';
+  publish('cmnd/' + dev.topic + '/' + ch, 'TOGGLE');
 }
 
 function setFanSpeed(deviceId, speed) {
@@ -356,7 +361,8 @@ function setFanSpeed(deviceId, speed) {
     }
   }
   if (!dev) return;
-  publish('cmnd/' + dev.topic + '/Fanspeed', String(speed));
+  var ch = dev.channel || 'POWER';
+  publish('cmnd/' + dev.topic + '/' + ch, speed > 0 ? 'ON' : 'OFF');
 }
 
 function pcAction(compId, action) {
@@ -387,26 +393,32 @@ function triggerScene(sceneName) {
   if (sceneName === 'all_off') {
     // Turn off all devices
     for (var i = 0; i < DOCK_CONFIG.devices.length; i++) {
-      publish('cmnd/' + DOCK_CONFIG.devices[i].topic + '/POWER', 'OFF');
+      var d = DOCK_CONFIG.devices[i];
+      var ch = d.channel || 'POWER';
+      publish('cmnd/' + d.topic + '/' + ch, 'OFF');
     }
     // Put computers to sleep
     for (var j = 0; j < DOCK_CONFIG.computers.length; j++) {
       publish('cmnd/' + DOCK_CONFIG.computers[j].topic + '/power', 'sleep');
     }
   } else if (sceneName === 'work_mode') {
-    // Turn on ceiling light and desk lamp
-    publish('cmnd/room_light/POWER', 'ON');
-    publish('cmnd/desk_bulb/POWER', 'ON');
-    publish('cmnd/ceiling_fan/POWER', 'ON');
-    publish('cmnd/ceiling_fan/Fanspeed', '2');
-    // Wake desktop PC
+    for (var k = 0; k < DOCK_CONFIG.devices.length; k++) {
+      var d2 = DOCK_CONFIG.devices[k];
+      var ch2 = d2.channel || 'POWER';
+      publish('cmnd/' + d2.topic + '/' + ch2, 'ON');
+    }
     pcAction('desktop_pc', 'wake');
   } else if (sceneName === 'relax_mode') {
-    publish('cmnd/room_light/POWER', 'OFF');
-    publish('cmnd/desk_bulb/POWER', 'ON');
-    publish('cmnd/desk_bulb/Dimmer', '30');
-    publish('cmnd/ceiling_fan/POWER', 'ON');
-    publish('cmnd/ceiling_fan/Fanspeed', '1');
+    // Turn off room lights, leave fan on
+    for (var m = 0; m < DOCK_CONFIG.devices.length; m++) {
+      var d3 = DOCK_CONFIG.devices[m];
+      var ch3 = d3.channel || 'POWER';
+      if (d3.type === 'fan') {
+        publish('cmnd/' + d3.topic + '/' + ch3, 'ON');
+      } else {
+        publish('cmnd/' + d3.topic + '/' + ch3, 'OFF');
+      }
+    }
   }
 }
 
