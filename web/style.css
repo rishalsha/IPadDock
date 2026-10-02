@@ -163,6 +163,11 @@ html, body {
   cursor: pointer;
 }
 
+.hidden-touch-btn {
+  opacity: 0 !important;
+  /* Completely invisible to sight, but maintains exact geometry and touch target */
+}
+
 .settings-circle-btn:active {
   background: rgba(255, 255, 255, 0.22);
 }
