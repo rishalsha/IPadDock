@@ -1,5 +1,6 @@
 // iPad Dock Configuration
-// Customized for your 3-channel Tasmota device (Tube, Fan, Light)
+// Customized for your 3-channel Tasmota device:
+// Relay 1 = Fan, Relay 2 = Light, Relay 3 = Bulb
 
 var DOCK_CONFIG = {
   // MQTT Connection Settings
@@ -15,29 +16,29 @@ var DOCK_CONFIG = {
   clockFormat24h: false,
   showSeconds: true,
 
-  // Tasmota Devices (configured to match your 3 relays on 'room_light')
+  // Tasmota Devices (Relay 1 = Fan, Relay 2 = Light, Relay 3 = Bulb)
   devices: [
     {
-      id: 'room_tube',
-      name: 'Tube Light',
-      type: 'switch',
-      icon: '💡',
+      id: 'room_fan',
+      name: 'Fan',
+      type: 'fan',
+      icon: '💨',
       topic: 'room_light',
       channel: 'POWER1',
       powerState: 'OFF'
     },
     {
-      id: 'room_fan',
-      name: 'Ceiling Fan',
-      type: 'fan',
-      icon: '💨',
+      id: 'room_light',
+      name: 'Light',
+      type: 'switch',
+      icon: '💡',
       topic: 'room_light',
       channel: 'POWER2',
       powerState: 'OFF'
     },
     {
-      id: 'room_light',
-      name: 'Main Light',
+      id: 'room_bulb',
+      name: 'Bulb',
       type: 'switch',
       icon: '🏮',
       topic: 'room_light',
