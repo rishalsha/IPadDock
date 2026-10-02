@@ -123,21 +123,10 @@ function renderDevices() {
       '<div class="ios-switch"><div class="ios-switch-knob"></div></div>' +
       '</div>';
 
-    var fanSpeedHtml = '';
-    if (isFan && isOn) {
-      fanSpeedHtml = '<div class="fan-speed-selector" onclick="event.stopPropagation();">' +
-        '<div class="speed-chip' + (dev.speed === 1 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 1)">1</div>' +
-        '<div class="speed-chip' + (dev.speed === 2 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 2)">2</div>' +
-        '<div class="speed-chip' + (dev.speed === 3 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 3)">3</div>' +
-        '<div class="speed-chip' + (dev.speed === 4 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 4)">4</div>' +
-        '</div>';
-    }
-
     var bottomHtml = '<div class="tile-bottom">' +
       '<div class="tile-tag">' + channelLabel + '</div>' +
       '<div class="tile-title">' + dev.name + '</div>' +
       '<div class="tile-state" id="state-text-' + dev.id + '">' + dev.powerState + '</div>' +
-      fanSpeedHtml +
       '</div>';
 
     card.innerHTML = topHtml + bottomHtml;
@@ -299,7 +288,6 @@ function handleIncomingMessage(topic, payload) {
         var json = JSON.parse(payload);
         if (json[ch] !== undefined) updateDevicePowerState(dev.id, json[ch]);
         if (!dev.channel && json.POWER !== undefined) updateDevicePowerState(dev.id, json.POWER);
-        if (dev.type === 'fan' && json.Fanspeed !== undefined) updateFanSpeedState(dev.id, json.Fanspeed);
       } catch (e) {}
     }
   }
@@ -329,18 +317,6 @@ function updateDevicePowerState(deviceId, state) {
   }
 }
 
-function updateFanSpeedState(deviceId, speed) {
-  var dev = null;
-  for (var i = 0; i < DOCK_CONFIG.devices.length; i++) {
-    if (DOCK_CONFIG.devices[i].id === deviceId) {
-      dev = DOCK_CONFIG.devices[i];
-      break;
-    }
-  }
-  if (!dev) return;
-  dev.speed = Number(speed);
-  renderDevices();
-}
 
 function updateComputerStatus(compId, status) {
   var comp = null;
@@ -387,22 +363,6 @@ function toggleDevice(deviceId) {
   publish('cmnd/' + dev.topic + '/' + ch, 'TOGGLE');
 }
 
-function setFanSpeed(deviceId, speed) {
-  var dev = null;
-  for (var i = 0; i < DOCK_CONFIG.devices.length; i++) {
-    if (DOCK_CONFIG.devices[i].id === deviceId) {
-      dev = DOCK_CONFIG.devices[i];
-      break;
-    }
-  }
-  if (!dev) return;
-
-  var ch = dev.channel || 'POWER';
-  dev.speed = speed;
-  renderDevices();
-
-  publish('cmnd/' + dev.topic + '/' + ch, speed > 0 ? 'ON' : 'OFF');
-}
 
 function pcAction(compId, action) {
   var comp = null;

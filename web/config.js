@@ -33,8 +33,7 @@ var DOCK_CONFIG = {
       icon: '💨',
       topic: 'room_light',
       channel: 'POWER2',
-      powerState: 'OFF',
-      speed: 1
+      powerState: 'OFF'
     },
     {
       id: 'room_light',

@@ -448,35 +448,6 @@ html, body {
   font-weight: 600;
 }
 
-/* Fan Speed Bar */
-.fan-speed-selector {
-  display: -webkit-flex;
-  display: flex;
-  gap: 6px;
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.speed-chip {
-  -webkit-flex: 1;
-  flex: 1;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #94a3b8;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 6px 0;
-  border-radius: 8px;
-  cursor: pointer;
-  text-align: center;
-}
-
-.speed-chip.active {
-  background: #38bdf8;
-  color: #090d16;
-  border-color: #38bdf8;
-}
 
 /* -------------------------------------------------------------
    WORKSTATION / PC CARDS
