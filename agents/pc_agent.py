@@ -32,10 +32,10 @@ def send_wol_packet(mac: str):
             ("255.255.255.255", 9),
             ("255.255.255.255", 7),
         ]
-        for _ in range(2):
+        for _ in range(4):
             for addr, port in destinations:
                 sock.sendto(packet, (addr, port))
-            time.sleep(0.05)
+            time.sleep(0.08)
         sock.close()
         print(f"[+] Broadcasted WoL Magic Packet for {mac}")
     except Exception as e:
