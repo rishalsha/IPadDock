@@ -16,6 +16,7 @@ import paho.mqtt.client as mqtt
 
 IS_WINDOWS = platform.system().lower() == "windows"
 IS_LINUX = platform.system().lower() == "linux"
+IS_MAC = platform.system().lower() == "darwin"
 
 def execute_power_action(action: str):
     """Executes OS-level sleep, shutdown, or restart."""
@@ -24,13 +25,15 @@ def execute_power_action(action: str):
 
     if action == "sleep":
         if IS_WINDOWS:
-            # Trigger Windows sleep / suspend
             import ctypes
             print("[*] Suspending Windows...")
             ctypes.windll.PowrProf.SetSuspendState(0, 1, 0)
         elif IS_LINUX:
             print("[*] Suspending Linux...")
             subprocess.run(["systemctl", "suspend"], check=False)
+        elif IS_MAC:
+            print("[*] Suspending macOS...")
+            subprocess.run(["pmset", "sleepnow"], check=False)
         else:
             print(f"[!] Unsupported OS for sleep: {platform.system()}")
 
@@ -41,6 +44,9 @@ def execute_power_action(action: str):
         elif IS_LINUX:
             print("[*] Shutting down Linux...")
             subprocess.run(["systemctl", "poweroff"], check=False)
+        elif IS_MAC:
+            print("[*] Shutting down macOS...")
+            subprocess.run(["osascript", "-e", 'tell app "System Events" to shut down'], check=False)
 
     elif action == "restart":
         if IS_WINDOWS:
@@ -49,6 +55,9 @@ def execute_power_action(action: str):
         elif IS_LINUX:
             print("[*] Restarting Linux...")
             subprocess.run(["systemctl", "reboot"], check=False)
+        elif IS_MAC:
+            print("[*] Restarting macOS...")
+            subprocess.run(["osascript", "-e", 'tell app "System Events" to restart'], check=False)
     else:
         print(f"[!] Unknown action: {action}")
 

@@ -55,7 +55,7 @@ var DOCK_CONFIG = {
       type: 'pc',
       icon: '🖥️',
       topic: 'desktop_pc',
-      mac: '00:11:22:33:44:55',
+      mac: '04:7c:16:b7:5e:96',
       wolDeviceTopic: 'room_light', // Tasmota device that broadcasts WoL packet
       state: 'offline' // 'online', 'offline', 'sleep'
     },
