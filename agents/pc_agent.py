@@ -12,11 +12,34 @@ import json
 import platform
 import argparse
 import subprocess
+import socket
 import paho.mqtt.client as mqtt
 
 IS_WINDOWS = platform.system().lower() == "windows"
 IS_LINUX = platform.system().lower() == "linux"
 IS_MAC = platform.system().lower() == "darwin"
+
+def send_wol_packet(mac: str):
+    """Broadcasts a Wake-on-LAN magic packet over the local network."""
+    try:
+        clean_mac = bytes.fromhex(mac.replace(":", "").replace("-", ""))
+        packet = b"\xff" * 6 + clean_mac * 16
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        destinations = [
+            ("192.168.1.255", 9),
+            ("192.168.1.255", 7),
+            ("255.255.255.255", 9),
+            ("255.255.255.255", 7),
+        ]
+        for _ in range(2):
+            for addr, port in destinations:
+                sock.sendto(packet, (addr, port))
+            time.sleep(0.05)
+        sock.close()
+        print(f"[+] Broadcasted WoL Magic Packet for {mac}")
+    except Exception as e:
+        print(f"[-] Failed to broadcast WoL packet: {e}")
 
 def execute_power_action(action: str):
     """Executes OS-level sleep, shutdown, or restart."""
@@ -95,7 +118,8 @@ class PCAgent:
             # Subscribe to command topics
             client.subscribe(self.cmnd_power_topic)
             client.subscribe(self.cmnd_ping_topic)
-            print(f"[+] Subscribed to: {self.cmnd_power_topic} and {self.cmnd_ping_topic}")
+            client.subscribe("cmnd/+/wake")
+            print(f"[+] Subscribed to: {self.cmnd_power_topic}, {self.cmnd_ping_topic}, cmnd/+/wake")
         else:
             print(f"[-] Connection failed with return code {rc}")
 
@@ -106,6 +130,13 @@ class PCAgent:
         topic = msg.topic
         payload = msg.payload.decode("utf-8").strip()
         print(f"[>] Message on {topic}: {payload}")
+
+        if topic.endswith("/wake"):
+            target_mac = payload.strip()
+            if target_mac:
+                print(f"[*] Relaying WoL Magic Packet for MAC: {target_mac}")
+                send_wol_packet(target_mac)
+            return
 
         if topic == self.cmnd_ping_topic:
             client.publish(self.stat_topic, payload="online", qos=1, retain=True)

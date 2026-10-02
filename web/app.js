@@ -394,9 +394,10 @@ function pcAction(compId, action, btnEl) {
   animateButtonPress(btnEl, action, compId);
 
   if (action === 'wake') {
+    publish('cmnd/' + comp.topic + '/wake', comp.mac);
     var wolTopic = comp.wolDeviceTopic || 'room_light';
     publish('cmnd/' + wolTopic + '/WakeOnLan', comp.mac);
-    console.log('Published WoL request to Tasmota:', comp.mac);
+    console.log('Published WoL request for ' + comp.name + ':', comp.mac);
   } else if (action === 'sleep') {
     publish('cmnd/' + comp.topic + '/power', 'sleep');
   } else if (action === 'shutdown') {
