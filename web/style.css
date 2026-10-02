@@ -1,9 +1,10 @@
-/* iPad Dock - iOS 10 Safari Optimized Stylesheet */
+/* iPad Dock 2.0 - High-End Touch Dashboard for iOS 10 Safari */
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
@@ -12,352 +13,640 @@
 html, body {
   width: 100%;
   height: 100%;
-  background-color: #0b0f19;
-  color: #e2e8f0;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #090d16;
+  color: #f1f5f9;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   overflow: hidden;
 }
 
-#dock-app {
+/* Master Container */
+#dock-container {
+  display: -webkit-flex;
   display: flex;
-  flex-direction: column;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* -------------------------------------------------------------
+   LEFT SIDEBAR (Clock, System Status, Quick Scenes)
+   ------------------------------------------------------------- */
+.dock-sidebar {
+  width: 320px;
+  min-width: 300px;
   height: 100%;
-  padding: 20px 24px;
+  background-color: #0d1322;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 28px 24px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  flex-shrink: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-/* Header & Live Clock */
-.header-bar {
+.greeting-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #38bdf8;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.clock-display {
+  margin-bottom: 22px;
+}
+
+.time-row {
+  display: -webkit-flex;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 20px;
+  -webkit-align-items: baseline;
+  align-items: baseline;
+  line-height: 0.95;
 }
 
-.clock-widget .time {
-  font-size: 2.8rem;
-  font-weight: 300;
-  letter-spacing: -1px;
+.time-text {
+  font-size: 3.8rem;
+  font-weight: 200;
+  letter-spacing: -2px;
   color: #ffffff;
-  line-height: 1;
 }
 
-.clock-widget .date {
-  font-size: 1rem;
+.ampm-text {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-left: 8px;
+  text-transform: uppercase;
+}
+
+.date-text {
+  font-size: 1.05rem;
   font-weight: 400;
   color: #94a3b8;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
-.header-status {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* System Summary Card */
+.status-summary-card {
+  background: #141c2e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
 }
 
-.mqtt-pill {
+.status-summary-header {
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 6px 14px;
-  border-radius: 9999px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  margin-bottom: 4px;
 }
 
 .status-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  margin-right: 8px;
   background-color: #ef4444; /* red default */
+  margin-right: 10px;
+  flex-shrink: 0;
 }
 
 .status-dot.connected {
-  background-color: #10b981; /* green */
-  box-shadow: 0 0 8px #10b981;
+  background-color: #10b981; /* emerald green */
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
 }
 
 .status-dot.connecting {
   background-color: #f59e0b; /* amber */
 }
 
-.icon-btn {
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.status-title {
+  font-size: 0.9rem;
+  font-weight: 600;
   color: #e2e8f0;
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.icon-btn:active {
-  background: #334155;
-  transform: scale(0.96);
-}
-
-/* Quick Scenes Bar */
-.scenes-bar {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.scene-btn {
-  flex: 1;
-  background: linear-gradient(135deg, #1e293b, #0f172a);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 12px 16px;
-  color: #f8fafc;
-  font-size: 0.95rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-}
-
-.scene-btn:active {
-  background: #334155;
-  border-color: #38bdf8;
-}
-
-/* Section Headings */
-.section-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 14px;
-}
-
-/* Grid Layouts */
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
-}
-
-/* Device Card (Tiles) */
-.device-card {
-  background: #151d2f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 140px;
-  transition: border-color 0.2s, background 0.2s;
-  position: relative;
-}
-
-.device-card.active {
-  background: #1b263e;
-  border-color: #38bdf8;
-  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.15);
-}
-
-.card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.device-icon {
-  font-size: 2rem;
-  line-height: 1;
-}
-
-.power-toggle-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #94a3b8;
-  font-size: 1.3rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.device-card.active .power-toggle-btn {
-  background: #38bdf8;
-  color: #0b0f19;
-  border-color: #38bdf8;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
-}
-
-.power-toggle-btn:active {
-  transform: scale(0.92);
-}
-
-.card-bottom {
-  margin-top: 14px;
-}
-
-.device-name {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #f1f5f9;
-  margin-bottom: 4px;
-}
-
-.device-status {
-  font-size: 0.85rem;
-  color: #64748b;
-  font-weight: 500;
-}
-
-.device-card.active .device-status {
-  color: #38bdf8;
-}
-
-/* Extra Controls: Dimmer / Fan Speed */
-.card-extra-controls {
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.fan-speeds {
-  display: flex;
-  gap: 6px;
-}
-
-.fan-speed-btn {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #94a3b8;
-  padding: 6px 0;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.fan-speed-btn.active {
-  background: #38bdf8;
-  color: #0b0f19;
-  border-color: #38bdf8;
-}
-
-/* PC Card Special Controls */
-.computer-card {
-  min-height: 160px;
-}
-
-.pc-status-badge {
-  display: inline-flex;
-  align-items: center;
+.status-summary-sub {
   font-size: 0.8rem;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #94a3b8;
+  color: #64748b;
+  padding-left: 20px;
+}
+
+/* Sidebar Scenes */
+.sidebar-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #64748b;
   margin-bottom: 12px;
 }
 
-.pc-status-badge.online {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-}
-
-.pc-status-badge.sleep {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-}
-
-.pc-status-badge.offline {
-  background: rgba(239, 68, 68, 0.15);
-  color: #f87171;
-}
-
-.pc-actions {
+.scenes-list {
+  display: -webkit-flex;
   display: flex;
-  gap: 8px;
-  margin-top: 10px;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.pc-action-btn {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #f1f5f9;
-  padding: 8px 4px;
+.scene-tile {
+  background: #141c2e;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  width: 100%;
+}
+
+.scene-tile:active {
+  background: #1e293b;
+  border-color: #38bdf8;
+  transform: scale(0.98);
+}
+
+.scene-icon-box {
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
-  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.scene-info {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+.scene-name {
+  font-size: 0.95rem;
   font-weight: 600;
-  text-align: center;
+  color: #f1f5f9;
+}
+
+.scene-desc {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.settings-trigger-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  gap: 8px;
   cursor: pointer;
 }
 
-.pc-action-btn:active {
-  background: #334155;
+.settings-trigger-btn:active {
+  background: #1e293b;
+  color: #ffffff;
 }
 
-.pc-action-btn.wake-btn {
-  background: rgba(16, 185, 129, 0.2);
-  border-color: rgba(16, 185, 129, 0.4);
+/* -------------------------------------------------------------
+   MAIN CONTENT AREA (Room Relays & Workstations)
+   ------------------------------------------------------------- */
+.dock-main {
+  -webkit-flex: 1;
+  flex: 1;
+  height: 100%;
+  padding: 32px 36px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.dashboard-section {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+.section-header {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+}
+
+.section-subtitle {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 3px;
+}
+
+.section-badge {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: #38bdf8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  letter-spacing: 0.05em;
+}
+
+/* -------------------------------------------------------------
+   DEVICE CARDS (HomeKit Style Tiles)
+   ------------------------------------------------------------- */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 18px;
+}
+
+.device-tile {
+  background: #121929;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: 20px;
+  cursor: pointer;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  min-height: 160px;
+  position: relative;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.device-tile:active {
+  transform: scale(0.98);
+}
+
+/* Active State (ON) */
+.device-tile.active {
+  background: -webkit-linear-gradient(135deg, #18233c 0%, #151d30 100%);
+  background: linear-gradient(135deg, #18233c 0%, #151d30 100%);
+  border-color: #f59e0b; /* warm glowing amber for lighting */
+  box-shadow: 0 4px 25px rgba(245, 158, 11, 0.18);
+}
+
+.device-tile.active.fan-tile {
+  border-color: #38bdf8; /* cyan glow for fan */
+  box-shadow: 0 4px 25px rgba(56, 189, 248, 0.18);
+}
+
+.tile-top {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.tile-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  font-size: 1.6rem;
+}
+
+.device-tile.active .tile-icon-box {
+  background: rgba(245, 158, 11, 0.2);
+}
+
+.device-tile.active.fan-tile .tile-icon-box {
+  background: rgba(56, 189, 248, 0.2);
+}
+
+/* iOS Style Switch Simulation */
+.ios-switch {
+  width: 44px;
+  height: 26px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.12);
+  position: relative;
+  transition: background 0.2s;
+}
+
+.ios-switch-knob {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #94a3b8;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.device-tile.active .ios-switch {
+  background: #f59e0b;
+}
+
+.device-tile.active.fan-tile .ios-switch {
+  background: #38bdf8;
+}
+
+.device-tile.active .ios-switch-knob {
+  background: #ffffff;
+  transform: translateX(18px);
+  -webkit-transform: translateX(18px);
+}
+
+.tile-bottom {
+  margin-top: 18px;
+}
+
+.tile-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.tile-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.tile-state {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.device-tile.active .tile-state {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.device-tile.active.fan-tile .tile-state {
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+/* Fan Speed Bar */
+.fan-speed-selector {
+  display: -webkit-flex;
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.speed-chip {
+  -webkit-flex: 1;
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.speed-chip.active {
+  background: #38bdf8;
+  color: #090d16;
+  border-color: #38bdf8;
+}
+
+/* -------------------------------------------------------------
+   WORKSTATION / PC CARDS
+   ------------------------------------------------------------- */
+.computers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+.computer-tile {
+  background: #121929;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: 22px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  min-height: 175px;
+}
+
+.computer-tile.active {
+  background: -webkit-linear-gradient(135deg, #162137 0%, #121929 100%);
+  background: linear-gradient(135deg, #162137 0%, #121929 100%);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.comp-header {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  -webkit-align-items: center;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.comp-badge {
+  display: -webkit-inline-flex;
+  display: inline-flex;
+  -webkit-align-items: center;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+}
+
+.comp-badge.online {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.comp-badge.sleep {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+.comp-badge.offline {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+.comp-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.comp-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 3px;
+}
+
+.comp-btn-group {
+  display: -webkit-flex;
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.comp-btn {
+  -webkit-flex: 1;
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
+  padding: 10px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s;
+}
+
+.comp-btn:active {
+  background: #1e293b;
+  transform: scale(0.97);
+}
+
+.comp-btn.wake {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
   color: #6ee7b7;
 }
 
-.pc-action-btn.poweroff-btn {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.3);
+.comp-btn.sleep {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.25);
+  color: #fde68a;
+}
+
+.comp-btn.off {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.25);
   color: #fca5a5;
 }
 
-/* Modal dialog */
+/* -------------------------------------------------------------
+   SETTINGS MODAL
+   ------------------------------------------------------------- */
 .modal-overlay {
   display: none;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 9999;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-justify-content: center;
   justify-content: center;
   padding: 20px;
 }
 
 .modal-overlay.open {
+  display: -webkit-flex;
   display: flex;
 }
 
 .modal-content {
-  background: #151d2f;
+  background: #121929;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
+  border-radius: 24px;
   width: 100%;
   max-width: 480px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 24px;
+  padding: 28px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
 }
 
 .modal-header {
+  display: -webkit-flex;
   display: flex;
+  -webkit-justify-content: space-between;
   justify-content: space-between;
+  -webkit-align-items: center;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -365,52 +654,108 @@ html, body {
 .modal-title {
   font-size: 1.3rem;
   font-weight: 600;
+  color: #ffffff;
+}
+
+.icon-btn-close {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #94a3b8;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
 }
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .form-group label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
   color: #94a3b8;
   margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .form-group input {
   width: 100%;
-  background: #0b0f19;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
   font-size: 0.95rem;
 }
 
 .modal-footer {
+  display: -webkit-flex;
   display: flex;
+  -webkit-justify-content: flex-end;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
   margin-top: 24px;
 }
 
 .btn-primary {
   background: #38bdf8;
-  color: #0b0f19;
+  color: #090d16;
   border: none;
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-weight: 600;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
   cursor: pointer;
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   color: #f1f5f9;
   border: none;
-  padding: 10px 16px;
-  border-radius: 10px;
-  font-weight: 500;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
+}
+
+/* -------------------------------------------------------------
+   RESPONSIVE DESIGN (Portrait iPad / Smaller Displays)
+   ------------------------------------------------------------- */
+@media (max-width: 860px) {
+  #dock-container {
+    -webkit-flex-direction: column;
+    flex-direction: column;
+  }
+
+  .dock-sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .time-text {
+    font-size: 2.8rem;
+  }
+
+  .scenes-list {
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .scene-tile {
+    min-width: 160px;
+  }
+
+  .dock-main {
+    padding: 20px;
+  }
 }

@@ -1,11 +1,13 @@
-// iPad Dock Application Logic
-// Strictly ES5 / iOS 10 Safari Compatible
+// iPad Dock Application Controller 2.0
+// Pure ES5 / 100% Compatible with iOS 10 Safari
 
 var mqttClient = null;
 var isConnected = false;
 var reconnectTimer = null;
 
-// Load persisted settings or fallback to config.js defaults
+// -------------------------------------------------------------
+// Settings Management
+// -------------------------------------------------------------
 function getSettings() {
   var host = localStorage.getItem('dock_mqtt_host');
   var port = localStorage.getItem('dock_mqtt_port');
@@ -27,45 +29,77 @@ function getSettings() {
 }
 
 // -------------------------------------------------------------
-// UI Clock & Date Updater
+// Live Clock & Dynamic Greeting
 // -------------------------------------------------------------
 function updateClock() {
   var now = new Date();
   var hours = now.getHours();
   var minutes = now.getMinutes();
-  var seconds = now.getSeconds();
 
-  var ampm = '';
+  var greetingElem = document.getElementById('live-greeting');
+  if (greetingElem) {
+    if (hours >= 5 && hours < 12) {
+      greetingElem.innerHTML = 'GOOD MORNING';
+    } else if (hours >= 12 && hours < 17) {
+      greetingElem.innerHTML = 'GOOD AFTERNOON';
+    } else if (hours >= 17 && hours < 22) {
+      greetingElem.innerHTML = 'GOOD EVENING';
+    } else {
+      greetingElem.innerHTML = 'GOOD NIGHT';
+    }
+  }
+
+  var ampm = 'AM';
   if (!DOCK_CONFIG.clockFormat24h) {
-    ampm = hours >= 12 ? ' PM' : ' AM';
+    ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
-    hours = hours ? hours : 12; // 0 should be 12
+    hours = hours ? hours : 12;
   } else {
     hours = hours < 10 ? '0' + hours : hours;
   }
 
   minutes = minutes < 10 ? '0' + minutes : minutes;
-  seconds = seconds < 10 ? '0' + seconds : seconds;
 
-  var timeStr = hours + ':' + minutes;
-  if (DOCK_CONFIG.showSeconds) {
-    timeStr += ':' + seconds;
-  }
-  timeStr += ampm;
+  var timeElem = document.getElementById('live-time');
+  var ampmElem = document.getElementById('live-ampm');
+  var dateElem = document.getElementById('live-date');
+
+  if (timeElem) timeElem.innerHTML = hours + ':' + minutes;
+  if (ampmElem) ampmElem.innerHTML = DOCK_CONFIG.clockFormat24h ? '' : ampm;
 
   var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  var dateStr = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate();
-
-  var timeElem = document.getElementById('live-time');
-  var dateElem = document.getElementById('live-date');
-  if (timeElem) timeElem.innerHTML = timeStr;
-  if (dateElem) dateElem.innerHTML = dateStr;
+  if (dateElem) {
+    dateElem.innerHTML = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate();
+  }
 }
 
 // -------------------------------------------------------------
-// Dynamic Card Rendering
+// Dynamic Rendering: Devices & Summary Counters
 // -------------------------------------------------------------
+function updateActiveCounters() {
+  var activeCount = 0;
+  for (var i = 0; i < DOCK_CONFIG.devices.length; i++) {
+    if (DOCK_CONFIG.devices[i].powerState === 'ON') {
+      activeCount++;
+    }
+  }
+
+  var badgeElem = document.getElementById('relays-active-count');
+  if (badgeElem) {
+    badgeElem.innerHTML = activeCount + ' ACTIVE';
+  }
+
+  var subElem = document.getElementById('device-summary-text');
+  if (subElem) {
+    if (activeCount === 0) {
+      subElem.innerHTML = 'All Relays OFF';
+    } else {
+      subElem.innerHTML = activeCount + ' of ' + DOCK_CONFIG.devices.length + ' Relays ON';
+    }
+  }
+}
+
 function renderDevices() {
   var container = document.getElementById('devices-grid');
   if (!container) return;
@@ -73,35 +107,44 @@ function renderDevices() {
 
   for (var i = 0; i < DOCK_CONFIG.devices.length; i++) {
     var dev = DOCK_CONFIG.devices[i];
-    var card = document.createElement('div');
-    card.id = 'card-' + dev.id;
-    card.className = 'device-card' + (dev.powerState === 'ON' ? ' active' : '');
+    var isFan = dev.type === 'fan';
+    var isOn = dev.powerState === 'ON';
 
-    var topHtml = '<div class="card-top">' +
-      '<div class="device-icon">' + dev.icon + '</div>' +
-      '<button class="power-toggle-btn" onclick="toggleDevice(\'' + dev.id + '\')">⏻</button>' +
+    var card = document.createElement('div');
+    card.id = 'tile-' + dev.id;
+    card.className = 'device-tile' + (isFan ? ' fan-tile' : '') + (isOn ? ' active' : '');
+    card.setAttribute('onclick', 'toggleDevice(\'' + dev.id + '\')');
+
+    var channelLabel = dev.channel || 'RELAY';
+    channelLabel = channelLabel.replace('POWER', 'RELAY ');
+
+    var topHtml = '<div class="tile-top">' +
+      '<div class="tile-icon-box">' + dev.icon + '</div>' +
+      '<div class="ios-switch"><div class="ios-switch-knob"></div></div>' +
       '</div>';
 
-    var extraHtml = '';
-    if (dev.type === 'fan') {
-      extraHtml = '<div class="card-extra-controls">' +
-        '<div class="fan-speeds">' +
-        '<button class="fan-speed-btn' + (dev.speed === 1 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 1)">1</button>' +
-        '<button class="fan-speed-btn' + (dev.speed === 2 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 2)">2</button>' +
-        '<button class="fan-speed-btn' + (dev.speed === 3 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 3)">3</button>' +
-        '<button class="fan-speed-btn' + (dev.speed === 4 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 4)">4</button>' +
-        '</div></div>';
+    var fanSpeedHtml = '';
+    if (isFan && isOn) {
+      fanSpeedHtml = '<div class="fan-speed-selector" onclick="event.stopPropagation();">' +
+        '<div class="speed-chip' + (dev.speed === 1 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 1)">1</div>' +
+        '<div class="speed-chip' + (dev.speed === 2 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 2)">2</div>' +
+        '<div class="speed-chip' + (dev.speed === 3 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 3)">3</div>' +
+        '<div class="speed-chip' + (dev.speed === 4 ? ' active' : '') + '" onclick="setFanSpeed(\'' + dev.id + '\', 4)">4</div>' +
+        '</div>';
     }
 
-    var bottomHtml = '<div class="card-bottom">' +
-      '<div class="device-name">' + dev.name + '</div>' +
-      '<div class="device-status" id="status-' + dev.id + '">' + dev.powerState + '</div>' +
-      extraHtml +
+    var bottomHtml = '<div class="tile-bottom">' +
+      '<div class="tile-tag">' + channelLabel + '</div>' +
+      '<div class="tile-title">' + dev.name + '</div>' +
+      '<div class="tile-state" id="state-text-' + dev.id + '">' + dev.powerState + '</div>' +
+      fanSpeedHtml +
       '</div>';
 
     card.innerHTML = topHtml + bottomHtml;
     container.appendChild(card);
   }
+
+  updateActiveCounters();
 }
 
 function renderComputers() {
@@ -113,22 +156,25 @@ function renderComputers() {
     var comp = DOCK_CONFIG.computers[i];
     var card = document.createElement('div');
     card.id = 'comp-' + comp.id;
-    card.className = 'device-card computer-card' + (comp.state === 'online' ? ' active' : '');
+    card.className = 'computer-tile' + (comp.state === 'online' ? ' active' : '');
 
     var badgeClass = comp.state === 'online' ? 'online' : (comp.state === 'sleep' ? 'sleep' : 'offline');
     var badgeLabel = comp.state.toUpperCase();
 
-    var html = '<div class="card-top">' +
-      '<div class="device-icon">' + comp.icon + '</div>' +
-      '<span class="pc-status-badge ' + badgeClass + '" id="comp-badge-' + comp.id + '">' + badgeLabel + '</span>' +
+    var html = '<div class="comp-header">' +
+      '<div class="tile-icon-box">' + comp.icon + '</div>' +
+      '<div class="comp-badge ' + badgeClass + '" id="comp-badge-' + comp.id + '">' +
+      '<span>●</span> <span>' + badgeLabel + '</span>' +
       '</div>' +
-      '<div class="card-bottom">' +
-      '<div class="device-name">' + comp.name + '</div>' +
-      '<div class="pc-actions">' +
-      '<button class="pc-action-btn wake-btn" onclick="pcAction(\'' + comp.id + '\', \'wake\')">⚡ Wake</button>' +
-      '<button class="pc-action-btn" onclick="pcAction(\'' + comp.id + '\', \'sleep\')">💤 Sleep</button>' +
-      '<button class="pc-action-btn poweroff-btn" onclick="pcAction(\'' + comp.id + '\', \'shutdown\')">⏻ Off</button>' +
       '</div>' +
+      '<div>' +
+      '<div class="comp-name">' + comp.name + '</div>' +
+      '<div class="comp-desc">Wake-on-LAN Ready</div>' +
+      '</div>' +
+      '<div class="comp-btn-group">' +
+      '<button class="comp-btn wake" onclick="pcAction(\'' + comp.id + '\', \'wake\')">⚡ Wake</button>' +
+      '<button class="comp-btn sleep" onclick="pcAction(\'' + comp.id + '\', \'sleep\')">💤 Sleep</button>' +
+      '<button class="comp-btn off" onclick="pcAction(\'' + comp.id + '\', \'shutdown\')">⏻ Off</button>' +
       '</div>';
 
     card.innerHTML = html;
@@ -137,22 +183,19 @@ function renderComputers() {
 }
 
 // -------------------------------------------------------------
-// MQTT Connection & Handlers (Paho MQTT)
+// MQTT Connection & Subscription (Paho MQTT)
 // -------------------------------------------------------------
 function setStatus(status, text) {
   var dot = document.getElementById('mqtt-dot');
   var label = document.getElementById('mqtt-label');
-  if (!dot || !label) return;
-
-  dot.className = 'status-dot ' + status;
-  label.innerHTML = text;
+  if (dot) dot.className = 'status-dot ' + status;
+  if (label) label.innerHTML = text;
 }
 
 function connectMqtt() {
   var cfg = getSettings();
   setStatus('connecting', 'Connecting...');
 
-  // Generate random client ID
   var clientId = 'ipad_dock_' + Math.random().toString(16).substr(2, 8);
 
   try {
@@ -167,7 +210,6 @@ function connectMqtt() {
     isConnected = false;
     setStatus('error', 'Disconnected');
     console.warn('MQTT Connection lost:', responseObject.errorMessage);
-    // Auto-reconnect after 4 seconds
     clearTimeout(reconnectTimer);
     reconnectTimer = setTimeout(connectMqtt, 4000);
   };
@@ -183,7 +225,7 @@ function connectMqtt() {
     useSSL: cfg.useSSL,
     onSuccess: function () {
       isConnected = true;
-      setStatus('connected', 'Live');
+      setStatus('connected', 'System Online');
       console.log('Connected to MQTT broker at ' + cfg.host + ':' + cfg.port);
       subscribeAll();
     },
@@ -207,7 +249,6 @@ function connectMqtt() {
 function subscribeAll() {
   if (!isConnected || !mqttClient) return;
 
-  // Subscribe to all Tasmota telemetry and status topics
   mqttClient.subscribe('stat/+/POWER', { qos: 0 });
   mqttClient.subscribe('stat/+/POWER1', { qos: 0 });
   mqttClient.subscribe('stat/+/POWER2', { qos: 0 });
@@ -216,14 +257,13 @@ function subscribeAll() {
   mqttClient.subscribe('stat/+/RESULT', { qos: 0 });
   mqttClient.subscribe('tele/+/STATE', { qos: 0 });
 
-  // Subscribe to computer status topics
   for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
     var comp = DOCK_CONFIG.computers[i];
     mqttClient.subscribe('stat/' + comp.topic + '/status', { qos: 0 });
     publish('cmnd/' + comp.topic + '/ping', '1');
   }
 
-  // Query initial state for all Tasmota devices
+  // Request initial status for all relays
   for (var j = 0; j < DOCK_CONFIG.devices.length; j++) {
     var dev = DOCK_CONFIG.devices[j];
     var ch = dev.channel || 'POWER';
@@ -243,10 +283,9 @@ function publish(topic, message) {
 }
 
 // -------------------------------------------------------------
-// Message Routing & State Updates
+// Message Routing & Live Feedback
 // -------------------------------------------------------------
 function handleIncomingMessage(topic, payload) {
-  // Check Tasmota device states
   for (var i = 0; i < DOCK_CONFIG.devices.length; i++) {
     var dev = DOCK_CONFIG.devices[i];
     var ch = dev.channel || 'POWER';
@@ -265,7 +304,6 @@ function handleIncomingMessage(topic, payload) {
     }
   }
 
-  // Check Computer status
   for (var k = 0; k < DOCK_CONFIG.computers.length; k++) {
     var comp = DOCK_CONFIG.computers[k];
     if (topic === 'stat/' + comp.topic + '/status') {
@@ -284,19 +322,11 @@ function updateDevicePowerState(deviceId, state) {
   }
   if (!dev) return;
 
-  dev.powerState = (state === 'ON' || state === '1') ? 'ON' : 'OFF';
-
-  var card = document.getElementById('card-' + dev.id);
-  var statusElem = document.getElementById('status-' + dev.id);
-
-  if (card) {
-    if (dev.powerState === 'ON') {
-      card.className = 'device-card active';
-    } else {
-      card.className = 'device-card';
-    }
+  var newState = (state === 'ON' || state === '1') ? 'ON' : 'OFF';
+  if (dev.powerState !== newState) {
+    dev.powerState = newState;
+    renderDevices();
   }
-  if (statusElem) statusElem.innerHTML = dev.powerState;
 }
 
 function updateFanSpeedState(deviceId, speed) {
@@ -322,17 +352,17 @@ function updateComputerStatus(compId, status) {
   }
   if (!comp) return;
 
-  comp.state = status; // 'online', 'offline', 'sleep'
+  comp.state = status;
   var card = document.getElementById('comp-' + comp.id);
   var badge = document.getElementById('comp-badge-' + comp.id);
 
   if (card) {
-    card.className = 'device-card computer-card' + (status === 'online' ? ' active' : '');
+    card.className = 'computer-tile' + (status === 'online' ? ' active' : '');
   }
   if (badge) {
     var badgeClass = status === 'online' ? 'online' : (status === 'sleep' ? 'sleep' : 'offline');
-    badge.className = 'pc-status-badge ' + badgeClass;
-    badge.innerHTML = status.toUpperCase();
+    badge.className = 'comp-badge ' + badgeClass;
+    badge.innerHTML = '<span>●</span> <span>' + status.toUpperCase() + '</span>';
   }
 }
 
@@ -348,7 +378,12 @@ function toggleDevice(deviceId) {
     }
   }
   if (!dev) return;
+
   var ch = dev.channel || 'POWER';
+  // Optimistic toggle for instant feel
+  dev.powerState = dev.powerState === 'ON' ? 'OFF' : 'ON';
+  renderDevices();
+
   publish('cmnd/' + dev.topic + '/' + ch, 'TOGGLE');
 }
 
@@ -361,7 +396,11 @@ function setFanSpeed(deviceId, speed) {
     }
   }
   if (!dev) return;
+
   var ch = dev.channel || 'POWER';
+  dev.speed = speed;
+  renderDevices();
+
   publish('cmnd/' + dev.topic + '/' + ch, speed > 0 ? 'ON' : 'OFF');
 }
 
@@ -376,14 +415,13 @@ function pcAction(compId, action) {
   if (!comp) return;
 
   if (action === 'wake') {
-    // Send WakeOnLan command via Tasmota device on the local network
     var wolTopic = comp.wolDeviceTopic || 'room_light';
     publish('cmnd/' + wolTopic + '/WakeOnLan', comp.mac);
     console.log('Published WoL request to Tasmota:', comp.mac);
   } else if (action === 'sleep') {
     publish('cmnd/' + comp.topic + '/power', 'sleep');
   } else if (action === 'shutdown') {
-    if (confirm('Are you sure you want to shut down ' + comp.name + '?')) {
+    if (confirm('Shut down ' + comp.name + '?')) {
       publish('cmnd/' + comp.topic + '/power', 'shutdown');
     }
   }
@@ -391,44 +429,49 @@ function pcAction(compId, action) {
 
 function triggerScene(sceneName) {
   if (sceneName === 'all_off') {
-    // Turn off all devices
     for (var i = 0; i < DOCK_CONFIG.devices.length; i++) {
       var d = DOCK_CONFIG.devices[i];
+      d.powerState = 'OFF';
       var ch = d.channel || 'POWER';
       publish('cmnd/' + d.topic + '/' + ch, 'OFF');
     }
-    // Put computers to sleep
+    renderDevices();
     for (var j = 0; j < DOCK_CONFIG.computers.length; j++) {
       publish('cmnd/' + DOCK_CONFIG.computers[j].topic + '/power', 'sleep');
     }
   } else if (sceneName === 'work_mode') {
     for (var k = 0; k < DOCK_CONFIG.devices.length; k++) {
       var d2 = DOCK_CONFIG.devices[k];
+      d2.powerState = 'ON';
       var ch2 = d2.channel || 'POWER';
       publish('cmnd/' + d2.topic + '/' + ch2, 'ON');
     }
+    renderDevices();
     pcAction('desktop_pc', 'wake');
   } else if (sceneName === 'relax_mode') {
-    // Turn off room lights, leave fan on
     for (var m = 0; m < DOCK_CONFIG.devices.length; m++) {
       var d3 = DOCK_CONFIG.devices[m];
       var ch3 = d3.channel || 'POWER';
       if (d3.type === 'fan') {
+        d3.powerState = 'ON';
         publish('cmnd/' + d3.topic + '/' + ch3, 'ON');
       } else {
+        d3.powerState = 'OFF';
         publish('cmnd/' + d3.topic + '/' + ch3, 'OFF');
       }
     }
+    renderDevices();
   }
 }
 
 // -------------------------------------------------------------
-// Settings Modal Handlers
+// Settings Modal
 // -------------------------------------------------------------
 function openSettings() {
   var cfg = getSettings();
   document.getElementById('cfg-host').value = cfg.host;
   document.getElementById('cfg-port').value = cfg.port;
+  document.getElementById('cfg-path').value = cfg.path;
   document.getElementById('cfg-user').value = cfg.username || '';
   document.getElementById('cfg-pass').value = cfg.password || '';
   document.getElementById('settings-modal').className = 'modal-overlay open';
@@ -441,11 +484,13 @@ function closeSettings() {
 function saveSettings() {
   var host = document.getElementById('cfg-host').value.trim();
   var port = document.getElementById('cfg-port').value.trim();
+  var path = document.getElementById('cfg-path').value.trim();
   var user = document.getElementById('cfg-user').value.trim();
   var pass = document.getElementById('cfg-pass').value.trim();
 
   localStorage.setItem('dock_mqtt_host', host);
   localStorage.setItem('dock_mqtt_port', port);
+  localStorage.setItem('dock_mqtt_path', path);
   localStorage.setItem('dock_mqtt_user', user);
   localStorage.setItem('dock_mqtt_pass', pass);
 
@@ -458,7 +503,7 @@ function saveSettings() {
 }
 
 // -------------------------------------------------------------
-// Initialization
+// App Initialization
 // -------------------------------------------------------------
 window.onload = function () {
   updateClock();
@@ -466,11 +511,6 @@ window.onload = function () {
 
   renderDevices();
   renderComputers();
-
-  var btnSettings = document.getElementById('btn-settings');
-  if (btnSettings) {
-    btnSettings.onclick = openSettings;
-  }
 
   connectMqtt();
 };
