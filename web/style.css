@@ -1,10 +1,11 @@
-/* Apple HomeKit Style - iPad Gen 4 Dark Theme */
+/* Apple HomeKit Style - iPad Gen 4 (iOS 10 WebKit Compatible) */
 
 * {
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   margin: 0;
   padding: 0;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
@@ -13,21 +14,20 @@
 html, body {
   width: 100%;
   height: 100%;
-  background: #000000;
+  margin: 0;
+  padding: 0;
+  background-color: #000000;
   color: #ffffff;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   overflow: hidden;
+  position: fixed;
 }
 
-/* App Viewport */
+/* Master App Container */
 .home-app {
-  width: 100vw;
-  height: 100vh;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  padding: 24px 32px;
+  width: 100%;
+  height: 100%;
+  padding: 22px 28px;
   background: -webkit-radial-gradient(50% 0%, circle, #162032 0%, #0a0e17 60%, #03060a 100%);
   background: radial-gradient(circle at 50% 0%, #162032 0%, #0a0e17 60%, #03060a 100%);
   overflow-y: auto;
@@ -35,7 +35,7 @@ html, body {
 }
 
 /* -------------------------------------------------------------
-   TOP HEADER & STATUS BAR
+   TOP HEADER & STATUS BAR (No CSS gap)
    ------------------------------------------------------------- */
 .home-header {
   display: -webkit-flex;
@@ -45,7 +45,6 @@ html, body {
   -webkit-align-items: center;
   align-items: center;
   margin-bottom: 20px;
-  flex-shrink: 0;
 }
 
 .header-left {
@@ -53,7 +52,6 @@ html, body {
   display: flex;
   -webkit-align-items: center;
   align-items: center;
-  gap: 24px;
 }
 
 .header-time-group {
@@ -61,10 +59,11 @@ html, body {
   display: flex;
   -webkit-align-items: baseline;
   align-items: baseline;
+  margin-right: 24px;
 }
 
 .home-clock {
-  font-size: 3.2rem;
+  font-size: 3rem;
   font-weight: 300;
   letter-spacing: -1.5px;
   line-height: 1;
@@ -72,7 +71,7 @@ html, body {
 }
 
 .home-ampm {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 500;
   color: #8e8e93;
   margin-left: 6px;
@@ -85,11 +84,11 @@ html, body {
   -webkit-flex-direction: column;
   flex-direction: column;
   border-left: 1px solid rgba(255, 255, 255, 0.15);
-  padding-left: 20px;
+  padding-left: 18px;
 }
 
 .home-date {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
   color: #8e8e93;
   text-transform: uppercase;
@@ -97,10 +96,11 @@ html, body {
 }
 
 .room-title {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #ffffff;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.4px;
+  margin-top: 2px;
 }
 
 .header-right {
@@ -108,7 +108,6 @@ html, body {
   display: flex;
   -webkit-align-items: center;
   align-items: center;
-  gap: 12px;
 }
 
 .home-status-chip {
@@ -116,11 +115,11 @@ html, body {
   display: flex;
   -webkit-align-items: center;
   align-items: center;
-  gap: 8px;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 8px 16px;
   border-radius: 9999px;
+  margin-right: 12px;
 }
 
 .status-indicator-dot {
@@ -128,6 +127,8 @@ html, body {
   height: 8px;
   border-radius: 50%;
   background: #ef4444; /* red default */
+  margin-right: 8px;
+  flex-shrink: 0;
 }
 
 .status-indicator-dot.connected {
@@ -146,11 +147,11 @@ html, body {
 }
 
 .settings-circle-btn {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
   display: -webkit-flex;
   display: flex;
@@ -158,25 +159,21 @@ html, body {
   align-items: center;
   -webkit-justify-content: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   cursor: pointer;
-  transition: transform 0.1s, background 0.15s;
 }
 
 .settings-circle-btn:active {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.22);
 }
 
 /* -------------------------------------------------------------
-   SCENE PILLS ROW (Horizontal HomeKit Chips)
+   SCENE PILLS ROW (No CSS gap)
    ------------------------------------------------------------- */
 .scenes-scroller {
   display: -webkit-flex;
   display: flex;
-  gap: 12px;
-  margin-bottom: 26px;
-  flex-shrink: 0;
+  margin-bottom: 22px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
@@ -191,19 +188,25 @@ html, body {
   display: flex;
   -webkit-align-items: center;
   align-items: center;
-  gap: 10px;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.15s, transform 0.1s;
+  margin-right: 12px;
+  color: #ffffff;
+}
+
+.scene-chip:last-child {
+  margin-right: 0;
 }
 
 .scene-chip:active {
   background: rgba(255, 255, 255, 0.22);
   transform: scale(0.96);
+  -webkit-transform: scale(0.96);
 }
 
 .scene-chip-icon {
   font-size: 1.15rem;
+  margin-right: 8px;
 }
 
 .scene-chip-title {
@@ -216,20 +219,11 @@ html, body {
    MAIN CONTENT & SECTIONS
    ------------------------------------------------------------- */
 .home-content {
-  -webkit-flex: 1;
-  flex: 1;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  gap: 26px;
+  width: 100%;
 }
 
 .home-section {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
+  margin-bottom: 24px;
 }
 
 .section-title-row {
@@ -239,7 +233,7 @@ html, body {
   justify-content: space-between;
   -webkit-align-items: baseline;
   align-items: baseline;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .section-heading {
@@ -256,18 +250,26 @@ html, body {
 }
 
 /* -------------------------------------------------------------
-   HOMEKIT SQUARE TILES (Accessories)
+   HOMEKIT ACCESSORY TILES (Pure Flexbox - NO CSS Grid)
    ------------------------------------------------------------- */
 .homekit-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 18px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-left: -8px;
+  margin-right: -8px;
 }
 
 .homekit-tile {
+  -webkit-flex: 1 1 200px;
+  flex: 1 1 200px;
+  min-width: 190px;
+  max-width: 33.333%;
+  margin: 8px;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
+  border-radius: 22px;
   padding: 20px;
   cursor: pointer;
   display: -webkit-flex;
@@ -277,28 +279,29 @@ html, body {
   -webkit-justify-content: space-between;
   justify-content: space-between;
   min-height: 155px;
-  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.12s;
   position: relative;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .homekit-tile:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
+  -webkit-transform: scale(0.97);
 }
 
-/* Active State: Warm Golden Light Glow */
+/* Active State: Amber Glow for Lights */
 .homekit-tile.active {
   background: -webkit-linear-gradient(145deg, #2b2313 0%, #1b1710 100%);
   background: linear-gradient(145deg, #2b2313 0%, #1b1710 100%);
   border-color: #f59e0b;
-  box-shadow: 0 8px 30px rgba(245, 158, 11, 0.25);
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
 }
 
-/* Active State: Cool Cyan Fan Glow */
+/* Active State: Cyan Glow for Fan */
 .homekit-tile.active.fan-tile {
   background: -webkit-linear-gradient(145deg, #102636 0%, #0d1a24 100%);
   background: linear-gradient(145deg, #102636 0%, #0d1a24 100%);
   border-color: #38bdf8;
-  box-shadow: 0 8px 30px rgba(56, 189, 248, 0.25);
+  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.25);
 }
 
 .tile-header {
@@ -322,19 +325,18 @@ html, body {
   -webkit-justify-content: center;
   justify-content: center;
   font-size: 1.5rem;
-  transition: background 0.2s, transform 0.2s;
 }
 
 .homekit-tile.active .tile-icon-circle {
   background: #f59e0b;
   color: #1a1408;
-  box-shadow: 0 0 16px rgba(245, 158, 11, 0.7);
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.7);
 }
 
 .homekit-tile.active.fan-tile .tile-icon-circle {
   background: #38bdf8;
   color: #052438;
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.7);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.7);
 }
 
 .tile-state-dot {
@@ -342,7 +344,6 @@ html, body {
   height: 10px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
-  transition: background 0.2s;
 }
 
 .homekit-tile.active .tile-state-dot {
@@ -394,26 +395,33 @@ html, body {
 }
 
 /* -------------------------------------------------------------
-   WORKSTATION / PC TILES
+   WORKSTATIONS / COMPUTERS (Pure Flexbox - NO CSS Grid)
    ------------------------------------------------------------- */
 .workstations-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 18px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-left: -8px;
+  margin-right: -8px;
 }
 
 .workstation-tile {
+  -webkit-flex: 1 1 300px;
+  flex: 1 1 300px;
+  min-width: 280px;
+  margin: 8px;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 22px;
+  border-radius: 22px;
+  padding: 20px;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
   flex-direction: column;
   -webkit-justify-content: space-between;
   justify-content: space-between;
-  min-height: 165px;
+  min-height: 160px;
 }
 
 .workstation-tile.active {
@@ -429,6 +437,7 @@ html, body {
   justify-content: space-between;
   -webkit-align-items: center;
   align-items: center;
+  margin-bottom: 12px;
 }
 
 .ws-badge {
@@ -436,7 +445,6 @@ html, body {
   display: inline-flex;
   -webkit-align-items: center;
   align-items: center;
-  gap: 6px;
   padding: 5px 12px;
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -444,6 +452,10 @@ html, body {
   letter-spacing: 0.04em;
   background: rgba(255, 255, 255, 0.08);
   color: #8e8e93;
+}
+
+.ws-badge span:first-child {
+  margin-right: 6px;
 }
 
 .ws-badge.online {
@@ -480,7 +492,6 @@ html, body {
 .ws-action-bar {
   display: -webkit-flex;
   display: flex;
-  gap: 8px;
   margin-top: 16px;
 }
 
@@ -496,11 +507,16 @@ html, body {
   font-weight: 600;
   cursor: pointer;
   text-align: center;
-  transition: transform 0.1s, background 0.15s;
+  margin-right: 8px;
+}
+
+.ws-btn:last-child {
+  margin-right: 0;
 }
 
 .ws-btn:active {
   transform: scale(0.96);
+  -webkit-transform: scale(0.96);
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -530,9 +546,9 @@ html, body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
   z-index: 9999;
   -webkit-align-items: center;
   align-items: center;
@@ -553,7 +569,6 @@ html, body {
   width: 100%;
   max-width: 440px;
   padding: 26px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9);
 }
 
 .modal-top {
@@ -583,12 +598,8 @@ html, body {
   cursor: pointer;
 }
 
-.modal-fields {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  gap: 12px;
+.field-item {
+  margin-bottom: 12px;
 }
 
 .field-item label {
@@ -616,8 +627,19 @@ html, body {
   display: flex;
   -webkit-justify-content: flex-end;
   justify-content: flex-end;
-  gap: 10px;
   margin-top: 22px;
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-right: 10px;
 }
 
 .btn-save {
@@ -631,23 +653,12 @@ html, body {
   cursor: pointer;
 }
 
-.btn-cancel {
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 9999px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
 /* -------------------------------------------------------------
-   RESPONSIVE DESIGN (Portrait iPad)
+   RESPONSIVE DESIGN (Portrait iPad: 768px width)
    ------------------------------------------------------------- */
 @media (max-width: 768px) {
   .home-app {
-    padding: 18px 20px;
+    padding: 18px;
   }
 
   .home-header {
@@ -655,7 +666,10 @@ html, body {
     flex-direction: column;
     -webkit-align-items: flex-start;
     align-items: flex-start;
-    gap: 12px;
+  }
+
+  .header-left {
+    margin-bottom: 14px;
   }
 
   .header-right {
@@ -669,6 +683,14 @@ html, body {
   }
 
   .room-title {
-    font-size: 1.4rem;
+    font-size: 1.35rem;
+  }
+
+  .homekit-tile {
+    max-width: 48%;
+  }
+
+  .workstation-tile {
+    max-width: 100%;
   }
 }
