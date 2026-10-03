@@ -1133,26 +1133,150 @@ html, body {
    PAGE 4: STREAM DECK & WORKSTATION ACTIONS
    ------------------------------------------------------------- */
 .deck-container {
-  max-width: 680px;
+  max-width: 960px;
+  width: 100%;
   margin: 0 auto;
-  padding: 4px;
+  padding: 0 4px;
 }
 
+.deck-target-bar {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 8px;
+}
+
+.deck-target-status {
+  font-size: 0.80rem;
+  color: #30d158;
+  font-weight: 600;
+}
+
+.deck-section {
+  margin-bottom: 8px;
+}
+
+.compact-title {
+  margin-bottom: 4px !important;
+}
+
+/* Quick Apps Deck Grid (4x2 Horizontal Tiles with Large Icons) */
+.app-deck-grid {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin: -3px;
+}
+
+.app-tile {
+  width: calc(25% - 6px);
+  margin: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 14px;
+  padding: 7px 10px;
+  color: #ffffff;
+  cursor: pointer;
+  -webkit-transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  box-sizing: border-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  text-align: left;
+}
+
+.app-tile:active {
+  -webkit-transform: scale(0.94);
+  transform: scale(0.94);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.app-icon-wrap {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.08);
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin-right: 10px;
+  -webkit-flex-shrink: 0;
+  flex-shrink: 0;
+}
+
+.app-tile-icon {
+  font-size: 2.1rem;
+  line-height: 1;
+}
+
+.app-tile-info {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-tile-name {
+  font-size: 0.90rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-tile-desc {
+  font-size: 0.68rem;
+  color: #8e8e93;
+  line-height: 1.2;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* App specific brand glows */
+.app-whatsapp .app-icon-wrap { background: rgba(37, 211, 102, 0.18); border: 1px solid rgba(37, 211, 102, 0.4); }
+.app-gemini .app-icon-wrap { background: rgba(138, 92, 246, 0.22); border: 1px solid rgba(138, 92, 246, 0.45); }
+.app-claude .app-icon-wrap { background: rgba(217, 119, 6, 0.2); border: 1px solid rgba(217, 119, 6, 0.4); }
+.app-youtube .app-icon-wrap { background: rgba(255, 0, 0, 0.18); border: 1px solid rgba(255, 0, 0, 0.4); }
+.app-github .app-icon-wrap { background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.28); }
+.app-chatgpt .app-icon-wrap { background: rgba(16, 163, 127, 0.2); border: 1px solid rgba(16, 163, 127, 0.4); }
+.app-gmail .app-icon-wrap { background: rgba(234, 67, 53, 0.18); border: 1px solid rgba(234, 67, 53, 0.4); }
+.app-spotify .app-icon-wrap { background: rgba(30, 215, 96, 0.18); border: 1px solid rgba(30, 215, 96, 0.4); }
+
+/* System Macros (Single Row of 6) */
 .deck-grid {
   display: -webkit-flex;
   display: flex;
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin: -6px;
+  margin: -3px;
 }
 
 .deck-tile {
-  width: calc(33.333% - 12px);
-  margin: 6px;
+  width: calc(16.666% - 6px);
+  margin: 3px;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 18px;
-  padding: 16px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 14px;
+  padding: 8px;
   text-align: left;
   color: #ffffff;
   cursor: pointer;
@@ -1162,8 +1286,8 @@ html, body {
 }
 
 .deck-tile:active {
-  -webkit-transform: scale(0.94);
-  transform: scale(0.94);
+  -webkit-transform: scale(0.93);
+  transform: scale(0.93);
   background: rgba(255, 255, 255, 0.18);
 }
 
@@ -1174,18 +1298,18 @@ html, body {
   align-items: center;
   -webkit-justify-content: space-between;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 .deck-icon {
-  font-size: 1.8rem;
+  font-size: 1.45rem;
 }
 
 .deck-badge {
-  font-size: 0.68rem;
+  font-size: 0.60rem;
   font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 10px;
+  padding: 2px 6px;
+  border-radius: 8px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   background: rgba(255, 255, 255, 0.12);
@@ -1226,143 +1350,78 @@ html, body {
 }
 
 .deck-title {
-  font-size: 0.96rem;
+  font-size: 0.84rem;
   font-weight: 600;
   color: #ffffff;
-  margin-bottom: 2px;
-}
-
-.deck-sub {
-  font-size: 0.74rem;
-  color: #8e8e93;
-}
-
-/* Quick Apps Deck Grid (Large Prominent Icons) */
-.app-deck-grid {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-wrap: wrap;
-  flex-wrap: wrap;
-  margin: -5px;
-}
-
-.app-tile {
-  width: calc(25% - 10px);
-  margin: 5px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 18px;
-  padding: 16px 8px;
-  text-align: center;
-  color: #ffffff;
-  cursor: pointer;
-  -webkit-transition: all 0.22s cubic-bezier(0.25, 0.1, 0.25, 1);
-  transition: all 0.22s cubic-bezier(0.25, 0.1, 0.25, 1);
-  box-sizing: border-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  -webkit-align-items: center;
-  align-items: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-}
-
-.app-tile:active {
-  -webkit-transform: scale(0.92);
-  transform: scale(0.92);
-  background: rgba(255, 255, 255, 0.22);
-}
-
-.app-icon-wrap {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.08);
-  display: -webkit-flex;
-  display: flex;
-  -webkit-align-items: center;
-  align-items: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-  margin-bottom: 8px;
-  -webkit-transition: all 0.2s;
-  transition: all 0.2s;
-}
-
-.app-tile-icon {
-  font-size: 2.2rem;
-  line-height: 1;
-}
-
-.app-tile-name {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100%;
 }
 
-.app-tile-desc {
-  font-size: 0.70rem;
+.deck-sub {
+  font-size: 0.66rem;
   color: #8e8e93;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* App specific brand glows */
-.app-whatsapp .app-icon-wrap { background: rgba(37, 211, 102, 0.18); border: 1px solid rgba(37, 211, 102, 0.4); }
-.app-gemini .app-icon-wrap { background: rgba(138, 92, 246, 0.22); border: 1px solid rgba(138, 92, 246, 0.45); }
-.app-claude .app-icon-wrap { background: rgba(217, 119, 6, 0.2); border: 1px solid rgba(217, 119, 6, 0.4); }
-.app-youtube .app-icon-wrap { background: rgba(255, 0, 0, 0.18); border: 1px solid rgba(255, 0, 0, 0.4); }
-.app-github .app-icon-wrap { background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.28); }
-.app-chatgpt .app-icon-wrap { background: rgba(16, 163, 127, 0.2); border: 1px solid rgba(16, 163, 127, 0.4); }
-.app-gmail .app-icon-wrap { background: rgba(234, 67, 53, 0.18); border: 1px solid rgba(234, 67, 53, 0.4); }
-.app-spotify .app-icon-wrap { background: rgba(30, 215, 96, 0.18); border: 1px solid rgba(30, 215, 96, 0.4); }
-
-/* Teleport Card */
-.teleport-card {
+/* Teleport Card (Compact 2-Column Horizontal Layout) */
+.teleport-card.compact-card {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 20px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 8px 10px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
 }
 
-.teleport-input-wrap {
-  margin-bottom: 12px;
+.teleport-grid-layout {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: stretch;
+  align-items: stretch;
 }
 
-.teleport-textarea {
+.teleport-left-pane {
+  -webkit-flex: 1;
+  flex: 1;
+  margin-right: 10px;
+  display: -webkit-flex;
+  display: flex;
+}
+
+.teleport-textarea.compact-textarea {
   width: 100%;
+  height: 100%;
+  min-height: 74px;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 12px;
-  padding: 10px 14px;
+  padding: 8px 10px;
   color: #ffffff;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   resize: none;
   box-sizing: border-box;
   -webkit-appearance: none;
 }
 
-.teleport-textarea:focus {
+.teleport-textarea.compact-textarea:focus {
   outline: none;
   border-color: #0a84ff;
   box-shadow: 0 0 10px rgba(10, 132, 255, 0.4);
 }
 
-/* Teleport Multi-Machine Clipboard Box */
-.teleport-machines-box {
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  padding: 8px 12px;
-  margin-bottom: 10px;
+.teleport-right-pane {
+  -webkit-flex: 1.4;
+  flex: 1.4;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
 }
 
 .machine-teleport-row {
@@ -1372,37 +1431,34 @@ html, body {
   align-items: center;
   -webkit-justify-content: space-between;
   justify-content: space-between;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.machine-teleport-row:last-child {
-  border-bottom: none;
+  padding: 2px 0;
 }
 
 .machine-row-label {
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: #e5e5ea;
   white-space: nowrap;
-  margin-right: 10px;
 }
 
 .machine-row-buttons {
   display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
-  align-items: center;
 }
 
 .teleport-btn.machine-btn {
-  padding: 7px 12px;
-  font-size: 0.80rem;
-  margin-left: 8px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-left: 6px;
   margin-right: 0;
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  cursor: pointer;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
 }
 
 .teleport-btn.machine-btn.primary {
@@ -1410,61 +1466,72 @@ html, body {
   border-color: #0a84ff;
 }
 
+.teleport-btn.machine-btn:active {
+  -webkit-transform: scale(0.93);
+  transform: scale(0.93);
+}
+
+.teleport-actions-row.compact-actions {
+  display: -webkit-flex;
+  display: flex;
+  margin-top: 4px;
+}
+
 .teleport-btn.sync-btn {
-  -webkit-flex: 2;
-  flex: 2;
+  -webkit-flex: 1.3;
+  flex: 1.3;
+  padding: 5px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  margin-right: 5px;
   background: -webkit-linear-gradient(135deg, #0a84ff 0%, #5e5ce6 100%);
   background: linear-gradient(135deg, #0a84ff 0%, #5e5ce6 100%);
   color: #ffffff;
-  box-shadow: 0 2px 10px rgba(94, 92, 230, 0.4);
-}
-
-.teleport-actions-row {
-  display: -webkit-flex;
-  display: flex;
-  margin-bottom: 12px;
-}
-
-.teleport-btn {
-  padding: 10px 14px;
-  border-radius: 14px;
-  border: none;
-  font-size: 0.84rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-right: 8px;
-  display: -webkit-inline-flex;
-  display: inline-flex;
-  -webkit-align-items: center;
-  align-items: center;
-  -webkit-justify-content: center;
-  justify-content: center;
+  box-shadow: 0 2px 8px rgba(94, 92, 230, 0.35);
   -webkit-transition: all 0.2s;
   transition: all 0.2s;
 }
 
-.teleport-btn:last-child {
-  margin-right: 0;
-}
-
 .teleport-btn.secondary {
-  -webkit-flex: 1.5;
-  flex: 1.5;
-  background: rgba(255, 255, 255, 0.12);
+  -webkit-flex: 1;
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
+  cursor: pointer;
+  margin-right: 5px;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
 }
 
 .teleport-btn.clear {
-  -webkit-flex: 0.7;
-  flex: 0.7;
+  -webkit-flex: 0.6;
+  flex: 0.6;
+  padding: 5px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
   background: rgba(255, 255, 255, 0.08);
   color: #8e8e93;
+  cursor: pointer;
+  margin-right: 0;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
 }
 
-.teleport-btn:active {
-  -webkit-transform: scale(0.95);
-  transform: scale(0.95);
+.teleport-btn.sync-btn:active,
+.teleport-btn.secondary:active,
+.teleport-btn.clear:active {
+  -webkit-transform: scale(0.93);
+  transform: scale(0.93);
 }
 
 /* Toast Notifications */

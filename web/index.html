@@ -230,16 +230,17 @@
         <div class="carousel-page" id="page-deck">
           <div class="deck-container">
             <!-- Machine Target Selector -->
-            <div class="media-target-row">
+            <div class="deck-target-bar">
               <span class="media-target-label">Target Workstation:</span>
               <div class="media-target-buttons" id="deck-target-buttons">
                 <!-- Dynamically generated computer selector tabs -->
               </div>
+              <span class="deck-target-status" id="deck-target-hint">Target: Desktop PC</span>
             </div>
 
-            <!-- SECTION 1: QUICK APPS (LARGER ICONS - FOCUS OR OPEN) -->
-            <section class="home-section" style="margin-bottom: 16px;">
-              <div class="section-title-row">
+            <!-- SECTION 1: QUICK APPS (4x2 COMPACT GRID, LARGE ICONS) -->
+            <section class="deck-section">
+              <div class="section-title-row compact-title">
                 <h2 class="section-heading">Quick Apps</h2>
                 <span class="section-status-sub">Open or Focus if Active</span>
               </div>
@@ -249,8 +250,10 @@
                   <div class="app-icon-wrap">
                     <span class="app-tile-icon">💬</span>
                   </div>
-                  <div class="app-tile-name">WhatsApp</div>
-                  <div class="app-tile-desc">Chat & Web</div>
+                  <div class="app-tile-info">
+                    <div class="app-tile-name">WhatsApp</div>
+                    <div class="app-tile-desc">Chat & Web</div>
+                  </div>
                 </button>
 
                 <!-- Gemini -->
@@ -258,8 +261,10 @@
                   <div class="app-icon-wrap">
                     <span class="app-tile-icon">✨</span>
                   </div>
-                  <div class="app-tile-name">Gemini</div>
-                  <div class="app-tile-desc">Google AI</div>
+                  <div class="app-tile-info">
+                    <div class="app-tile-name">Gemini</div>
+                    <div class="app-tile-desc">Google AI</div>
+                  </div>
                 </button>
 
                 <!-- Claude -->
@@ -267,8 +272,10 @@
                   <div class="app-icon-wrap">
                     <span class="app-tile-icon">🧠</span>
                   </div>
-                  <div class="app-tile-name">Claude</div>
-                  <div class="app-tile-desc">Anthropic AI</div>
+                  <div class="app-tile-info">
+                    <div class="app-tile-name">Claude</div>
+                    <div class="app-tile-desc">Anthropic AI</div>
+                  </div>
                 </button>
 
                 <!-- YouTube -->
@@ -276,8 +283,10 @@
                   <div class="app-icon-wrap">
                     <span class="app-tile-icon">🎬</span>
                   </div>
-                  <div class="app-tile-name">YouTube</div>
-                  <div class="app-tile-desc">Videos & Music</div>
+                  <div class="app-tile-info">
+                    <div class="app-tile-name">YouTube</div>
+                    <div class="app-tile-desc">Videos & Music</div>
+                  </div>
                 </button>
 
                 <!-- GitHub -->
@@ -285,8 +294,10 @@
                   <div class="app-icon-wrap">
                     <span class="app-tile-icon">🐙</span>
                   </div>
-                  <div class="app-tile-name">GitHub</div>
-                  <div class="app-tile-desc">Repositories</div>
+                  <div class="app-tile-info">
+                    <div class="app-tile-name">GitHub</div>
+                    <div class="app-tile-desc">Repositories</div>
+                  </div>
                 </button>
 
                 <!-- ChatGPT -->
@@ -294,8 +305,10 @@
                   <div class="app-icon-wrap">
                     <span class="app-tile-icon">🤖</span>
                   </div>
-                  <div class="app-tile-name">ChatGPT</div>
-                  <div class="app-tile-desc">OpenAI</div>
+                  <div class="app-tile-info">
+                    <div class="app-tile-name">ChatGPT</div>
+                    <div class="app-tile-desc">OpenAI</div>
+                  </div>
                 </button>
 
                 <!-- Gmail -->
@@ -303,8 +316,10 @@
                   <div class="app-icon-wrap">
                     <span class="app-tile-icon">✉️</span>
                   </div>
-                  <div class="app-tile-name">Gmail</div>
-                  <div class="app-tile-desc">Google Mail</div>
+                  <div class="app-tile-info">
+                    <div class="app-tile-name">Gmail</div>
+                    <div class="app-tile-desc">Google Mail</div>
+                  </div>
                 </button>
 
                 <!-- Spotify -->
@@ -312,17 +327,19 @@
                   <div class="app-icon-wrap">
                     <span class="app-tile-icon">🎵</span>
                   </div>
-                  <div class="app-tile-name">Spotify</div>
-                  <div class="app-tile-desc">Music Web</div>
+                  <div class="app-tile-info">
+                    <div class="app-tile-name">Spotify</div>
+                    <div class="app-tile-desc">Music Web</div>
+                  </div>
                 </button>
               </div>
             </section>
 
-            <!-- SECTION 2: SYSTEM MACROS & ACTIONS -->
-            <section class="home-section" style="margin-bottom: 16px;">
-              <div class="section-title-row">
-                <h2 class="section-heading">System Macros</h2>
-                <span class="section-status-sub" id="deck-target-hint">Target: Desktop PC</span>
+            <!-- SECTION 2: SYSTEM MACROS (1x6 ROW) -->
+            <section class="deck-section">
+              <div class="section-title-row compact-title">
+                <h2 class="section-heading">System Controls</h2>
+                <span class="section-status-sub">One-Touch Workstation Macros</span>
               </div>
               <div class="deck-grid">
                 <!-- Microphone Live/Mute Toggle Tile -->
@@ -387,60 +404,59 @@
               </div>
             </section>
 
-            <!-- SECTION 3: CROSS-DEVICE TELEPORT (FULL CLIPBOARD SYNC SUITE) -->
-            <section class="home-section">
-              <div class="section-title-row">
+            <!-- SECTION 3: CROSS-DEVICE TELEPORT (2-COLUMN HORIZONTAL CARD) -->
+            <section class="deck-section" style="margin-bottom: 0;">
+              <div class="section-title-row compact-title">
                 <h2 class="section-heading">Cross-Device Teleport</h2>
-                <span class="section-status-sub">Direct Clipboard Sync & Beam</span>
+                <span class="section-status-sub">Direct Clipboard Sync Between PC, Laptop & iPad</span>
               </div>
-              <div class="teleport-card">
-                <div class="teleport-input-wrap">
-                  <textarea id="teleport-text" class="teleport-textarea" rows="2" placeholder="Type, view, or paste text/URL to beam across devices..."></textarea>
-                </div>
+              <div class="teleport-card compact-card">
+                <div class="teleport-grid-layout">
+                  <div class="teleport-left-pane">
+                    <textarea id="teleport-text" class="teleport-textarea compact-textarea" rows="3" placeholder="Type, view, or paste text/URL to beam across devices..."></textarea>
+                  </div>
+                  <div class="teleport-right-pane">
+                    <!-- Machine Controls Rows -->
+                    <div class="machine-teleport-row">
+                      <span class="machine-row-label">🖥️ Desktop PC:</span>
+                      <div class="machine-row-buttons">
+                        <button class="teleport-btn machine-btn" onclick="copyFromMachine('desktop_pc')">
+                          <span>📥</span> Copy
+                        </button>
+                        <button class="teleport-btn machine-btn primary" onclick="pasteToMachine('desktop_pc')">
+                          <span>📤</span> Paste
+                        </button>
+                      </div>
+                    </div>
 
-                <!-- Per-Machine Copy & Paste Controls -->
-                <div class="teleport-machines-box">
-                  <!-- Desktop PC Controls -->
-                  <div class="machine-teleport-row">
-                    <span class="machine-row-label">🖥️ Desktop PC:</span>
-                    <div class="machine-row-buttons">
-                      <button class="teleport-btn machine-btn" onclick="copyFromMachine('desktop_pc')">
-                        <span>📥</span> Copy from PC
+                    <div class="machine-teleport-row">
+                      <span class="machine-row-label">💻 Work Laptop:</span>
+                      <div class="machine-row-buttons">
+                        <button class="teleport-btn machine-btn" onclick="copyFromMachine('work_laptop')">
+                          <span>📥</span> Copy
+                        </button>
+                        <button class="teleport-btn machine-btn primary" onclick="pasteToMachine('work_laptop')">
+                          <span>📤</span> Paste
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Sync & Extra Actions Row -->
+                    <div class="teleport-actions-row compact-actions" style="margin-top: 6px; margin-bottom: 0;">
+                      <button class="teleport-btn sync-btn" onclick="syncClipboard('desktop_pc', 'work_laptop')">
+                        <span>🔄</span> PC ➔ Laptop
                       </button>
-                      <button class="teleport-btn machine-btn primary" onclick="pasteToMachine('desktop_pc')">
-                        <span>📤</span> Paste to PC
+                      <button class="teleport-btn sync-btn" onclick="syncClipboard('work_laptop', 'desktop_pc')">
+                        <span>🔄</span> Laptop ➔ PC
+                      </button>
+                      <button class="teleport-btn secondary" onclick="beamUrl()">
+                        <span>🌐</span> Open URL
+                      </button>
+                      <button class="teleport-btn clear" onclick="clearTeleport()">
+                        <span>✕</span> Clear
                       </button>
                     </div>
                   </div>
-
-                  <!-- Work Laptop Controls -->
-                  <div class="machine-teleport-row">
-                    <span class="machine-row-label">💻 Work Laptop:</span>
-                    <div class="machine-row-buttons">
-                      <button class="teleport-btn machine-btn" onclick="copyFromMachine('work_laptop')">
-                        <span>📥</span> Copy from Laptop
-                      </button>
-                      <button class="teleport-btn machine-btn primary" onclick="pasteToMachine('work_laptop')">
-                        <span>📤</span> Paste to Laptop
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 1-Tap Machine-to-Machine Quick Sync & Extra Actions -->
-                <div class="teleport-actions-row" style="margin-top: 10px; margin-bottom: 0;">
-                  <button class="teleport-btn sync-btn" onclick="syncClipboard('desktop_pc', 'work_laptop')">
-                    <span>🔄</span> PC ➔ Laptop
-                  </button>
-                  <button class="teleport-btn sync-btn" onclick="syncClipboard('work_laptop', 'desktop_pc')">
-                    <span>🔄</span> Laptop ➔ PC
-                  </button>
-                  <button class="teleport-btn secondary" onclick="beamUrl()">
-                    <span>🌐</span> Open URL
-                  </button>
-                  <button class="teleport-btn clear" onclick="clearTeleport()">
-                    <span>✕</span> Clear
-                  </button>
                 </div>
               </div>
             </section>
