@@ -954,37 +954,10 @@ html, body {
 /* -------------------------------------------------------------
    PAGE 3: MEDIA & AUDIO STUDIO
    ------------------------------------------------------------- */
-#page-media {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  height: 100%;
-  box-sizing: border-box;
-}
-
 .media-container {
-  max-width: 660px;
-  width: 100%;
+  max-width: 620px;
   margin: 0 auto;
-  padding: 4px 6px 14px 6px;
-  height: 100%;
-  min-height: 100%;
-  -webkit-flex: 1 1 auto;
-  flex: 1 1 auto;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  -webkit-justify-content: space-between;
-  justify-content: space-between;
-  box-sizing: border-box;
-}
-
-.media-top-group {
-  width: 100%;
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
+  padding: 4px;
 }
 
 .media-target-row {
@@ -994,13 +967,11 @@ html, body {
   align-items: center;
   -webkit-justify-content: space-between;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   background: rgba(255, 255, 255, 0.06);
-  padding: 6px 14px;
-  border-radius: 16px;
+  padding: 6px 12px;
+  border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
 }
 
 .media-target-label {
@@ -1037,30 +1008,29 @@ html, body {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 24px;
-  padding: 24px 26px;
+  padding: 24px;
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: center;
   align-items: center;
+  margin-bottom: 18px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
 }
 
 .media-vinyl-wrap {
-  margin-right: 22px;
+  margin-right: 20px;
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
 }
 
 .media-vinyl {
-  width: 108px;
-  height: 108px;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
   background: -webkit-radial-gradient(circle, #2c2c2e 0%, #1c1c1e 60%, #000000 100%);
   background: radial-gradient(circle, #2c2c2e 0%, #1c1c1e 60%, #000000 100%);
   border: 4px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: center;
@@ -1072,8 +1042,8 @@ html, body {
 }
 
 .vinyl-center {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   overflow: hidden;
   display: -webkit-flex;
@@ -1085,7 +1055,7 @@ html, body {
   background: #1c1c1e;
   border: 2px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
-  font-size: 1.6rem;
+  font-size: 1.5rem;
 }
 
 .vinyl-art-img {
@@ -1193,14 +1163,6 @@ html, body {
   50% { height: 16px; }
 }
 
-.media-bottom-controls {
-  margin-top: auto;
-  padding-bottom: 12px;
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
-  width: 100%;
-}
-
 .media-controls-row {
   display: -webkit-flex;
   display: flex;
@@ -1208,14 +1170,14 @@ html, body {
   align-items: center;
   -webkit-justify-content: center;
   justify-content: center;
-  margin-bottom: 26px;
+  margin-bottom: 20px;
 }
 
 .media-ctrl-btn {
   padding: 0;
-  margin: 0 16px;
-  width: 62px;
-  height: 62px;
+  margin: 0 14px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: rgba(255, 255, 255, 0.09);
@@ -1235,8 +1197,8 @@ html, body {
 }
 
 .media-ctrl-btn.primary-play-btn {
-  width: 80px;
-  height: 80px;
+  width: 74px;
+  height: 74px;
   background: -webkit-linear-gradient(135deg, #0a84ff 0%, #0066cc 100%);
   background: linear-gradient(135deg, #0a84ff 0%, #0066cc 100%);
   border-color: rgba(255, 255, 255, 0.35);
