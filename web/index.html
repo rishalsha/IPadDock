@@ -63,10 +63,14 @@
         <span class="tab-text">Media</span>
       </button>
       <button class="nav-tab" onclick="goToPage(3)" id="tab-3">
+        <span class="tab-icon">🎛️</span>
+        <span class="tab-text">Deck</span>
+      </button>
+      <button class="nav-tab" onclick="goToPage(4)" id="tab-4">
         <span class="tab-icon">🌤️</span>
         <span class="tab-text">Weather</span>
       </button>
-      <button class="nav-tab" onclick="goToPage(4)" id="tab-4">
+      <button class="nav-tab" onclick="goToPage(5)" id="tab-5">
         <span class="tab-icon">⏱️</span>
         <span class="tab-text">Timer</span>
       </button>
@@ -163,7 +167,10 @@
             <div class="media-card">
               <div class="media-vinyl-wrap">
                 <div class="media-vinyl" id="media-vinyl">
-                  <span class="vinyl-icon">🎵</span>
+                  <div class="vinyl-center" id="vinyl-center">
+                    <img id="media-art-img" class="vinyl-art-img" src="" alt="Album Art" style="display: none;" onerror="onArtError()">
+                    <span class="vinyl-icon" id="vinyl-icon-fallback">🎵</span>
+                  </div>
                 </div>
               </div>
 
@@ -218,7 +225,124 @@
         </div>
 
         <!-- ==========================================
-             PAGE 4: WEATHER & CLIMATE HUB
+             PAGE 4: STREAM DECK & MACRO ACTIONS
+             ========================================== -->
+        <div class="carousel-page" id="page-deck">
+          <div class="deck-container">
+            <!-- Machine Target Selector -->
+            <div class="media-target-row">
+              <span class="media-target-label">Target Workstation:</span>
+              <div class="media-target-buttons" id="deck-target-buttons">
+                <!-- Dynamically generated computer selector tabs -->
+              </div>
+            </div>
+
+            <!-- Quick Action Macros Section -->
+            <section class="home-section" style="margin-bottom: 14px;">
+              <div class="section-title-row">
+                <h2 class="section-heading">Quick Actions</h2>
+                <span class="section-status-sub" id="deck-target-hint">Target: Desktop PC</span>
+              </div>
+              <div class="deck-grid">
+                <!-- Microphone Live/Mute Toggle Tile -->
+                <button class="deck-tile mic-live" id="deck-mic-btn" onclick="sendDesktopAction('toggle_mic')">
+                  <div class="deck-tile-top">
+                    <span class="deck-icon" id="deck-mic-icon">🎙️</span>
+                    <span class="deck-badge" id="deck-mic-badge">LIVE</span>
+                  </div>
+                  <div class="deck-title">Microphone</div>
+                  <div class="deck-sub" id="deck-mic-sub">Tap to Mute</div>
+                </button>
+
+                <!-- Launch Terminal Tile -->
+                <button class="deck-tile" onclick="sendDesktopAction('launch_terminal')">
+                  <div class="deck-tile-top">
+                    <span class="deck-icon">💻</span>
+                    <span class="deck-badge action">RUN</span>
+                  </div>
+                  <div class="deck-title">Terminal</div>
+                  <div class="deck-sub">Ghostty / Shell</div>
+                </button>
+
+                <!-- Launch Browser Tile -->
+                <button class="deck-tile" onclick="sendDesktopAction('launch_browser')">
+                  <div class="deck-tile-top">
+                    <span class="deck-icon">🌐</span>
+                    <span class="deck-badge action">LAUNCH</span>
+                  </div>
+                  <div class="deck-title">Browser</div>
+                  <div class="deck-sub">Google Chrome</div>
+                </button>
+
+                <!-- Take Screenshot Tile -->
+                <button class="deck-tile" onclick="sendDesktopAction('take_screenshot')">
+                  <div class="deck-tile-top">
+                    <span class="deck-icon">📸</span>
+                    <span class="deck-badge action">CAPTURE</span>
+                  </div>
+                  <div class="deck-title">Screenshot</div>
+                  <div class="deck-sub">Omarchy / Grim</div>
+                </button>
+
+                <!-- Next Theme / Wallpaper Tile -->
+                <button class="deck-tile" onclick="sendDesktopAction('next_theme')">
+                  <div class="deck-tile-top">
+                    <span class="deck-icon">🎨</span>
+                    <span class="deck-badge action">CYCLE</span>
+                  </div>
+                  <div class="deck-title">Next Theme</div>
+                  <div class="deck-sub">Theme & Wallpaper</div>
+                </button>
+
+                <!-- Lock Screen Tile -->
+                <button class="deck-tile" onclick="sendDesktopAction('lock_screen')">
+                  <div class="deck-tile-top">
+                    <span class="deck-icon">🔒</span>
+                    <span class="deck-badge warning">LOCK</span>
+                  </div>
+                  <div class="deck-title">Lock Screen</div>
+                  <div class="deck-sub">Hyprlock Session</div>
+                </button>
+              </div>
+            </section>
+
+            <!-- Cross-Device Teleport / Beam Card -->
+            <section class="home-section">
+              <div class="section-title-row">
+                <h2 class="section-heading">Cross-Device Teleport</h2>
+                <span class="section-status-sub">iPad ➔ PC Beam</span>
+              </div>
+              <div class="teleport-card">
+                <div class="teleport-input-wrap">
+                  <textarea id="teleport-text" class="teleport-textarea" rows="2" placeholder="Type text, links, or notes to beam to workstation..."></textarea>
+                </div>
+                <div class="teleport-actions-row">
+                  <button class="teleport-btn primary" onclick="beamClipboard()">
+                    <span>📋</span> Copy to PC
+                  </button>
+                  <button class="teleport-btn secondary" onclick="beamUrl()">
+                    <span>🌐</span> Open URL
+                  </button>
+                  <button class="teleport-btn clear" onclick="clearTeleport()">
+                    <span>✕</span> Clear
+                  </button>
+                </div>
+                <!-- Quick Preset URLs Chips -->
+                <div class="teleport-chips-row">
+                  <span class="teleport-chip-label">Quick Links:</span>
+                  <button class="teleport-chip" onclick="quickBeamUrl('https://youtube.com')">YouTube</button>
+                  <button class="teleport-chip" onclick="quickBeamUrl('https://github.com')">GitHub</button>
+                  <button class="teleport-chip" onclick="quickBeamUrl('https://chatgpt.com')">ChatGPT</button>
+                  <button class="teleport-chip" onclick="quickBeamUrl('https://mail.google.com')">Gmail</button>
+                  <button class="teleport-chip" onclick="quickBeamUrl('https://open.spotify.com')">Spotify</button>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             PAGE 5: WEATHER & CLIMATE HUB
              ========================================== -->
         <div class="carousel-page" id="page-weather">
           <div class="weather-container">
@@ -272,7 +396,7 @@
         </div>
 
         <!-- ==========================================
-             PAGE 5: DESK POMODORO & FOCUS TIMER
+             PAGE 6: DESK POMODORO & FOCUS TIMER
              ========================================== -->
         <div class="carousel-page" id="page-timer">
           <div class="timer-container">
@@ -387,6 +511,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Bottom Toast Notification for Stream Deck / Teleport feedback -->
+  <div id="dock-toast" class="dock-toast"></div>
 
   <!-- Scripts -->
   <script src="paho-mqtt.js"></script>

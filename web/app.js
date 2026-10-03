@@ -7,11 +7,12 @@ var reconnectTimer = null;
 
 // Page Navigation State
 var currentPage = 0;
-var totalPages = 5;
-var pageTitles = ['Home', 'Battle Station HUD', 'Media Studio', 'Weather & Climate', 'Desk Focus Timer'];
+var totalPages = 6;
+var pageTitles = ['Home', 'Battle Station HUD', 'Media Studio', 'Stream Deck', 'Weather & Climate', 'Desk Focus Timer'];
 
-// Media Studio State
+// Media & Deck Targets
 var activeMediaTarget = 'work_laptop';
+var activeDeckTarget = 'desktop_pc';
 
 // Pomodoro Timer State
 var timerTotalSeconds = 25 * 60;
@@ -99,7 +100,7 @@ function goToPage(index) {
 
   var track = document.getElementById('carousel-track');
   if (track) {
-    var offsetPct = index * 20; // 5 pages = 20% each of 500% track
+    var offsetPct = index * (100 / totalPages);
     track.style.webkitTransform = 'translate3d(-' + offsetPct + '%, 0, 0)';
     track.style.transform = 'translate3d(-' + offsetPct + '%, 0, 0)';
   }
@@ -122,8 +123,8 @@ function goToPage(index) {
     titleEl.innerHTML = pageTitles[index];
   }
 
-  // Lazy fetch weather if switching to Weather page
-  if (index === 3 && !weatherData) {
+  // Lazy fetch weather if switching to Weather page (Page 4, 0-indexed)
+  if (index === 4 && !weatherData) {
     fetchWeather();
   }
 }
@@ -181,11 +182,13 @@ function initSwipeGestures() {
     }
   }, false);
 
-  // Keyboard navigation for desktop testing
+  // Keyboard navigation for testing & desk keyboard
   window.addEventListener('keydown', function (e) {
+    var tag = e.target && e.target.tagName ? e.target.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea') return;
     if (e.key === 'ArrowRight') goToPage(currentPage + 1);
     else if (e.key === 'ArrowLeft') goToPage(currentPage - 1);
-    else if (e.key >= '1' && e.key <= '5') goToPage(parseInt(e.key, 10) - 1);
+    else if (e.key >= '1' && e.key <= '6') goToPage(parseInt(e.key, 10) - 1);
   });
 }
 
@@ -495,6 +498,30 @@ function updateMediaCard(media) {
     muteBtn.innerHTML = media.muted ? '🔊' : '🔇';
     muteBtn.style.background = media.muted ? 'rgba(255, 69, 58, 0.4)' : '';
   }
+
+  // Live Album Artwork inside Vinyl
+  var artImg = document.getElementById('media-art-img');
+  var fallbackIcon = document.getElementById('vinyl-icon-fallback');
+  if (artImg && fallbackIcon) {
+    if (media.art_url && (media.art_url.indexOf('http://') === 0 || media.art_url.indexOf('https://') === 0)) {
+      if (artImg.src !== media.art_url) {
+        artImg.src = media.art_url;
+      }
+      artImg.style.display = 'block';
+      fallbackIcon.style.display = 'none';
+    } else {
+      artImg.src = '';
+      artImg.style.display = 'none';
+      fallbackIcon.style.display = 'inline-block';
+    }
+  }
+}
+
+function onArtError() {
+  var artImg = document.getElementById('media-art-img');
+  var fallbackIcon = document.getElementById('vinyl-icon-fallback');
+  if (artImg) artImg.style.display = 'none';
+  if (fallbackIcon) fallbackIcon.style.display = 'inline-block';
 }
 
 function sendMediaCmd(action) {
@@ -533,7 +560,162 @@ function onVolumeSliderChange(val) {
 }
 
 // -------------------------------------------------------------
-// PAGE 4: WEATHER & CLIMATE HUB
+// PAGE 4: STREAM DECK & WORKSTATION ACTIONS
+// -------------------------------------------------------------
+function renderDeckTargets() {
+  var container = document.getElementById('deck-target-buttons');
+  if (!container) return;
+  container.innerHTML = '';
+
+  for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
+    var comp = DOCK_CONFIG.computers[i];
+    var btn = document.createElement('button');
+    btn.className = 'media-tab-btn' + (comp.id === activeDeckTarget ? ' active' : '');
+    btn.id = 'deck-target-' + comp.id;
+    btn.onclick = (function (id) {
+      return function () { selectDeckTarget(id); };
+    })(comp.id);
+    btn.innerHTML = comp.icon + ' ' + comp.name;
+    container.appendChild(btn);
+  }
+  updateDeckTargetHint();
+}
+
+function selectDeckTarget(compId) {
+  activeDeckTarget = compId;
+  renderDeckTargets();
+
+  // If comp already has media info, update mic tile state
+  for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
+    if (DOCK_CONFIG.computers[i].id === compId && DOCK_CONFIG.computers[i].media) {
+      updateDeckMicTile(DOCK_CONFIG.computers[i].media);
+      break;
+    }
+  }
+}
+
+function updateDeckTargetHint() {
+  var hintEl = document.getElementById('deck-target-hint');
+  if (!hintEl) return;
+  for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
+    if (DOCK_CONFIG.computers[i].id === activeDeckTarget) {
+      hintEl.innerHTML = 'Target: ' + DOCK_CONFIG.computers[i].name;
+      break;
+    }
+  }
+}
+
+function updateDeckMicTile(media) {
+  if (!media) return;
+  var micBtn = document.getElementById('deck-mic-btn');
+  var micIcon = document.getElementById('deck-mic-icon');
+  var micBadge = document.getElementById('deck-mic-badge');
+  var micSub = document.getElementById('deck-mic-sub');
+
+  if (media.mic_muted) {
+    if (micBtn) micBtn.className = 'deck-tile mic-muted';
+    if (micIcon) micIcon.innerHTML = '🔇';
+    if (micBadge) {
+      micBadge.className = 'deck-badge';
+      micBadge.innerHTML = 'MUTED';
+    }
+    if (micSub) micSub.innerHTML = 'Tap to Unmute';
+  } else {
+    if (micBtn) micBtn.className = 'deck-tile mic-live';
+    if (micIcon) micIcon.innerHTML = '🎙️';
+    if (micBadge) {
+      micBadge.className = 'deck-badge';
+      micBadge.innerHTML = 'LIVE';
+    }
+    if (micSub) micSub.innerHTML = 'Tap to Mute';
+  }
+}
+
+function sendDesktopAction(action, payload) {
+  var comp = null;
+  for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
+    if (DOCK_CONFIG.computers[i].id === activeDeckTarget) {
+      comp = DOCK_CONFIG.computers[i];
+      break;
+    }
+  }
+  if (!comp) return;
+
+  var cmd = action;
+  if (payload !== undefined && payload !== null && payload !== '') {
+    cmd = action + ':' + payload;
+  }
+
+  publish('cmnd/' + comp.topic + '/action', cmd);
+  console.log('Dispatched desktop action to ' + comp.name + ':', cmd);
+
+  var friendlyNames = {
+    'toggle_mic': 'Toggling Mic on ',
+    'launch_terminal': 'Opening Terminal on ',
+    'launch_browser': 'Opening Browser on ',
+    'take_screenshot': 'Taking Screenshot on ',
+    'next_theme': 'Cycling Theme on ',
+    'lock_screen': 'Locking screen on '
+  };
+
+  var msg = (friendlyNames[action] || ('Executed ' + action + ' on ')) + comp.name;
+  if (action === 'clipboard') {
+    msg = '📋 Beamed text to ' + comp.name + ' clipboard!';
+  } else if (action === 'open_url') {
+    msg = '🌐 Opened URL on ' + comp.name + '!';
+  }
+  showToast(msg);
+}
+
+function beamClipboard() {
+  var input = document.getElementById('teleport-text');
+  if (!input) return;
+  var text = input.value.trim();
+  if (!text) {
+    showToast('⚠️ Type or paste text to beam first');
+    return;
+  }
+  sendDesktopAction('clipboard', text);
+}
+
+function beamUrl() {
+  var input = document.getElementById('teleport-text');
+  if (!input) return;
+  var url = input.value.trim();
+  if (!url) {
+    showToast('⚠️ Type or paste a URL to open first');
+    return;
+  }
+  sendDesktopAction('open_url', url);
+}
+
+function quickBeamUrl(url) {
+  var input = document.getElementById('teleport-text');
+  if (input) input.value = url;
+  sendDesktopAction('open_url', url);
+}
+
+function clearTeleport() {
+  var input = document.getElementById('teleport-text');
+  if (input) input.value = '';
+}
+
+var toastTimer = null;
+function showToast(msg, duration) {
+  var toast = document.getElementById('dock-toast');
+  if (!toast) return;
+
+  toast.innerHTML = msg;
+  toast.className = 'dock-toast show';
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () {
+    toast.className = 'dock-toast';
+  }, duration || 2600);
+}
+
+// -------------------------------------------------------------
+// PAGE 5: WEATHER & CLIMATE HUB
 // -------------------------------------------------------------
 var WMO_CODES = {
   0: { text: 'Clear Sky', icon: '☀️' },
@@ -991,6 +1173,7 @@ function subscribeAll() {
   // Telemetry & Media subscriptions
   mqttClient.subscribe('stat/+/telemetry', { qos: 0 });
   mqttClient.subscribe('stat/+/media', { qos: 0 });
+  mqttClient.subscribe('stat/+/action_status', { qos: 0 });
 
   for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
     var comp = DOCK_CONFIG.computers[i];
@@ -1065,7 +1248,20 @@ function handleIncomingMessage(topic, payload) {
         if (comp.id === activeMediaTarget) {
           updateMediaCard(media);
         }
+        if (comp.id === activeDeckTarget) {
+          updateDeckMicTile(media);
+        }
       } catch (e3) {}
+    }
+
+    // Action Execution Feedback
+    if (topic === 'stat/' + comp.topic + '/action_status') {
+      try {
+        var actRes = JSON.parse(payload);
+        if (actRes.message) {
+          showToast('✓ ' + comp.name + ': ' + actRes.message);
+        }
+      } catch (e4) {}
     }
   }
 }
@@ -1238,7 +1434,10 @@ window.onload = function () {
   // Initialize Page 3 (Media)
   renderMediaTargets();
 
-  // Initialize Page 5 (Timer)
+  // Initialize Page 4 (Stream Deck)
+  renderDeckTargets();
+
+  // Initialize Page 6 (Timer)
   updateTimerDisplay();
 
   // Initialize Swipe Carousel

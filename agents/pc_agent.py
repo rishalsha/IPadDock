@@ -6,7 +6,9 @@ Features:
 - Power commands: sleep, shutdown, restart
 - Wake-on-LAN relay (cross-machine packet broadcast)
 - Live Telemetry: CPU %, RAM %, Temps, Uptime
-- Media & Audio Control: Play/Pause, Next/Prev, Volume +/-, Mute, Now Playing track info
+- Media & Audio Control: Play/Pause, Next/Prev, Volume +/-, Mute, Album Artwork
+- Stream Deck / Desktop Actions: App Launchers, Mic Mute, Lock Screen, Screenshot, Theme
+- Cross-Device Clipboard & URL Teleport: "Copy to PC" & "Open URL on PC"
 """
 
 import sys
@@ -18,12 +20,34 @@ import platform
 import argparse
 import subprocess
 import socket
+import shutil
 import threading
 import paho.mqtt.client as mqtt
+try:
+    sys.stdout.reconfigure(line_buffering=True)
+    sys.stderr.reconfigure(line_buffering=True)
+except Exception:
+    pass
 
 IS_WINDOWS = platform.system().lower() == "windows"
 IS_LINUX = platform.system().lower() == "linux"
 IS_MAC = platform.system().lower() == "darwin"
+
+
+def get_desktop_env():
+    """Builds environment variables required to launch GUI apps on Wayland/X11."""
+    env = os.environ.copy()
+    if IS_LINUX:
+        if "WAYLAND_DISPLAY" not in env:
+            env["WAYLAND_DISPLAY"] = "wayland-1"
+        if "DISPLAY" not in env:
+            env["DISPLAY"] = ":0"
+        if "XDG_RUNTIME_DIR" not in env:
+            try:
+                env["XDG_RUNTIME_DIR"] = f"/run/user/{os.getuid()}"
+            except Exception:
+                pass
+    return env
 
 
 def send_wol_packet(mac: str):
@@ -177,7 +201,6 @@ def get_telemetry():
             pass
 
     elif IS_WINDOWS:
-        # Windows fallback (psutil if installed or ctypes)
         try:
             import psutil
             cpu_pct = psutil.cpu_percent(interval=None)
@@ -204,19 +227,21 @@ def get_telemetry():
 
 
 # -------------------------------------------------------------
-# Media & Audio Controls (MPRIS / PipeWire / PulseAudio / Win)
+# Media, Audio & Microphone Controls
 # -------------------------------------------------------------
 def get_media_state():
-    """Returns current audio playback status, volume, and track metadata."""
+    """Returns current audio playback status, volume, track metadata, and album artwork."""
     status = "Stopped"
     title = ""
     artist = ""
     album = ""
+    art_url = ""
     volume = 100
     muted = False
+    mic_muted = False
 
     if IS_LINUX:
-        # Check playerctl for MPRIS media players (Spotify, YouTube in Chrome/Firefox, VLC, MPV)
+        # Check playerctl for MPRIS media players (Spotify, YouTube, VLC, MPV)
         try:
             status = subprocess.check_output(
                 ["playerctl", "status"], text=True, stderr=subprocess.DEVNULL
@@ -225,26 +250,21 @@ def get_media_state():
             status = "Stopped"
 
         if status in ("Playing", "Paused"):
-            try:
-                title = subprocess.check_output(
-                    ["playerctl", "metadata", "title"], text=True, stderr=subprocess.DEVNULL
-                ).strip()
-            except Exception:
-                pass
-            try:
-                artist = subprocess.check_output(
-                    ["playerctl", "metadata", "artist"], text=True, stderr=subprocess.DEVNULL
-                ).strip()
-            except Exception:
-                pass
-            try:
-                album = subprocess.check_output(
-                    ["playerctl", "metadata", "album"], text=True, stderr=subprocess.DEVNULL
-                ).strip()
-            except Exception:
-                pass
+            for field, cmd in [("title", "title"), ("artist", "artist"), ("album", "album"), ("art_url", "mpris:artUrl")]:
+                try:
+                    val = subprocess.check_output(
+                        ["playerctl", "metadata", cmd], text=True, stderr=subprocess.DEVNULL
+                    ).strip()
+                    if field == "title": title = val
+                    elif field == "artist": artist = val
+                    elif field == "album": album = val
+                    elif field == "art_url":
+                        if val.startswith("http://") or val.startswith("https://"):
+                            art_url = val
+                except Exception:
+                    pass
 
-        # Query volume via wpctl (PipeWire) or pactl (PulseAudio)
+        # Query speaker output volume via wpctl (PipeWire) or pactl
         try:
             out = subprocess.check_output(["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"], text=True).strip()
             m = re.search(r"Volume:\s*([0-9.]+)", out)
@@ -255,10 +275,20 @@ def get_media_state():
             try:
                 out = subprocess.check_output(["pactl", "get-sink-volume", "@DEFAULT_SINK@"], text=True)
                 m = re.search(r"/\s*([0-9]+)%\s*/", out)
-                if m:
-                    volume = int(m.group(1))
+                if m: volume = int(m.group(1))
                 mute_out = subprocess.check_output(["pactl", "get-sink-mute", "@DEFAULT_SINK@"], text=True)
                 muted = "yes" in mute_out.lower()
+            except Exception:
+                pass
+
+        # Query microphone input state via wpctl or pactl
+        try:
+            out_mic = subprocess.check_output(["wpctl", "get-volume", "@DEFAULT_AUDIO_SOURCE@"], text=True).strip()
+            mic_muted = "[MUTED]" in out_mic
+        except Exception:
+            try:
+                mute_mic = subprocess.check_output(["pactl", "get-source-mute", "@DEFAULT_SOURCE@"], text=True)
+                mic_muted = "yes" in mute_mic.lower()
             except Exception:
                 pass
 
@@ -270,8 +300,10 @@ def get_media_state():
         "title": title,
         "artist": artist,
         "album": album,
+        "art_url": art_url,
         "volume": max(0, min(100, volume)),
         "muted": muted,
+        "mic_muted": mic_muted,
     }
 
 
@@ -326,20 +358,91 @@ def execute_media_command(cmd: str):
             ctypes.windll.user32.keybd_event(vk, 0, 0, 0)
             ctypes.windll.user32.keybd_event(vk, 0, 2, 0)
 
-        if cmd == "play_pause":
-            send_vk(VK_MEDIA_PLAY_PAUSE)
-        elif cmd == "next":
-            send_vk(VK_MEDIA_NEXT_TRACK)
-        elif cmd == "prev":
-            send_vk(VK_MEDIA_PREV_TRACK)
-        elif cmd == "mute":
-            send_vk(VK_VOLUME_MUTE)
-        elif cmd == "vol_up":
-            send_vk(VK_VOLUME_UP)
-            send_vk(VK_VOLUME_UP)
-        elif cmd == "vol_down":
-            send_vk(VK_VOLUME_DOWN)
-            send_vk(VK_VOLUME_DOWN)
+        if cmd == "play_pause": send_vk(VK_MEDIA_PLAY_PAUSE)
+        elif cmd == "next": send_vk(VK_MEDIA_NEXT_TRACK)
+        elif cmd == "prev": send_vk(VK_MEDIA_PREV_TRACK)
+        elif cmd == "mute": send_vk(VK_VOLUME_MUTE)
+        elif cmd == "vol_up": send_vk(VK_VOLUME_UP); send_vk(VK_VOLUME_UP)
+        elif cmd == "vol_down": send_vk(VK_VOLUME_DOWN); send_vk(VK_VOLUME_DOWN)
+
+
+# -------------------------------------------------------------
+# Stream Deck Actions, App Launchers, Clipboard & URL Beam
+# -------------------------------------------------------------
+def execute_desktop_action(action_str: str):
+    """Handles app launching, screenshot, lock screen, clipboard, and URL beam."""
+    env = get_desktop_env()
+    parts = action_str.split(":", 1)
+    action = parts[0].strip()
+    payload = parts[1].strip() if len(parts) > 1 else ""
+    print(f"[*] Executing desktop action: {action} (payload len={len(payload)})")
+
+    if action == "toggle_mic":
+        if IS_LINUX:
+            res = subprocess.run(["wpctl", "set-mute", "@DEFAULT_AUDIO_SOURCE@", "toggle"], check=False)
+            if res.returncode != 0:
+                subprocess.run(["pactl", "set-source-mute", "@DEFAULT_SOURCE@", "toggle"], check=False)
+        return {"action": "toggle_mic", "status": "ok"}
+
+    elif action == "clipboard":
+        if IS_LINUX:
+            try:
+                p = subprocess.Popen(["wl-copy"], stdin=subprocess.PIPE, env=env)
+                p.communicate(payload.encode("utf-8"))
+            except Exception:
+                try:
+                    p2 = subprocess.Popen(["xclip", "-selection", "clipboard"], stdin=subprocess.PIPE, env=env)
+                    p2.communicate(payload.encode("utf-8"))
+                except Exception as e:
+                    print(f"[-] Clipboard copy failed: {e}")
+        elif IS_WINDOWS:
+            try:
+                p = subprocess.Popen(["clip"], stdin=subprocess.PIPE, shell=True)
+                p.communicate(payload.encode("utf-8"))
+            except Exception:
+                pass
+        return {"action": "clipboard", "status": "ok", "message": "Copied to PC clipboard"}
+
+    elif action == "open_url":
+        if payload:
+            if not (payload.startswith("http://") or payload.startswith("https://")):
+                payload = "https://" + payload
+            subprocess.Popen(["xdg-open", payload], env=env, start_new_session=True)
+        return {"action": "open_url", "status": "ok", "message": f"Opened {payload}"}
+
+    elif action == "launch_terminal":
+        term = shutil.which("ghostty") or shutil.which("alacritty") or shutil.which("foot") or shutil.which("kitty") or "xterm"
+        subprocess.Popen([term], env=env, start_new_session=True)
+        return {"action": "launch_terminal", "status": "ok"}
+
+    elif action == "launch_browser":
+        browser = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("firefox") or "xdg-open"
+        subprocess.Popen([browser], env=env, start_new_session=True)
+        return {"action": "launch_browser", "status": "ok"}
+
+    elif action == "lock_screen":
+        if shutil.which("hyprlock"):
+            subprocess.Popen(["hyprlock"], env=env, start_new_session=True)
+        else:
+            subprocess.Popen(["loginctl", "lock-session"], env=env, start_new_session=True)
+        return {"action": "lock_screen", "status": "ok"}
+
+    elif action == "take_screenshot":
+        if shutil.which("omarchy"):
+            subprocess.Popen(["omarchy", "screenshot"], env=env, start_new_session=True)
+        elif shutil.which("grim"):
+            pics = os.path.expanduser("~/Pictures/Screenshots")
+            os.makedirs(pics, exist_ok=True)
+            fpath = os.path.join(pics, f"screenshot_{int(time.time())}.png")
+            subprocess.Popen(["grim", fpath], env=env, start_new_session=True)
+        return {"action": "take_screenshot", "status": "ok"}
+
+    elif action == "next_theme":
+        if shutil.which("omarchy"):
+            subprocess.Popen(["omarchy", "theme", "next"], env=env, start_new_session=True)
+        return {"action": "next_theme", "status": "ok"}
+
+    return {"action": action, "status": "unknown"}
 
 
 # -------------------------------------------------------------
@@ -356,10 +459,12 @@ class PCAgent:
         self.stat_topic = f"stat/{self.topic_name}/status"
         self.stat_telemetry_topic = f"stat/{self.topic_name}/telemetry"
         self.stat_media_topic = f"stat/{self.topic_name}/media"
+        self.stat_action_topic = f"stat/{self.topic_name}/action_status"
 
         self.cmnd_power_topic = f"cmnd/{self.topic_name}/power"
         self.cmnd_ping_topic = f"cmnd/{self.topic_name}/ping"
         self.cmnd_media_topic = f"cmnd/{self.topic_name}/media"
+        self.cmnd_action_topic = f"cmnd/{self.topic_name}/action"
 
         self.running = False
         client_id = f"pc_agent_{self.topic_name}_{int(time.time())}"
@@ -379,12 +484,12 @@ class PCAgent:
         if rc == 0:
             print(f"[+] Connected to MQTT broker at {self.broker_host}:{self.broker_port}")
             client.publish(self.stat_topic, payload="online", qos=1, retain=True)
-            # Subscribe to command topics
             client.subscribe(self.cmnd_power_topic)
             client.subscribe(self.cmnd_ping_topic)
             client.subscribe(self.cmnd_media_topic)
+            client.subscribe(self.cmnd_action_topic)
             client.subscribe("cmnd/+/wake")
-            print(f"[+] Subscribed to: {self.cmnd_power_topic}, {self.cmnd_media_topic}, cmnd/+/wake")
+            print(f"[+] Subscribed to: {self.cmnd_power_topic}, {self.cmnd_media_topic}, {self.cmnd_action_topic}, cmnd/+/wake")
         else:
             print(f"[-] Connection failed with return code {rc}")
 
@@ -394,7 +499,7 @@ class PCAgent:
     def on_message(self, client, userdata, msg):
         topic = msg.topic
         payload = msg.payload.decode("utf-8").strip()
-        print(f"[>] Message on {topic}: {payload}")
+        print(f"[>] Message on {topic}: {payload[:60]}")
 
         if topic.endswith("/wake"):
             target_mac = payload.strip()
@@ -409,12 +514,20 @@ class PCAgent:
 
         if topic == self.cmnd_media_topic:
             execute_media_command(payload)
-            # Immediately publish updated media state
             try:
                 st = get_media_state()
                 client.publish(self.stat_media_topic, payload=json.dumps(st), qos=0, retain=True)
             except Exception as e:
-                print(f"[-] Failed to publish immediate media state: {e}")
+                print(f"[-] Failed to publish media state: {e}")
+            return
+
+        if topic == self.cmnd_action_topic:
+            res = execute_desktop_action(payload)
+            client.publish(self.stat_action_topic, payload=json.dumps(res), qos=0, retain=False)
+            # If mic was toggled, update media state immediately
+            if payload.startswith("toggle_mic"):
+                st = get_media_state()
+                client.publish(self.stat_media_topic, payload=json.dumps(st), qos=0, retain=True)
             return
 
         if topic == self.cmnd_power_topic:
@@ -442,7 +555,7 @@ class PCAgent:
                 telem = get_telemetry()
                 self.client.publish(self.stat_telemetry_topic, payload=json.dumps(telem), qos=0, retain=True)
 
-                # 2. Media state
+                # 2. Media state with Album Art & Mic Status
                 media = get_media_state()
                 self.client.publish(self.stat_media_topic, payload=json.dumps(media), qos=0, retain=True)
             except Exception as e:
@@ -455,7 +568,6 @@ class PCAgent:
         self.running = True
         self.client.connect(self.broker_host, self.broker_port, keepalive=30)
 
-        # Start telemetry background thread
         telem_thread = threading.Thread(target=self._telemetry_loop, daemon=True)
         telem_thread.start()
 
