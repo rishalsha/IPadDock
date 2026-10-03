@@ -264,9 +264,9 @@ html, body {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
-  padding: 14px 10px;
+  padding: 44px 20px;
   color: #ffffff;
-  font-size: 0.94rem;
+  font-size: 1.94rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
@@ -519,13 +519,13 @@ html, body {
 .ws-btn {
   -webkit-flex: 1;
   flex: 1;
-  padding: 8px 4px;
+  padding: 12px 8px;
   margin-right: 6px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.09);
   color: #ffffff;
-  font-size: 0.78rem;
+  font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
   -webkit-transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1015,6 +1015,7 @@ html, body {
   align-items: center;
   margin-bottom: 18px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  margin-top: 90px;
 }
 
 .media-vinyl-wrap {
@@ -1170,7 +1171,9 @@ html, body {
   align-items: center;
   -webkit-justify-content: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+  margin-top: 150px;
+
 }
 
 .media-ctrl-btn {
@@ -1407,6 +1410,12 @@ html, body {
 .app-tile-icon {
   font-size: 2.35rem;
   line-height: 1;
+}
+
+.app-brand-svg {
+  width: 28px;
+  height: 28px;
+  display: block;
 }
 
 .app-tile-info {

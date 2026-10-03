@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>iDock Dashboard</title>
-  
+
   <!-- Apple Fullscreen Kiosk Mode Meta Tags for iOS 10 Safari -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,12 +11,12 @@
   <meta name="apple-mobile-web-app-title" content="iDock">
   <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#000000">
-  
-  <link rel="stylesheet" href="style.css?v=1791034622">
+
+  <link rel="stylesheet" href="style.css?v=1791036601">
 </head>
 <body>
   <div class="home-app">
-    
+
     <!-- TOP NAVIGATION & STATUS BAR -->
     <header class="home-header">
       <div class="header-left">
@@ -89,11 +89,11 @@
             <div class="scenes-grid">
               <button class="scene-chip" onclick="triggerScene('wake_day', this)">
                 <span class="scene-chip-icon">☀️</span>
-                <span class="scene-chip-title">Wake Day</span>
+                <span class="scene-chip-title">Wake</span>
               </button>
               <button class="scene-chip" onclick="triggerScene('wake_night', this)">
                 <span class="scene-chip-icon">🌙</span>
-                <span class="scene-chip-title">Wake Night</span>
+                <span class="scene-chip-title">Wake</span>
               </button>
               <button class="scene-chip" onclick="triggerScene('suspend', this)">
                 <span class="scene-chip-icon">💤</span>
@@ -234,7 +234,9 @@
                 <!-- WhatsApp -->
                 <button class="app-tile app-whatsapp" onclick="openOrFocusApp('whatsapp', 'https://web.whatsapp.com')">
                   <div class="app-icon-wrap">
-                    <span class="app-tile-icon">💬</span>
+                    <svg viewBox="0 0 24 24" class="app-brand-svg" fill="#25D366">
+                      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.24-.75-.67-1.25-1.49-1.4-1.74-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.45 1.03 2.62.13.17 1.78 2.71 4.3 3.8.6.26 1.07.42 1.44.53.61.2 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.1-.23-.17-.48-.29z"/>
+                    </svg>
                   </div>
                   <div class="app-tile-info">
                     <div class="app-tile-name">WhatsApp</div>
@@ -245,7 +247,16 @@
                 <!-- Gemini -->
                 <button class="app-tile app-gemini" onclick="openOrFocusApp('gemini', 'https://gemini.google.com')">
                   <div class="app-icon-wrap">
-                    <span class="app-tile-icon">✨</span>
+                    <svg viewBox="0 0 24 24" class="app-brand-svg">
+                      <defs>
+                        <linearGradient id="gemini-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#9BC5FF"/>
+                          <stop offset="50%" stop-color="#7C86FF"/>
+                          <stop offset="100%" stop-color="#BA7BFF"/>
+                        </linearGradient>
+                      </defs>
+                      <path fill="url(#gemini-grad)" d="M12 2C12 7.52 7.52 12 2 12C7.52 12 12 16.48 12 22C12 16.48 16.48 12 22 12C16.48 12 12 7.52 12 2Z"/>
+                    </svg>
                   </div>
                   <div class="app-tile-info">
                     <div class="app-tile-name">Gemini</div>
@@ -256,7 +267,9 @@
                 <!-- Claude -->
                 <button class="app-tile app-claude" onclick="openOrFocusApp('claude', 'https://claude.ai')">
                   <div class="app-icon-wrap">
-                    <span class="app-tile-icon">🧠</span>
+                    <svg viewBox="0 0 24 24" class="app-brand-svg" fill="#D97706">
+                      <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5h3.18l-2.25 2.25c-.59.59-.59 1.54 0 2.12s1.54.59 2.12 0l2.25-2.25v3.18c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-3.18l2.25 2.25c.59.59 1.54.59 2.12 0s.59-1.54 0-2.12l-2.25-2.25h3.18c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5h-3.18l2.25-2.25c.59-.59.59-1.54 0-2.12s-1.54-.59-2.12 0l-2.25 2.25V4.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v3.18l-2.25-2.25c-.59-.59-1.54-.59-2.12 0s-.59 1.54 0 2.12l2.25 2.25H4.5z"/>
+                    </svg>
                   </div>
                   <div class="app-tile-info">
                     <div class="app-tile-name">Claude</div>
@@ -267,7 +280,10 @@
                 <!-- YouTube -->
                 <button class="app-tile app-youtube" onclick="openOrFocusApp('youtube', 'https://youtube.com')">
                   <div class="app-icon-wrap">
-                    <span class="app-tile-icon">🎬</span>
+                    <svg viewBox="0 0 24 24" class="app-brand-svg">
+                      <path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/>
+                      <polygon fill="#FFFFFF" points="9.545,15.568 15.818,12 9.545,8.432"/>
+                    </svg>
                   </div>
                   <div class="app-tile-info">
                     <div class="app-tile-name">YouTube</div>
@@ -278,7 +294,9 @@
                 <!-- GitHub -->
                 <button class="app-tile app-github" onclick="openOrFocusApp('github', 'https://github.com')">
                   <div class="app-icon-wrap">
-                    <span class="app-tile-icon">🐙</span>
+                    <svg viewBox="0 0 24 24" class="app-brand-svg" fill="#FFFFFF">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
+                    </svg>
                   </div>
                   <div class="app-tile-info">
                     <div class="app-tile-name">GitHub</div>
@@ -289,7 +307,9 @@
                 <!-- ChatGPT -->
                 <button class="app-tile app-chatgpt" onclick="openOrFocusApp('chatgpt', 'https://chatgpt.com')">
                   <div class="app-icon-wrap">
-                    <span class="app-tile-icon">🤖</span>
+                    <svg viewBox="0 0 24 24" class="app-brand-svg" fill="#10A37F">
+                      <path d="M22.28 10.42a5.95 5.95 0 0 0-.52-4.94 6.07 6.07 0 0 0-6.55-2.92A5.96 5.96 0 0 0 10.9.8a6.07 6.07 0 0 0-5.8 4.21A5.95 5.95 0 0 0 1.5 7.82a6.07 6.07 0 0 0 .74 7.15 5.96 5.96 0 0 0 .52 4.94 6.07 6.07 0 0 0 6.55 2.92A5.96 5.96 0 0 0 13.6 24a6.07 6.07 0 0 0 5.8-4.21 5.95 5.95 0 0 0 3.6-2.81 6.07 6.07 0 0 0-.72-6.56zm-9.08 11.53c-1.3 0-2.5-.5-3.4-1.4l.1-.06 4.3-2.48a.8.8 0 0 0 .4-.7v-6.07l1.8 1.04a.08.08 0 0 1 .05.06v5.03a4.4 4.4 0 0 1-3.25 4.58zm-7.6-3.25a4.4 4.4 0 0 1-.58-5.54l.1.06 4.3 2.48a.8.8 0 0 0 .8 0l5.25-3.04v2.08a.08.08 0 0 1-.03.07l-4.36 2.52a4.4 4.4 0 0 1-5.48 1.37zm-2.02-8.6c.38-1.22 1.25-2.22 2.42-2.77l.01.12v4.96a.8.8 0 0 0 .4.7l5.26 3.03-1.8 1.04a.08.08 0 0 1-.08 0l-4.35-2.52a4.4 4.4 0 0 1-1.86-4.56zm15.02-1.32l-4.3-2.49a.8.8 0 0 0-.8 0l-5.26 3.04V7.26a.08.08 0 0 1 .03-.07l4.36-2.52a4.4 4.4 0 0 1 6.06 1.74l-.09-.07zm2.4 5.9a4.4 4.4 0 0 1-1.28 4.78l-.01-.12v-4.96a.8.8 0 0 0-.4-.7l-5.26-3.03 1.8-1.04a.08.08 0 0 1 .08 0l4.35 2.52a4.4 4.4 0 0 1 .72 2.55zm-8.8 2.05l-2.35-1.36 2.35-1.36 2.35 1.36-2.35 1.36z"/>
+                    </svg>
                   </div>
                   <div class="app-tile-info">
                     <div class="app-tile-name">ChatGPT</div>
@@ -300,7 +320,12 @@
                 <!-- Gmail -->
                 <button class="app-tile app-gmail" onclick="openOrFocusApp('gmail', 'https://mail.google.com')">
                   <div class="app-icon-wrap">
-                    <span class="app-tile-icon">✉️</span>
+                    <svg viewBox="0 0 24 24" class="app-brand-svg">
+                      <path fill="#4285F4" d="M22 6.5v11a2.5 2.5 0 0 1-2.5 2.5H18V10l-6 4.5L6 10v10H4.5A2.5 2.5 0 0 1 2 17.5v-11a2.5 2.5 0 0 1 4.14-1.89L12 9.42l5.86-4.81A2.5 2.5 0 0 1 22 6.5z"/>
+                      <path fill="#EA4335" d="M12 9.42L6.14 4.61C6.73 4.23 7.44 4 8.2 4h7.6c.76 0 1.47.23 2.06.61L12 9.42z"/>
+                      <path fill="#34A853" d="M18 10v10h1.5a2.5 2.5 0 0 0 2.5-2.5v-11L18 10z"/>
+                      <path fill="#FBBC05" d="M6 10L2 6.5v11A2.5 2.5 0 0 0 4.5 20H6V10z"/>
+                    </svg>
                   </div>
                   <div class="app-tile-info">
                     <div class="app-tile-name">Gmail</div>
@@ -311,7 +336,9 @@
                 <!-- Spotify -->
                 <button class="app-tile app-spotify" onclick="openOrFocusApp('spotify', 'https://open.spotify.com')">
                   <div class="app-icon-wrap">
-                    <span class="app-tile-icon">🎵</span>
+                    <svg viewBox="0 0 24 24" class="app-brand-svg" fill="#1DB954">
+                      <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.435-5.308-1.76-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.746 3.808-.87 7.076-.496 9.722 1.115.294.18.386.562.207.856zm1.223-2.721c-.226.367-.706.482-1.072.257-2.687-1.652-6.785-2.131-9.965-1.166-.413.127-.848-.106-.973-.517-.125-.413.108-.848.52-.973 3.632-1.102 8.147-.568 11.233 1.328.366.226.481.707.257 1.071zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.493.15-1.016-.129-1.166-.623-.149-.495.13-1.016.624-1.167 3.532-1.073 9.404-.866 13.115 1.337.445.264.59.838.327 1.282-.264.443-.838.59-1.283.329z"/>
+                    </svg>
                   </div>
                   <div class="app-tile-info">
                     <div class="app-tile-name">Spotify</div>
@@ -504,13 +531,13 @@
         <h3 class="modal-heading">Broker Settings</h3>
         <button class="modal-close-btn" onclick="closeSettings()">✕</button>
       </div>
-      
+
       <div class="modal-fields">
         <div class="field-item">
           <label for="cfg-host">Azure Host / IP</label>
           <input type="text" id="cfg-host" placeholder="20.244.45.142">
         </div>
-        
+
         <div class="field-item">
           <label for="cfg-port">WebSocket Port</label>
           <input type="number" id="cfg-port" placeholder="80">
@@ -572,6 +599,6 @@
   <!-- Scripts -->
   <script src="paho-mqtt.js"></script>
   <script src="config.js"></script>
-  <script src="app.js?v=1791034622"></script>
+  <script src="app.js?v=1791036601"></script>
 </body>
 </html>
