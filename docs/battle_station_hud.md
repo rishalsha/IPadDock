@@ -2,6 +2,8 @@
 
 The Battle Station Telemetry page (**Page 2**) transforms the iPad into a live cockpit dashboard for monitoring hardware health, temperatures, loads, and system parameters across Linux workstations.
 
+![Battle Station Cockpit Telemetry](screenshots/02_battle_station_hud.png)
+
 ---
 
 ## 🛰️ Architecture & Data Pipeline

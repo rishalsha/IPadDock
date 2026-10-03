@@ -2,6 +2,8 @@
 
 The Stream Deck page (**Page 4**) provides quick app focus/launching, desktop workstation macros, and a multi-machine cross-device clipboard bridge.
 
+![Stream Deck & Cross-Device Teleport](screenshots/04_stream_deck.png)
+
 ---
 
 ## 🚀 Quick Apps & Window Focus-or-Open

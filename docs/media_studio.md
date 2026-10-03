@@ -2,6 +2,8 @@
 
 The Media Studio page (**Page 3**) turns the iPad into a dedicated desk music controller and album artwork display for your workstations.
 
+![Media Studio & Audio Hub](screenshots/03_media_studio.png)
+
 ---
 
 ## 🎵 Features & Capabilities

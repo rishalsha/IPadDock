@@ -23,6 +23,9 @@ Turn a retired, obsolete **iPad Gen 4 (iOS 10.3.3 / WebKit 602)** into a permane
 ```
 
 ### 1. 🏠 Page 1: Smart Home & Tasmota Power
+
+![Page 1: Smart Home & Tasmota Power](docs/screenshots/01_smart_home.png)
+
 - **Live Device Toggles**: Fan, Room Light, and Accent Bulb with real-time bidirectional MQTT sync (`room_light`).
 - **Scene Quick Presets**: One-tap scene triggers:
   - ☀️ *Wake Day* (Lights ON, Fan ON)
@@ -33,6 +36,9 @@ Turn a retired, obsolete **iPad Gen 4 (iOS 10.3.3 / WebKit 602)** into a permane
 - **Workstation Power**: Remote Sleep, Shutdown, Restart, and Wake-on-LAN (WoL) for Desktop PC & Laptop.
 
 ### 2. 📊 Page 2: Battle Station Cockpit (Telemetry HUD)
+
+![Page 2: Battle Station Cockpit HUD](docs/screenshots/02_battle_station_hud.png)
+
 - **Workstation Switcher**: Toggle telemetry cockpit between **🖥️ Desktop PC** and **💻 Work Laptop**.
 - **Station Identity Banner**: Machine hostname, live state badge, LAN IP address, motherboard model, and Linux kernel release.
 - **5 Animated Circular SVG Gauges**:
@@ -52,6 +58,9 @@ Turn a retired, obsolete **iPad Gen 4 (iOS 10.3.3 / WebKit 602)** into a permane
   6. **🌐 Network & Power**: Network adapter (`Ethernet` / `WiFi`), IP address, power source, and system uptime counter.
 
 ### 3. 🎵 Page 3: Media Studio & Audio Hub
+
+![Page 3: Media Studio & Audio Hub](docs/screenshots/03_media_studio.png)
+
 - **Target Workstation Selector**: Switch audio control between Desktop PC and Work Laptop.
 - **Spinning Vinyl Record**: Real-time album art fetched over MPRIS2 D-Bus (Spotify, YouTube, VLC, browser tabs).
 - **Animated Audio Equalizer**: Bouncing equalizer bars active during playback.
@@ -59,6 +68,9 @@ Turn a retired, obsolete **iPad Gen 4 (iOS 10.3.3 / WebKit 602)** into a permane
 - **Volume Controller**: Master output volume slider with **touch isolation** (prevents slider dragging from triggering carousel page swiping), mute button, and $\pm 5\%$ step buttons.
 
 ### 4. 🎛️ Page 4: Stream Deck & Cross-Device Teleport
+
+![Page 4: Stream Deck & Cross-Device Teleport](docs/screenshots/04_stream_deck.png)
+
 - **Quick Apps (4×2 Grid)**:
   - 💬 WhatsApp, ✨ Gemini, 🧠 Claude, 🎬 YouTube, 🐙 GitHub, 🤖 ChatGPT, ✉️ Gmail, 🎵 Spotify.
   - Native **Hyprland window focus-or-open**: Brings existing browser window/tab into focus if already open; launches fresh session if closed.
@@ -77,6 +89,9 @@ Turn a retired, obsolete **iPad Gen 4 (iOS 10.3.3 / WebKit 602)** into a permane
   - 🌐 *Beam URL*: Opens any URL typed on iPad immediately on workstation.
 
 ### 5. ⏱️ Page 5: Desk Focus Pomodoro Timer
+
+![Page 5: Desk Focus Pomodoro Timer](docs/screenshots/05_focus_timer.png)
+
 - **Circular Countdown Ring**: Animated SVG timer ring showing elapsed session time.
 - **Quick Presets**: 🍅 25m Focus, ☕ 5m Break, 🌴 15m Long Break, ⚡ 45m Deep Work.
 - **Sound Alert**: Built-in audio chime alert upon session completion.
