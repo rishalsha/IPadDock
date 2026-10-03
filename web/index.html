@@ -12,7 +12,7 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#000000">
 
-  <link rel="stylesheet" href="style.css?v=1791036601">
+  <link rel="stylesheet" href="style.css?v=1791037240">
 </head>
 <body>
   <div class="home-app">
@@ -113,6 +113,14 @@
               </button>
             </div>
           </section>
+
+          <!-- Subtle Auto-Cycle Kiosk Loop Toggle -->
+          <div class="autocycle-footer">
+            <button id="btn-autocycle" class="autocycle-btn" onclick="toggleAutoCycle()" title="Toggle Auto-Cycle Carousel Loop">
+              <span class="autocycle-dot"></span>
+              <span id="autocycle-label">🔁 Auto Cycle: OFF</span>
+            </button>
+          </div>
         </div>
 
         <!-- ==========================================
@@ -599,6 +607,6 @@
   <!-- Scripts -->
   <script src="paho-mqtt.js"></script>
   <script src="config.js"></script>
-  <script src="app.js?v=1791036601"></script>
+  <script src="app.js?v=1791037240"></script>
 </body>
 </html>

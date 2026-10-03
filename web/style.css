@@ -293,6 +293,64 @@ html, body {
   background: rgba(255, 255, 255, 0.22);
 }
 
+/* Subtle Kiosk Auto-Cycle Loop Toggle */
+.autocycle-footer {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
+
+.autocycle-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: #636366;
+  padding: 4px 12px;
+  border-radius: 14px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  opacity: 0.22;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+  -webkit-align-items: center;
+  align-items: center;
+  outline: none;
+}
+
+.autocycle-btn:hover,
+.autocycle-btn:active {
+  opacity: 0.65;
+}
+
+.autocycle-btn.active {
+  opacity: 0.85;
+  background: rgba(48, 209, 88, 0.08);
+  border-color: rgba(48, 209, 88, 0.35);
+  color: #30d158;
+}
+
+.autocycle-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #636366;
+  margin-right: 6px;
+  display: inline-block;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.autocycle-btn.active .autocycle-dot {
+  background: #30d158;
+  box-shadow: 0 0 6px #30d158;
+}
+
 .home-section {
   margin-bottom: 20px;
 }

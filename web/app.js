@@ -96,7 +96,11 @@ function updateClock() {
 // -------------------------------------------------------------
 // Carousel & Swipe Navigation
 // -------------------------------------------------------------
-function goToPage(index) {
+var autoCycleTimer = null;
+var autoCycleEnabled = false;
+var AUTO_CYCLE_INTERVAL_MS = 15000; // 15 seconds per page
+
+function goToPage(index, isAuto) {
   if (index < 0) index = 0;
   if (index >= totalPages) index = totalPages - 1;
   currentPage = index;
@@ -113,6 +117,69 @@ function goToPage(index) {
   if (titleEl && pageTitles[index]) {
     titleEl.innerHTML = pageTitles[index];
   }
+
+  // If user navigated manually and auto-cycle is active, restart cycle timer
+  if (!isAuto && autoCycleEnabled) {
+    startAutoCycle();
+  }
+}
+
+function toggleAutoCycle() {
+  autoCycleEnabled = !autoCycleEnabled;
+  try {
+    localStorage.setItem('dock_autocycle', autoCycleEnabled ? '1' : '0');
+  } catch (err) {}
+  updateAutoCycleUI();
+  if (autoCycleEnabled) {
+    startAutoCycle();
+  } else {
+    stopAutoCycle();
+  }
+}
+
+function startAutoCycle() {
+  stopAutoCycle();
+  if (!autoCycleEnabled) return;
+  autoCycleTimer = setInterval(function () {
+    var next = (currentPage + 1) % totalPages;
+    goToPage(next, true);
+  }, AUTO_CYCLE_INTERVAL_MS);
+}
+
+function stopAutoCycle() {
+  if (autoCycleTimer) {
+    clearInterval(autoCycleTimer);
+    autoCycleTimer = null;
+  }
+}
+
+function updateAutoCycleUI() {
+  var btn = document.getElementById('btn-autocycle');
+  var label = document.getElementById('autocycle-label');
+  if (btn) {
+    if (autoCycleEnabled) {
+      btn.className = 'autocycle-btn active';
+      btn.title = 'Auto-Cycle Active (15s per page). Tap to Turn Off.';
+      if (label) label.innerHTML = '🔁 Loop: ON (15s)';
+    } else {
+      btn.className = 'autocycle-btn';
+      btn.title = 'Auto-Cycle: Off. Tap to Start Kiosk Loop.';
+      if (label) label.innerHTML = '🔁 Auto Cycle: OFF';
+    }
+  }
+}
+
+function initAutoCycle() {
+  try {
+    var saved = localStorage.getItem('dock_autocycle');
+    if (saved === '1') {
+      autoCycleEnabled = true;
+      updateAutoCycleUI();
+      startAutoCycle();
+      return;
+    }
+  } catch (e) {}
+  updateAutoCycleUI();
 }
 
 function initSwipeGestures() {
@@ -1781,6 +1848,9 @@ window.onload = function () {
 
   // Initialize Swipe Carousel
   initSwipeGestures();
+
+  // Initialize Kiosk Auto-Cycle Loop
+  initAutoCycle();
 
   // Initialize MQTT & Watchdogs
   connectMqtt();
