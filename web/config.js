@@ -1,12 +1,11 @@
 // iPad Dock Configuration
-// Customized for your 3-channel Tasmota device:
-// Relay 1 = Fan, Relay 2 = Light, Relay 3 = Bulb
+// Pure ES5 / 100% Compatible with iOS 10 Safari
 
 var DOCK_CONFIG = {
   // MQTT Connection Settings
   // Leave host as '' to automatically connect via current webpage host
   mqttHost: '',
-  mqttPort: 9001,
+  mqttPort: 80,
   mqttPath: '/mqtt',
   useSSL: false,
   username: '',
@@ -21,6 +20,16 @@ var DOCK_CONFIG = {
   autoRefreshIntervalMinutes: 30, // Scheduled page reload to prevent iOS 10 memory leaks (0 to disable)
   autoSyncIntervalSeconds: 15,    // Automatic background state re-polling
   checkVersionIntervalSeconds: 15, // Check for code/dashboard updates from server
+
+  // Weather Settings (Open-Meteo Global API - Free & Fast)
+  weather: {
+    enabled: true,
+    city: 'Payyanur',
+    region: 'Kerala',
+    latitude: 12.0935,
+    longitude: 75.2025,
+    updateIntervalMinutes: 20
+  },
 
   // Tasmota Devices (Relay 1 = Fan, Relay 2 = Light, Relay 3 = Bulb)
   devices: [
@@ -62,8 +71,10 @@ var DOCK_CONFIG = {
       icon: '🖥️',
       topic: 'desktop_pc',
       mac: '04:7c:16:b7:5e:96',
-      wolDeviceTopic: 'room_light', // Tasmota device that broadcasts WoL packet
-      state: 'offline' // 'online', 'offline', 'sleep'
+      wolDeviceTopic: 'room_light',
+      state: 'offline',
+      telemetry: null,
+      media: null
     },
     {
       id: 'work_laptop',
@@ -73,7 +84,9 @@ var DOCK_CONFIG = {
       topic: 'work_laptop',
       mac: '30:e3:a4:8e:ff:ee',
       wolDeviceTopic: 'room_light',
-      state: 'offline'
+      state: 'offline',
+      telemetry: null,
+      media: null
     }
   ]
 };

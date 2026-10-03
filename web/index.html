@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Home</title>
+  <title>iDock Dashboard</title>
   
   <!-- Apple Fullscreen Kiosk Mode Meta Tags for iOS 10 Safari -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Home">
+  <meta name="apple-mobile-web-app-title" content="iDock">
   <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#000000">
   
@@ -25,17 +25,21 @@
           <span id="live-ampm" class="home-ampm">PM</span>
         </div>
         <div class="header-title-group">
-          <div id="live-date" class="home-date">Friday, October 2</div>
-          <h1 class="room-title">Bedroom</h1>
+          <div id="live-date" class="home-date">Saturday, October 3</div>
+          <h1 id="current-page-title" class="room-title">Home</h1>
         </div>
       </div>
 
       <div class="header-right">
+        <!-- Standby / Night Mode Quick Trigger -->
+        <button class="header-icon-btn" onclick="enterStandbyMode()" title="Night Standby">
+          <span>🌙</span>
+        </button>
         <div class="home-status-chip">
           <span class="status-indicator-dot" id="mqtt-dot"></span>
           <span id="mqtt-label" class="status-chip-text">Connecting...</span>
         </div>
-        <button class="settings-circle-btn hidden-touch-btn" onclick="toggleFullscreen()" title="Fullscreen" style="opacity: 0; margin-right: 8px;">
+        <button class="settings-circle-btn hidden-touch-btn" onclick="toggleFullscreen()" title="Fullscreen" style="opacity: 0; margin-right: 6px;">
           <span>⛶</span>
         </button>
         <button class="settings-circle-btn hidden-touch-btn" onclick="openSettings()" title="Settings" style="opacity: 0;">
@@ -44,58 +48,272 @@
       </div>
     </header>
 
-    <!-- SCENES CHIPS ROW (Apple Home Style) -->
-    <div class="scenes-scroller">
-      <button class="scene-chip" onclick="triggerScene('wake_day', this)">
-        <span class="scene-chip-icon">☀️</span>
-        <span class="scene-chip-title">Wake Day</span>
+    <!-- PAGINATION / NAVIGATION BAR -->
+    <nav class="pagination-bar" id="pagination-bar">
+      <button class="nav-tab active" onclick="goToPage(0)" id="tab-0">
+        <span class="tab-icon">🏠</span>
+        <span class="tab-text">Home</span>
       </button>
-      <button class="scene-chip" onclick="triggerScene('wake_night', this)">
-        <span class="scene-chip-icon">🌙</span>
-        <span class="scene-chip-title">Wake Night</span>
+      <button class="nav-tab" onclick="goToPage(1)" id="tab-1">
+        <span class="tab-icon">📊</span>
+        <span class="tab-text">HUD</span>
       </button>
-      <button class="scene-chip" onclick="triggerScene('suspend', this)">
-        <span class="scene-chip-icon">💤</span>
-        <span class="scene-chip-title">Suspend</span>
+      <button class="nav-tab" onclick="goToPage(2)" id="tab-2">
+        <span class="tab-icon">🎵</span>
+        <span class="tab-text">Media</span>
       </button>
-      <button class="scene-chip" onclick="triggerScene('shutdown', this)">
-        <span class="scene-chip-icon">⏻</span>
-        <span class="scene-chip-title">Shutdown</span>
+      <button class="nav-tab" onclick="goToPage(3)" id="tab-3">
+        <span class="tab-icon">🌤️</span>
+        <span class="tab-text">Weather</span>
       </button>
-      <button class="scene-chip" onclick="triggerScene('all_on', this)">
-        <span class="scene-chip-icon">💡</span>
-        <span class="scene-chip-title">All On</span>
+      <button class="nav-tab" onclick="goToPage(4)" id="tab-4">
+        <span class="tab-icon">⏱️</span>
+        <span class="tab-text">Timer</span>
       </button>
-      <button class="scene-chip" onclick="triggerScene('all_off', this)">
-        <span class="scene-chip-icon">🌑</span>
-        <span class="scene-chip-title">All Off</span>
-      </button>
+    </nav>
+
+    <!-- CAROUSEL VIEWPORT (Swipe left/right) -->
+    <div class="carousel-viewport" id="carousel-viewport">
+      <div class="carousel-track" id="carousel-track">
+
+        <!-- ==========================================
+             PAGE 1: SMART HOME & ACCESSORIES
+             ========================================== -->
+        <div class="carousel-page" id="page-home">
+          <!-- SCENES CHIPS ROW -->
+          <div class="scenes-scroller">
+            <button class="scene-chip" onclick="triggerScene('wake_day', this)">
+              <span class="scene-chip-icon">☀️</span>
+              <span class="scene-chip-title">Wake Day</span>
+            </button>
+            <button class="scene-chip" onclick="triggerScene('wake_night', this)">
+              <span class="scene-chip-icon">🌙</span>
+              <span class="scene-chip-title">Wake Night</span>
+            </button>
+            <button class="scene-chip" onclick="triggerScene('suspend', this)">
+              <span class="scene-chip-icon">💤</span>
+              <span class="scene-chip-title">Suspend</span>
+            </button>
+            <button class="scene-chip" onclick="triggerScene('shutdown', this)">
+              <span class="scene-chip-icon">⏻</span>
+              <span class="scene-chip-title">Shutdown</span>
+            </button>
+            <button class="scene-chip" onclick="triggerScene('all_on', this)">
+              <span class="scene-chip-icon">💡</span>
+              <span class="scene-chip-title">All On</span>
+            </button>
+            <button class="scene-chip" onclick="triggerScene('all_off', this)">
+              <span class="scene-chip-icon">🌑</span>
+              <span class="scene-chip-title">All Off</span>
+            </button>
+          </div>
+
+          <!-- Section: Room Accessories -->
+          <section class="home-section">
+            <div class="section-title-row">
+              <h2 class="section-heading">Accessories</h2>
+              <span class="section-status-sub" id="relays-active-count">0 of 3 On</span>
+            </div>
+            <div id="devices-grid" class="homekit-grid">
+              <!-- Rendered dynamically via app.js -->
+            </div>
+          </section>
+
+          <!-- Section: Workstations Quick Power -->
+          <section class="home-section">
+            <div class="section-title-row">
+              <h2 class="section-heading">Workstations</h2>
+            </div>
+            <div id="computers-grid" class="workstations-grid">
+              <!-- Rendered dynamically via app.js -->
+            </div>
+          </section>
+        </div>
+
+        <!-- ==========================================
+             PAGE 2: BATTLE STATION HUD (TELEMETRY)
+             ========================================== -->
+        <div class="carousel-page" id="page-telemetry">
+          <div class="hud-container">
+            <div class="section-title-row" style="margin-bottom: 12px;">
+              <h2 class="section-heading">Battle Station Telemetry</h2>
+              <span class="hud-live-tag"><span class="hud-live-pulse"></span> LIVE HUD</span>
+            </div>
+
+            <div class="hud-grid" id="hud-grid">
+              <!-- Rendered dynamically via renderHud() in app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             PAGE 3: MEDIA & AUDIO STUDIO
+             ========================================== -->
+        <div class="carousel-page" id="page-media">
+          <div class="media-container">
+            <!-- Machine Target Selector -->
+            <div class="media-target-row">
+              <span class="media-target-label">Target Workstation:</span>
+              <div class="media-target-buttons" id="media-target-buttons">
+                <!-- Dynamically generated computer selector tabs -->
+              </div>
+            </div>
+
+            <!-- Now Playing Hero Card -->
+            <div class="media-card">
+              <div class="media-vinyl-wrap">
+                <div class="media-vinyl" id="media-vinyl">
+                  <span class="vinyl-icon">🎵</span>
+                </div>
+              </div>
+
+              <div class="media-info">
+                <div class="media-status-badge" id="media-status-badge">STOPPED</div>
+                <div class="media-track-title" id="media-title">No Media Playing</div>
+                <div class="media-track-artist" id="media-artist">Open Spotify, YouTube, or Music Player</div>
+                <div class="media-track-album" id="media-album"></div>
+
+                <!-- Animated Equalizer Bars -->
+                <div class="equalizer-bars" id="equalizer-bars">
+                  <span class="eq-bar"></span>
+                  <span class="eq-bar"></span>
+                  <span class="eq-bar"></span>
+                  <span class="eq-bar"></span>
+                  <span class="eq-bar"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Transport Controls -->
+            <div class="media-controls-row">
+              <button class="media-ctrl-btn" onclick="sendMediaCmd('prev')" title="Previous Track">
+                <span>⏮</span>
+              </button>
+              <button class="media-ctrl-btn primary-play-btn" onclick="sendMediaCmd('play_pause')" id="media-play-btn" title="Play / Pause">
+                <span id="media-play-icon">▶</span>
+              </button>
+              <button class="media-ctrl-btn" onclick="sendMediaCmd('next')" title="Next Track">
+                <span>⏭</span>
+              </button>
+            </div>
+
+            <!-- Volume Slider & Quick Controls -->
+            <div class="volume-panel">
+              <div class="volume-header">
+                <span class="volume-title">Master Output Volume</span>
+                <span class="volume-val" id="volume-val-label">100%</span>
+              </div>
+              <div class="volume-slider-row">
+                <button class="vol-quick-btn" onclick="sendMediaCmd('mute')" id="vol-mute-btn">🔇</button>
+                <button class="vol-quick-btn" onclick="sendMediaCmd('vol_down')">🔉 -5%</button>
+                <div class="slider-container">
+                  <input type="range" min="0" max="100" value="100" class="volume-range-input" id="volume-range" oninput="onVolumeSliderChange(this.value)">
+                </div>
+                <button class="vol-quick-btn" onclick="sendMediaCmd('vol_up')">🔊 +5%</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             PAGE 4: WEATHER & CLIMATE HUB
+             ========================================== -->
+        <div class="carousel-page" id="page-weather">
+          <div class="weather-container">
+            <!-- Weather Hero Card -->
+            <div class="weather-hero-card">
+              <div class="weather-hero-left">
+                <div class="weather-icon-giant" id="weather-icon-giant">⛅</div>
+                <div class="weather-temp-wrap">
+                  <span class="weather-temp-number" id="weather-temp">--</span>
+                  <span class="weather-temp-unit">°C</span>
+                </div>
+              </div>
+              <div class="weather-hero-right">
+                <div class="weather-condition-text" id="weather-condition">Loading Weather...</div>
+                <div class="weather-feels-like" id="weather-feels">Feels like --°C</div>
+                <div class="weather-highlow" id="weather-highlow">H: --° • L: --°</div>
+                <div class="weather-location-chip" id="weather-location">📍 Payyanur, Kerala</div>
+              </div>
+            </div>
+
+            <!-- Hourly Forecast Strip -->
+            <div class="weather-section-title">Hourly Forecast (Next 12 Hours)</div>
+            <div class="hourly-forecast-row" id="hourly-forecast-row">
+              <!-- Rendered dynamically via app.js -->
+            </div>
+
+            <!-- 4 Environmental Metric Tiles -->
+            <div class="weather-metrics-grid">
+              <div class="weather-metric-tile">
+                <div class="metric-top"><span class="metric-icon">💧</span> Humidity</div>
+                <div class="metric-val" id="weather-humidity">--%</div>
+                <div class="metric-sub" id="weather-humidity-sub">Relative moisture</div>
+              </div>
+              <div class="weather-metric-tile">
+                <div class="metric-top"><span class="metric-icon">💨</span> Wind Speed</div>
+                <div class="metric-val" id="weather-wind">-- km/h</div>
+                <div class="metric-sub">Surface wind velocity</div>
+              </div>
+              <div class="weather-metric-tile">
+                <div class="metric-top"><span class="metric-icon">🌧️</span> Rain Probability</div>
+                <div class="metric-val" id="weather-rain">--%</div>
+                <div class="metric-sub">Precipitation forecast</div>
+              </div>
+              <div class="weather-metric-tile">
+                <div class="metric-top"><span class="metric-icon">🧭</span> Air Pressure</div>
+                <div class="metric-val" id="weather-pressure">1012 hPa</div>
+                <div class="metric-sub">Barometric pressure</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             PAGE 5: DESK POMODORO & FOCUS TIMER
+             ========================================== -->
+        <div class="carousel-page" id="page-timer">
+          <div class="timer-container">
+            <!-- Circular Progress Display -->
+            <div class="timer-circle-wrap">
+              <svg class="timer-svg" viewBox="0 0 240 240">
+                <circle class="timer-svg-bg" cx="120" cy="120" r="100"></circle>
+                <circle class="timer-svg-progress" id="timer-progress-ring" cx="120" cy="120" r="100"></circle>
+              </svg>
+              <div class="timer-display-inner">
+                <div class="timer-mode-tag" id="timer-mode-label">FOCUS SESSION</div>
+                <div class="timer-digits" id="timer-digits">25:00</div>
+                <div class="timer-status-hint" id="timer-hint">Tap Start to begin</div>
+              </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="timer-presets-row">
+              <button class="timer-preset-chip active" onclick="setTimerPreset(25, 'FOCUS SESSION', this)">🍅 25m Focus</button>
+              <button class="timer-preset-chip" onclick="setTimerPreset(5, 'SHORT BREAK', this)">☕ 5m Break</button>
+              <button class="timer-preset-chip" onclick="setTimerPreset(15, 'LONG BREAK', this)">🌴 15m Long Break</button>
+              <button class="timer-preset-chip" onclick="setTimerPreset(45, 'DEEP WORK', this)">⚡ 45m Deep Work</button>
+            </div>
+
+            <!-- Timer Action Buttons -->
+            <div class="timer-actions-row">
+              <button class="timer-btn timer-btn-reset" onclick="resetTimer()">↺ Reset</button>
+              <button class="timer-btn timer-btn-primary" id="timer-toggle-btn" onclick="toggleTimer()">▶ Start</button>
+              <button class="timer-btn timer-btn-sound" id="timer-sound-btn" onclick="toggleTimerSound()">🔔 Sound On</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
+  </div>
 
-    <!-- MAIN HOMEKIT GRID -->
-    <div class="home-content">
-      
-      <!-- Section: Room Accessories -->
-      <section class="home-section">
-        <div class="section-title-row">
-          <h2 class="section-heading">Accessories</h2>
-          <span class="section-status-sub" id="relays-active-count">0 of 3 On</span>
-        </div>
-        <div id="devices-grid" class="homekit-grid">
-          <!-- Rendered dynamically via app.js -->
-        </div>
-      </section>
-
-      <!-- Section: Workstations & PCs -->
-      <section class="home-section">
-        <div class="section-title-row">
-          <h2 class="section-heading">Workstations</h2>
-        </div>
-        <div id="computers-grid" class="workstations-grid">
-          <!-- Rendered dynamically via app.js -->
-        </div>
-      </section>
-
+  <!-- STANDBY / NIGHT CLOCK OVERLAY (Apple Watch Nightstand Mode) -->
+  <div id="standby-overlay" class="standby-overlay" onclick="exitStandbyMode()">
+    <div class="standby-content">
+      <div class="standby-clock" id="standby-time">12:00</div>
+      <div class="standby-date" id="standby-date">Saturday, October 3</div>
+      <div class="standby-hint">Tap anywhere to wake dock</div>
     </div>
   </div>
 
@@ -143,6 +361,7 @@
         <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
         <button class="btn-save" onclick="saveSettings()">Save & Reconnect</button>
       </div>
+    </div>
   </div>
 
   <!-- Fullscreen / Kiosk Instructions Modal -->
