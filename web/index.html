@@ -12,7 +12,7 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#000000">
   
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=1791034515">
 </head>
 <body>
   <div class="home-app">
@@ -141,38 +141,41 @@
              ========================================== -->
         <div class="carousel-page" id="page-media">
           <div class="media-container">
-            <!-- Machine Target Selector -->
-            <div class="media-target-row">
-              <span class="media-target-label">Target Workstation:</span>
-              <div class="media-target-buttons" id="media-target-buttons">
-                <!-- Dynamically generated computer selector tabs -->
-              </div>
-            </div>
-
-            <!-- Now Playing Hero Card -->
-            <div class="media-card">
-              <div class="media-vinyl-wrap">
-                <div class="media-vinyl" id="media-vinyl">
-                  <div class="vinyl-center" id="vinyl-center">
-                    <img id="media-art-img" class="vinyl-art-img" src="" alt="Album Art" style="display: none;" onerror="onArtError()">
-                    <span class="vinyl-icon" id="vinyl-icon-fallback">🎵</span>
-                  </div>
+            <!-- Top Header & Hero Card Group -->
+            <div class="media-top-group">
+              <!-- Machine Target Selector -->
+              <div class="media-target-row">
+                <span class="media-target-label">Target Workstation:</span>
+                <div class="media-target-buttons" id="media-target-buttons">
+                  <!-- Dynamically generated computer selector tabs -->
                 </div>
               </div>
 
-              <div class="media-info">
-                <div class="media-status-badge" id="media-status-badge">STOPPED</div>
-                <div class="media-track-title" id="media-title">No Media Playing</div>
-                <div class="media-track-artist" id="media-artist">Open Spotify, YouTube, or Music Player</div>
-                <div class="media-track-album" id="media-album"></div>
+              <!-- Now Playing Hero Card -->
+              <div class="media-card">
+                <div class="media-vinyl-wrap">
+                  <div class="media-vinyl" id="media-vinyl">
+                    <div class="vinyl-center" id="vinyl-center">
+                      <img id="media-art-img" class="vinyl-art-img" src="" alt="Album Art" style="display: none;" onerror="onArtError()">
+                      <span class="vinyl-icon" id="vinyl-icon-fallback">🎵</span>
+                    </div>
+                  </div>
+                </div>
 
-                <!-- Animated Equalizer Bars -->
-                <div class="equalizer-bars" id="equalizer-bars">
-                  <span class="eq-bar"></span>
-                  <span class="eq-bar"></span>
-                  <span class="eq-bar"></span>
-                  <span class="eq-bar"></span>
-                  <span class="eq-bar"></span>
+                <div class="media-info">
+                  <div class="media-status-badge" id="media-status-badge">STOPPED</div>
+                  <div class="media-track-title" id="media-title">No Media Playing</div>
+                  <div class="media-track-artist" id="media-artist">Open Spotify, YouTube, or Music Player</div>
+                  <div class="media-track-album" id="media-album"></div>
+
+                  <!-- Animated Equalizer Bars -->
+                  <div class="equalizer-bars" id="equalizer-bars">
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -575,6 +578,6 @@
   <!-- Scripts -->
   <script src="paho-mqtt.js"></script>
   <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=1791034515"></script>
 </body>
 </html>

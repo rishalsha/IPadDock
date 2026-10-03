@@ -14,6 +14,10 @@ cat <<EOF > "$DIR/web/version.json"
 }
 EOF
 
+echo "[*] Updating cache busting queries in index.html..."
+sed -i -E "s/style\.css(\?v=[0-9]+)?/style.css?v=${TIMESTAMP}/g" "$DIR/web/index.html"
+sed -i -E "s/src=\"app\.js(\?v=[0-9]+)?\"/src=\"app.js?v=${TIMESTAMP}\"/g" "$DIR/web/index.html"
+
 echo "[*] Syncing web files to Azure VPS (azure-server)..."
 scp "$DIR"/web/* azure-server:/home/rishal/IPadDock/web/
 

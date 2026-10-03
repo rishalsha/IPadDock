@@ -32,7 +32,7 @@ var DOCK_CONFIG = {
       id: 'room_fan',
       name: 'Fan',
       type: 'fan',
-      icon: '💨',
+      icon: '𖣘',
       topic: 'room_light',
       channel: 'POWER1',
       powerState: 'OFF'
@@ -50,7 +50,7 @@ var DOCK_CONFIG = {
       id: 'room_bulb',
       name: 'Bulb',
       type: 'switch',
-      icon: '🏮',
+      icon: '💡',
       topic: 'room_light',
       channel: 'POWER3',
       powerState: 'OFF'
