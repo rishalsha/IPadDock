@@ -1282,10 +1282,10 @@ html, body {
    PAGE 4: STREAM DECK & WORKSTATION ACTIONS
    ------------------------------------------------------------- */
 .deck-container {
-  max-width: 960px;
+  max-width: 980px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 4px;
+  padding: 4px 6px 14px 6px;
 }
 
 .deck-target-bar {
@@ -1296,24 +1296,24 @@ html, body {
   -webkit-justify-content: space-between;
   justify-content: space-between;
   background: rgba(255, 255, 255, 0.06);
-  padding: 4px 12px;
-  border-radius: 14px;
+  padding: 7px 16px;
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .deck-target-status {
-  font-size: 0.80rem;
+  font-size: 0.84rem;
   color: #30d158;
   font-weight: 600;
 }
 
 .deck-section {
-  margin-bottom: 8px;
+  margin-bottom: 14px;
 }
 
 .compact-title {
-  margin-bottom: 4px !important;
+  margin-bottom: 8px !important;
 }
 
 /* Quick Apps Deck Grid (4x2 Horizontal Tiles with Large Icons) */
@@ -1322,16 +1322,16 @@ html, body {
   display: flex;
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin: -3px;
+  margin: -5px;
 }
 
 .app-tile {
-  width: calc(25% - 6px);
-  margin: 3px;
+  width: calc(25% - 10px);
+  margin: 5px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 14px;
-  padding: 7px 10px;
+  border-radius: 16px;
+  padding: 12px 14px;
   color: #ffffff;
   cursor: pointer;
   -webkit-transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -1351,10 +1351,10 @@ html, body {
 }
 
 .app-icon-wrap {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-  border-radius: 11px;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  border-radius: 13px;
   background: rgba(255, 255, 255, 0.08);
   display: -webkit-flex;
   display: flex;
@@ -1362,13 +1362,13 @@ html, body {
   align-items: center;
   -webkit-justify-content: center;
   justify-content: center;
-  margin-right: 10px;
+  margin-right: 12px;
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
 }
 
 .app-tile-icon {
-  font-size: 2.1rem;
+  font-size: 2.35rem;
   line-height: 1;
 }
 
@@ -1381,7 +1381,7 @@ html, body {
 }
 
 .app-tile-name {
-  font-size: 0.90rem;
+  font-size: 1.02rem;
   font-weight: 700;
   color: #ffffff;
   line-height: 1.2;
@@ -1391,10 +1391,10 @@ html, body {
 }
 
 .app-tile-desc {
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   color: #8e8e93;
   line-height: 1.2;
-  margin-top: 1px;
+  margin-top: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1416,16 +1416,16 @@ html, body {
   display: flex;
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin: -3px;
+  margin: -5px;
 }
 
 .deck-tile {
-  width: calc(16.666% - 6px);
-  margin: 3px;
+  width: calc(16.666% - 10px);
+  margin: 5px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 14px;
-  padding: 8px;
+  border-radius: 16px;
+  padding: 12px 10px;
   text-align: left;
   color: #ffffff;
   cursor: pointer;
@@ -1447,17 +1447,17 @@ html, body {
   align-items: center;
   -webkit-justify-content: space-between;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .deck-icon {
-  font-size: 1.45rem;
+  font-size: 1.65rem;
 }
 
 .deck-badge {
-  font-size: 0.60rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 3px 7px;
   border-radius: 8px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -1499,29 +1499,29 @@ html, body {
 }
 
 .deck-title {
-  font-size: 0.84rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: #ffffff;
-  margin-bottom: 1px;
+  margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .deck-sub {
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   color: #8e8e93;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Teleport Card (Compact 2-Column Horizontal Layout) */
+/* Teleport Card (2-Column Horizontal Layout) */
 .teleport-card.compact-card {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 16px;
-  padding: 8px 10px;
+  border-radius: 18px;
+  padding: 14px 18px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
 }
 
@@ -1535,7 +1535,7 @@ html, body {
 .teleport-left-pane {
   -webkit-flex: 1;
   flex: 1;
-  margin-right: 10px;
+  margin-right: 14px;
   display: -webkit-flex;
   display: flex;
 }
@@ -1543,13 +1543,14 @@ html, body {
 .teleport-textarea.compact-textarea {
   width: 100%;
   height: 100%;
-  min-height: 74px;
+  min-height: 120px;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 12px;
-  padding: 8px 10px;
+  border-radius: 14px;
+  padding: 12px 14px;
   color: #ffffff;
-  font-size: 0.88rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   resize: none;
   box-sizing: border-box;
@@ -1563,8 +1564,8 @@ html, body {
 }
 
 .teleport-right-pane {
-  -webkit-flex: 1.4;
-  flex: 1.4;
+  -webkit-flex: 1.35;
+  flex: 1.35;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
@@ -1580,11 +1581,11 @@ html, body {
   align-items: center;
   -webkit-justify-content: space-between;
   justify-content: space-between;
-  padding: 2px 0;
+  padding: 5px 0;
 }
 
 .machine-row-label {
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: #e5e5ea;
   white-space: nowrap;
@@ -1596,15 +1597,15 @@ html, body {
 }
 
 .teleport-btn.machine-btn {
-  padding: 5px 12px;
-  font-size: 0.78rem;
+  padding: 8px 16px;
+  font-size: 0.85rem;
   font-weight: 600;
-  margin-left: 6px;
+  margin-left: 8px;
   margin-right: 0;
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
+  border-radius: 11px;
   cursor: pointer;
   -webkit-transition: all 0.2s;
   transition: all 0.2s;
@@ -1623,19 +1624,19 @@ html, body {
 .teleport-actions-row.compact-actions {
   display: -webkit-flex;
   display: flex;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .teleport-btn.sync-btn {
   -webkit-flex: 1.3;
   flex: 1.3;
-  padding: 5px 8px;
-  font-size: 0.75rem;
+  padding: 8px 10px;
+  font-size: 0.82rem;
   font-weight: 600;
-  border-radius: 10px;
+  border-radius: 11px;
   border: none;
   cursor: pointer;
-  margin-right: 5px;
+  margin-right: 6px;
   background: -webkit-linear-gradient(135deg, #0a84ff 0%, #5e5ce6 100%);
   background: linear-gradient(135deg, #0a84ff 0%, #5e5ce6 100%);
   color: #ffffff;
@@ -1647,27 +1648,27 @@ html, body {
 .teleport-btn.secondary {
   -webkit-flex: 1;
   flex: 1;
-  padding: 5px 8px;
-  font-size: 0.75rem;
+  padding: 8px 10px;
+  font-size: 0.82rem;
   font-weight: 600;
-  border-radius: 10px;
+  border-radius: 11px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
   cursor: pointer;
-  margin-right: 5px;
+  margin-right: 6px;
   -webkit-transition: all 0.2s;
   transition: all 0.2s;
 }
 
 .teleport-btn.clear {
-  -webkit-flex: 0.6;
-  flex: 0.6;
-  padding: 5px 8px;
-  font-size: 0.75rem;
+  -webkit-flex: 0.7;
+  flex: 0.7;
+  padding: 8px 10px;
+  font-size: 0.82rem;
   font-weight: 600;
-  border-radius: 10px;
-  border: none;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.08);
   color: #8e8e93;
   cursor: pointer;
