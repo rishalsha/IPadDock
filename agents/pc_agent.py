@@ -129,9 +129,85 @@ def execute_power_action(action: str):
 _last_cpu_time = 0.0
 _last_cpu_total = 0.0
 _last_cpu_idle = 0.0
+_static_hardware = None
+
+def get_static_hardware():
+    global _static_hardware
+    if _static_hardware is not None:
+        return _static_hardware
+
+    cpu_model = "Standard Processor"
+    cores = os.cpu_count() or 1
+    threads = os.cpu_count() or 1
+    cache_l3 = ""
+    try:
+        with open("/proc/cpuinfo", "r") as f:
+            for line in f:
+                if "model name" in line and cpu_model == "Standard Processor":
+                    cpu_model = line.split(":")[1].strip()
+    except Exception:
+        pass
+    try:
+        out = subprocess.check_output(["lscpu"], text=True, stderr=subprocess.DEVNULL)
+        for line in out.splitlines():
+            if "Core(s) per socket:" in line:
+                cores = int(line.split(":")[1].strip())
+            if "L3 cache:" in line:
+                cache_l3 = line.split(":")[1].strip()
+    except Exception:
+        pass
+
+    def read_sys(p):
+        try:
+            with open(p, "r") as f:
+                return f.read().strip()
+        except Exception:
+            return ""
+
+    mb_board = read_sys("/sys/class/dmi/id/board_name") or read_sys("/sys/class/dmi/id/product_name")
+    mb_vendor = read_sys("/sys/class/dmi/id/board_vendor") or read_sys("/sys/class/dmi/id/sys_vendor")
+    mb_bios = read_sys("/sys/class/dmi/id/bios_version")
+
+    gpu_name = ""
+    if shutil.which("nvidia-smi"):
+        try:
+            out = subprocess.check_output(
+                ["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"],
+                text=True, stderr=subprocess.DEVNULL
+            ).strip().splitlines()
+            if out:
+                gpu_name = out[0].strip()
+        except Exception:
+            pass
+    if not gpu_name:
+        try:
+            out = subprocess.check_output(["lspci"], text=True, stderr=subprocess.DEVNULL)
+            for line in out.splitlines():
+                if "VGA compatible controller" in line or "3D controller" in line:
+                    parts = line.split(":", 2)
+                    gpu_name = parts[2].strip() if len(parts) > 2 else line
+                    break
+        except Exception:
+            pass
+
+    _static_hardware = {
+        "cpu_model": cpu_model,
+        "cores": cores,
+        "threads": threads,
+        "arch": platform.machine(),
+        "cache_l3": cache_l3,
+        "mb_board": mb_board,
+        "mb_vendor": mb_vendor,
+        "mb_bios": mb_bios,
+        "kernel": platform.release(),
+        "default_gpu_name": gpu_name or "Integrated GPU",
+        "has_nvidia": bool(shutil.which("nvidia-smi"))
+    }
+    return _static_hardware
+
 
 def get_telemetry():
-    """Reads CPU, RAM, Temperature, and Uptime metrics."""
+    """Reads CPU, RAM, GPU, Disks, Thermals, Motherboard, and Network metrics."""
     global _last_cpu_time, _last_cpu_total, _last_cpu_idle
     cpu_pct = 0.0
     ram_pct = 0.0
@@ -139,6 +215,18 @@ def get_telemetry():
     ram_total_gb = 0.0
     temp_c = 0.0
     uptime_str = "0m"
+
+    static_hw = get_static_hardware() if IS_LINUX else {}
+    freq_mhz = 0
+    governor = ""
+    mem_info = {"total_mb": 0, "used_mb": 0, "free_mb": 0, "cached_mb": 0, "ram_pct": 0,
+                "swap_total_mb": 0, "swap_used_mb": 0, "swap_pct": 0}
+    gpu_info = {"name": static_hw.get("default_gpu_name", "GPU"), "driver": "",
+                "vram_total_mb": 0, "vram_used_mb": 0, "vram_pct": 0, "gpu_pct": 0, "temp_c": 0}
+    storage_info = {"mount": "/", "used_gb": 0.0, "total_gb": 0.0, "free_gb": 0.0, "pct": 0.0}
+    displays = []
+    bat_info = {"has_battery": False, "pct": 100, "status": "AC"}
+    net_info = {"ip": "", "iface": "", "type": "LAN"}
 
     if IS_LINUX:
         # 1. CPU Usage from /proc/stat
@@ -157,7 +245,26 @@ def get_telemetry():
         except Exception:
             pass
 
-        # 2. RAM from /proc/meminfo
+        # CPU Freq & Governor
+        try:
+            with open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq", "r") as f:
+                freq_mhz = round(int(f.read().strip()) / 1000)
+        except Exception:
+            try:
+                with open("/proc/cpuinfo", "r") as f:
+                    for line in f:
+                        if "cpu MHz" in line:
+                            freq_mhz = round(float(line.split(":")[1].strip()))
+                            break
+            except Exception:
+                pass
+        try:
+            with open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", "r") as f:
+                governor = f.read().strip()
+        except Exception:
+            pass
+
+        # 2. RAM & Swap from /proc/meminfo
         try:
             mem = {}
             with open("/proc/meminfo", "r") as f:
@@ -168,13 +275,115 @@ def get_telemetry():
             total_kb = mem.get("MemTotal", 1)
             avail_kb = mem.get("MemAvailable", mem.get("MemFree", 0))
             used_kb = total_kb - avail_kb
+            cached_kb = mem.get("Cached", 0) + mem.get("Buffers", 0)
             ram_pct = round((used_kb / total_kb) * 100.0, 1)
             ram_used_gb = round(used_kb / (1024.0 * 1024.0), 1)
             ram_total_gb = round(total_kb / (1024.0 * 1024.0), 1)
+
+            swap_total_kb = mem.get("SwapTotal", 0)
+            swap_free_kb = mem.get("SwapFree", 0)
+            swap_used_kb = swap_total_kb - swap_free_kb
+            swap_pct = round((swap_used_kb / max(1, swap_total_kb)) * 100.0, 1) if swap_total_kb > 0 else 0.0
+
+            mem_info = {
+                "total_mb": round(total_kb / 1024),
+                "used_mb": round(used_kb / 1024),
+                "free_mb": round(avail_kb / 1024),
+                "cached_mb": round(cached_kb / 1024),
+                "ram_pct": ram_pct,
+                "swap_total_mb": round(swap_total_kb / 1024),
+                "swap_used_mb": round(swap_used_kb / 1024),
+                "swap_pct": swap_pct
+            }
         except Exception:
             pass
 
-        # 3. Temperature from /sys/class/thermal or /sys/class/hwmon
+        # 3. GPU (nvidia-smi or fallback)
+        if static_hw.get("has_nvidia"):
+            try:
+                out = subprocess.check_output(
+                    ["nvidia-smi", "--query-gpu=name,driver_version,memory.total,memory.used,utilization.gpu,temperature.gpu",
+                     "--format=csv,noheader,nounits"],
+                    text=True, stderr=subprocess.DEVNULL
+                ).strip().splitlines()
+                if out:
+                    p = [x.strip() for x in out[0].split(",")]
+                    vram_tot = int(float(p[2]))
+                    vram_usd = int(float(p[3]))
+                    gpu_info = {
+                        "name": p[0],
+                        "driver": p[1],
+                        "vram_total_mb": vram_tot,
+                        "vram_used_mb": vram_usd,
+                        "vram_pct": round((vram_usd / max(1, vram_tot)) * 100.0, 1),
+                        "gpu_pct": int(float(p[4])),
+                        "temp_c": int(float(p[5]))
+                    }
+            except Exception:
+                pass
+
+        # 4. Storage & Disks (Root /)
+        try:
+            st = os.statvfs("/")
+            tot_gb = round((st.f_blocks * st.f_frsize) / (1024.0 ** 3), 1)
+            fre_gb = round((st.f_bavail * st.f_frsize) / (1024.0 ** 3), 1)
+            usd_gb = round(tot_gb - fre_gb, 1)
+            storage_info = {
+                "mount": "/",
+                "used_gb": usd_gb,
+                "total_gb": tot_gb,
+                "free_gb": fre_gb,
+                "pct": round((usd_gb / max(0.1, tot_gb)) * 100.0, 1)
+            }
+        except Exception:
+            pass
+
+        # 5. Displays (hyprctl)
+        if shutil.which("hyprctl"):
+            try:
+                out = subprocess.check_output(["hyprctl", "monitors", "-j"], text=True, stderr=subprocess.DEVNULL)
+                for m in json.loads(out):
+                    w = m.get("width", 0)
+                    h = m.get("height", 0)
+                    hz = round(m.get("refreshRate", 60))
+                    desc = m.get("description", m.get("name", ""))
+                    displays.append(f"{w}x{h}@{hz}Hz ({desc})")
+            except Exception:
+                pass
+
+        # 6. Battery & Power
+        for b in ["BAT0", "BAT1"]:
+            bp = f"/sys/class/power_supply/{b}"
+            if os.path.exists(bp):
+                bat_info["has_battery"] = True
+                try:
+                    with open(f"{bp}/capacity", "r") as f:
+                        bat_info["pct"] = int(f.read().strip())
+                    with open(f"{bp}/status", "r") as f:
+                        bat_info["status"] = f.read().strip()
+                except Exception:
+                    pass
+                break
+
+        # 7. Network Hardware
+        try:
+            out = subprocess.check_output(["ip", "-j", "addr"], text=True, stderr=subprocess.DEVNULL)
+            for iface in json.loads(out):
+                name = iface.get("ifname", "")
+                if name == "lo" or "docker" in name or "veth" in name:
+                    continue
+                for a in iface.get("addr_info", []):
+                    if a.get("family") == "inet":
+                        net_info["ip"] = a.get("local")
+                        net_info["iface"] = name
+                        net_info["type"] = "WiFi" if name.startswith("wl") else "Ethernet"
+                        break
+                if net_info["ip"]:
+                    break
+        except Exception:
+            pass
+
+        # 8. Temperature from /sys/class/thermal or /sys/class/hwmon
         thermal_candidates = [
             "/sys/class/thermal/thermal_zone0/temp",
             "/sys/class/thermal/thermal_zone1/temp",
@@ -196,7 +405,7 @@ def get_telemetry():
                 except Exception:
                     pass
 
-        # 4. System Uptime
+        # 9. System Uptime
         try:
             with open("/proc/uptime", "r") as f:
                 uptime_sec = int(float(f.readline().split()[0]))
@@ -229,6 +438,27 @@ def get_telemetry():
         "temp_c": temp_c,
         "uptime": uptime_str,
         "timestamp": int(time.time()),
+        "cpu": {
+            "model": static_hw.get("cpu_model", "Processor"),
+            "cores": static_hw.get("cores", 1),
+            "threads": static_hw.get("threads", 1),
+            "arch": static_hw.get("arch", "x86_64"),
+            "governor": governor,
+            "freq_mhz": freq_mhz,
+            "cache_l3": static_hw.get("cache_l3", "")
+        },
+        "mem": mem_info,
+        "gpu": gpu_info,
+        "storage": storage_info,
+        "displays": displays,
+        "motherboard": {
+            "board": static_hw.get("mb_board", ""),
+            "vendor": static_hw.get("mb_vendor", ""),
+            "bios": static_hw.get("mb_bios", ""),
+            "kernel": static_hw.get("kernel", "")
+        },
+        "power": bat_info,
+        "network": net_info
     }
 
 

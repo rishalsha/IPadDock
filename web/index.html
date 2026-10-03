@@ -135,12 +135,17 @@
              ========================================== -->
         <div class="carousel-page" id="page-telemetry">
           <div class="hud-container">
-            <div class="section-title-row" style="margin-bottom: 12px;">
-              <h2 class="section-heading">Battle Station Telemetry</h2>
+            <!-- Machine Target Selector -->
+            <div class="hud-target-bar">
+              <span class="media-target-label">Target Workstation:</span>
+              <div class="media-target-buttons" id="hud-target-buttons">
+                <!-- Dynamically generated computer selector tabs -->
+              </div>
               <span class="hud-live-tag"><span class="hud-live-pulse"></span> LIVE HUD</span>
             </div>
 
-            <div class="hud-grid" id="hud-grid">
+            <!-- Dynamic Cockpit Telemetry Content -->
+            <div id="hud-content-area" class="hud-content-area">
               <!-- Rendered dynamically via renderHud() in app.js -->
             </div>
           </div>

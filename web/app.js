@@ -10,9 +10,10 @@ var currentPage = 0;
 var totalPages = 5;
 var pageTitles = ['Home', 'Battle Station HUD', 'Media Studio', 'Stream Deck', 'Desk Focus Timer'];
 
-// Media & Deck Targets
+// Media, Deck & HUD Targets
 var activeMediaTarget = 'work_laptop';
 var activeDeckTarget = 'desktop_pc';
+var activeHudTarget = 'desktop_pc';
 
 // Pomodoro Timer State
 var timerTotalSeconds = 25 * 60;
@@ -313,75 +314,336 @@ function updateActiveCounters() {
 // -------------------------------------------------------------
 // PAGE 2: BATTLE STATION HUD (TELEMETRY)
 // -------------------------------------------------------------
-function renderHud() {
-  var container = document.getElementById('hud-grid');
+function renderHudTargets() {
+  var container = document.getElementById('hud-target-buttons');
   if (!container) return;
   container.innerHTML = '';
 
   for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
     var comp = DOCK_CONFIG.computers[i];
-    var card = document.createElement('div');
-    card.className = 'hud-card';
-    card.id = 'hud-card-' + comp.id;
-
-    var telem = comp.telemetry || { cpu_pct: 0, ram_pct: 0, ram_used_gb: 0, ram_total_gb: 0, temp_c: 0, uptime: '0m' };
-    var isOnline = comp.state === 'online';
-    var badgeClass = isOnline ? 'online' : (comp.state === 'sleep' ? 'sleep' : 'offline');
-
-    var cpuWidth = isOnline ? Math.max(0, Math.min(100, telem.cpu_pct)) : 0;
-    var ramWidth = isOnline ? Math.max(0, Math.min(100, telem.ram_pct)) : 0;
-    var cpuWarning = cpuWidth >= 80 ? ' warning' : '';
-    var ramWarning = ramWidth >= 85 ? ' warning' : '';
-
-    var html = '<div class="hud-card-inner">' +
-      '<div class="hud-header">' +
-      '<div class="hud-title-wrap">' +
-      '<span class="hud-icon">' + comp.icon + '</span>' +
-      '<span class="hud-name">' + comp.name + '</span>' +
-      '</div>' +
-      '<span class="ws-status-badge ' + badgeClass + '" id="hud-badge-' + comp.id + '">' + comp.state.toUpperCase() + '</span>' +
-      '</div>' +
-
-      '<div class="hud-metrics-list">' +
-      // CPU
-      '<div class="hud-metric-item">' +
-      '<div class="hud-metric-label-row">' +
-      '<span>CPU Usage</span>' +
-      '<span class="hud-metric-val" id="hud-cpu-val-' + comp.id + '">' + (isOnline ? telem.cpu_pct + '%' : '--') + '</span>' +
-      '</div>' +
-      '<div class="hud-bar-track">' +
-      '<div class="hud-bar-fill' + cpuWarning + '" id="hud-cpu-bar-' + comp.id + '" style="width:' + cpuWidth + '%;"></div>' +
-      '</div>' +
-      '</div>' +
-
-      // RAM
-      '<div class="hud-metric-item">' +
-      '<div class="hud-metric-label-row">' +
-      '<span>Memory (RAM)</span>' +
-      '<span class="hud-metric-val" id="hud-ram-val-' + comp.id + '">' + (isOnline ? telem.ram_used_gb + ' / ' + telem.ram_total_gb + ' GB (' + telem.ram_pct + '%)' : '--') + '</span>' +
-      '</div>' +
-      '<div class="hud-bar-track">' +
-      '<div class="hud-bar-fill' + ramWarning + '" id="hud-ram-bar-' + comp.id + '" style="width:' + ramWidth + '%;"></div>' +
-      '</div>' +
-      '</div>' +
-      '</div>' +
-
-      // Detail Pills
-      '<div class="hud-badge-grid">' +
-      '<div class="hud-badge-item">' +
-      '<div class="hud-badge-title">🌡️ Core Temp</div>' +
-      '<div class="hud-badge-val" id="hud-temp-val-' + comp.id + '">' + (isOnline && telem.temp_c > 0 ? telem.temp_c + '°C' : '--') + '</div>' +
-      '</div>' +
-      '<div class="hud-badge-item">' +
-      '<div class="hud-badge-title">⏱️ Uptime</div>' +
-      '<div class="hud-badge-val" id="hud-uptime-val-' + comp.id + '">' + (isOnline ? telem.uptime : '--') + '</div>' +
-      '</div>' +
-      '</div>' +
-      '</div>';
-
-    card.innerHTML = html;
-    container.appendChild(card);
+    var btn = document.createElement('button');
+    btn.className = 'media-tab-btn' + (comp.id === activeHudTarget ? ' active' : '');
+    btn.id = 'hud-target-' + comp.id;
+    btn.onclick = (function (id) {
+      return function () { selectHudTarget(id); };
+    })(comp.id);
+    btn.innerHTML = comp.icon + ' ' + comp.name;
+    container.appendChild(btn);
   }
+}
+
+function selectHudTarget(compId) {
+  activeHudTarget = compId;
+  renderHudTargets();
+  renderHud();
+}
+
+function getRingDashOffset(pct) {
+  var p = Math.max(0, Math.min(100, pct || 0));
+  var perimeter = 194.78; // 2 * PI * 31 (r=31)
+  return perimeter * (1 - p / 100);
+}
+
+function renderHud() {
+  renderHudTargets();
+  var container = document.getElementById('hud-content-area');
+  if (!container) return;
+
+  var comp = null;
+  for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
+    if (DOCK_CONFIG.computers[i].id === activeHudTarget) {
+      comp = DOCK_CONFIG.computers[i];
+      break;
+    }
+  }
+  if (!comp && DOCK_CONFIG.computers.length > 0) {
+    comp = DOCK_CONFIG.computers[0];
+    activeHudTarget = comp.id;
+  }
+  if (!comp) return;
+
+  var telem = comp.telemetry || {
+    cpu_pct: 0,
+    ram_pct: 0,
+    ram_used_gb: 0,
+    ram_total_gb: 0,
+    temp_c: 0,
+    uptime: '0m',
+    cpu: { model: 'Processor', cores: 1, threads: 1, arch: 'x86_64', governor: 'powersave', freq_mhz: 0, cache_l3: '' },
+    mem: { total_mb: 0, used_mb: 0, free_mb: 0, cached_mb: 0, ram_pct: 0, swap_total_mb: 0, swap_used_mb: 0, swap_pct: 0 },
+    gpu: { name: 'GPU', driver: '', vram_total_mb: 0, vram_used_mb: 0, vram_pct: 0, gpu_pct: 0, temp_c: 0 },
+    storage: { mount: '/', used_gb: 0, total_gb: 0, free_gb: 0, pct: 0 },
+    displays: [],
+    motherboard: { board: '', vendor: '', bios: '', kernel: '' },
+    power: { has_battery: false, pct: 100, status: 'AC' },
+    network: { ip: '', iface: '', type: 'LAN' }
+  };
+
+  var isOnline = comp.state === 'online';
+  var badgeClass = isOnline ? 'online' : (comp.state === 'sleep' ? 'sleep' : 'offline');
+
+  // Gauges
+  var cpuPct = isOnline ? Math.max(0, Math.min(100, telem.cpu_pct || 0)) : 0;
+  var ramPct = isOnline ? Math.max(0, Math.min(100, (telem.mem && telem.mem.ram_pct !== undefined ? telem.mem.ram_pct : telem.ram_pct) || 0)) : 0;
+  var gpuPct = isOnline ? Math.max(0, Math.min(100, (telem.gpu && telem.gpu.gpu_pct !== undefined ? telem.gpu.gpu_pct : (telem.gpu ? telem.gpu.vram_pct : 0)) || 0)) : 0;
+  var tempVal = isOnline ? (telem.temp_c || 0) : 0;
+  var tempPct = Math.min(100, Math.round((tempVal / 100) * 100));
+
+  var isLaptop = telem.power && telem.power.has_battery;
+  var fifthPct = isLaptop ? (telem.power.pct || 100) : (telem.storage ? telem.storage.pct || 0 : 0);
+  var fifthLabel = isLaptop ? 'BATTERY' : 'ROOT SSD';
+  var fifthNum = isOnline ? (fifthPct + '%') : '--';
+  var fifthSub = isLaptop ? (telem.power.status || 'AC') : (telem.storage ? telem.storage.used_gb + '/' + telem.storage.total_gb + ' GB' : '--');
+  var fifthClass = isLaptop ? 'ring-bat' : 'ring-storage';
+
+  var perimeter = 194.78;
+  var cpuOffset = getRingDashOffset(cpuPct);
+  var ramOffset = getRingDashOffset(ramPct);
+  var gpuOffset = getRingDashOffset(gpuPct);
+  var tempOffset = getRingDashOffset(tempPct);
+  var fifthOffset = getRingDashOffset(fifthPct);
+
+  var cpuFreq = telem.cpu && telem.cpu.freq_mhz ? telem.cpu.freq_mhz + ' MHz' : cpuPct + '%';
+  var ramUsedTotal = telem.ram_used_gb + ' / ' + telem.ram_total_gb + ' GB';
+  var gpuNameShort = telem.gpu && telem.gpu.name ? telem.gpu.name.replace('NVIDIA GeForce ', '').replace(' Corporation', '').replace(' [Raptor Lake-P [UHD Graphics]]', ' UHD') : 'GPU';
+  if (gpuNameShort.length > 16) gpuNameShort = gpuNameShort.substring(0, 16);
+  var tempSub = telem.gpu && telem.gpu.temp_c ? 'GPU: ' + telem.gpu.temp_c + '°C' : 'Optimal';
+
+  var html = '<div class="hud-cockpit">' +
+    // Station Banner
+    '<div class="hud-station-banner">' +
+    '<div class="hud-station-left">' +
+    '<span class="hud-station-icon">' + comp.icon + '</span>' +
+    '<span class="hud-station-name">' + comp.name + '</span>' +
+    '<span class="ws-status-badge ' + badgeClass + '" id="hud-badge-' + comp.id + '">' + comp.state.toUpperCase() + '</span>' +
+    (telem.network && telem.network.ip ? '<span class="hud-station-ip">' + telem.network.ip + '</span>' : '') +
+    '</div>' +
+    '<div class="hud-station-right">' +
+    (telem.motherboard && telem.motherboard.board ? '<span class="hud-pill">' + telem.motherboard.board + '</span>' : '') +
+    (telem.motherboard && telem.motherboard.kernel ? '<span class="hud-pill">Linux ' + telem.motherboard.kernel.split('-')[0] + '</span>' : '') +
+    '<span class="hud-pill">⏱️ ' + (isOnline ? telem.uptime : '--') + '</span>' +
+    '</div>' +
+    '</div>' +
+
+    // Row 1: 5 Circular SVG Gauges
+    '<div class="hud-rings-row">' +
+    // 1. CPU Ring
+    '<div class="hud-ring-card">' +
+    '<div class="hud-ring-svg-wrap">' +
+    '<svg class="hud-ring-svg" viewBox="0 0 78 78">' +
+    '<circle class="hud-ring-bg" cx="39" cy="39" r="31"></circle>' +
+    '<circle class="hud-ring-fill ring-cpu" cx="39" cy="39" r="31" stroke-dasharray="' + perimeter + '" stroke-dashoffset="' + cpuOffset + '"></circle>' +
+    '</svg>' +
+    '<div class="hud-ring-center">' +
+    '<div class="hud-ring-num">' + (isOnline ? cpuPct + '%' : '--') + '</div>' +
+    '<div class="hud-ring-lbl">CPU LOAD</div>' +
+    '</div>' +
+    '</div>' +
+    '<div class="hud-ring-sub">' + (isOnline ? cpuFreq : '--') + '</div>' +
+    '</div>' +
+
+    // 2. RAM Ring
+    '<div class="hud-ring-card">' +
+    '<div class="hud-ring-svg-wrap">' +
+    '<svg class="hud-ring-svg" viewBox="0 0 78 78">' +
+    '<circle class="hud-ring-bg" cx="39" cy="39" r="31"></circle>' +
+    '<circle class="hud-ring-fill ring-ram" cx="39" cy="39" r="31" stroke-dasharray="' + perimeter + '" stroke-dashoffset="' + ramOffset + '"></circle>' +
+    '</svg>' +
+    '<div class="hud-ring-center">' +
+    '<div class="hud-ring-num">' + (isOnline ? ramPct + '%' : '--') + '</div>' +
+    '<div class="hud-ring-lbl">MEMORY</div>' +
+    '</div>' +
+    '</div>' +
+    '<div class="hud-ring-sub">' + (isOnline ? ramUsedTotal : '--') + '</div>' +
+    '</div>' +
+
+    // 3. GPU Ring
+    '<div class="hud-ring-card">' +
+    '<div class="hud-ring-svg-wrap">' +
+    '<svg class="hud-ring-svg" viewBox="0 0 78 78">' +
+    '<circle class="hud-ring-bg" cx="39" cy="39" r="31"></circle>' +
+    '<circle class="hud-ring-fill ring-gpu" cx="39" cy="39" r="31" stroke-dasharray="' + perimeter + '" stroke-dashoffset="' + gpuOffset + '"></circle>' +
+    '</svg>' +
+    '<div class="hud-ring-center">' +
+    '<div class="hud-ring-num">' + (isOnline ? gpuPct + '%' : '--') + '</div>' +
+    '<div class="hud-ring-lbl">GPU LOAD</div>' +
+    '</div>' +
+    '</div>' +
+    '<div class="hud-ring-sub">' + (isOnline ? gpuNameShort : '--') + '</div>' +
+    '</div>' +
+
+    // 4. Thermals Ring
+    '<div class="hud-ring-card">' +
+    '<div class="hud-ring-svg-wrap">' +
+    '<svg class="hud-ring-svg" viewBox="0 0 78 78">' +
+    '<circle class="hud-ring-bg" cx="39" cy="39" r="31"></circle>' +
+    '<circle class="hud-ring-fill ring-temp' + (tempVal >= 80 ? ' ring-warn' : '') + '" cx="39" cy="39" r="31" stroke-dasharray="' + perimeter + '" stroke-dashoffset="' + tempOffset + '"></circle>' +
+    '</svg>' +
+    '<div class="hud-ring-center">' +
+    '<div class="hud-ring-num">' + (isOnline && tempVal > 0 ? tempVal + '°C' : '--') + '</div>' +
+    '<div class="hud-ring-lbl">CORE TEMP</div>' +
+    '</div>' +
+    '</div>' +
+    '<div class="hud-ring-sub">' + (isOnline ? tempSub : '--') + '</div>' +
+    '</div>' +
+
+    // 5. Fifth Ring
+    '<div class="hud-ring-card">' +
+    '<div class="hud-ring-svg-wrap">' +
+    '<svg class="hud-ring-svg" viewBox="0 0 78 78">' +
+    '<circle class="hud-ring-bg" cx="39" cy="39" r="31"></circle>' +
+    '<circle class="hud-ring-fill ' + fifthClass + '" cx="39" cy="39" r="31" stroke-dasharray="' + perimeter + '" stroke-dashoffset="' + fifthOffset + '"></circle>' +
+    '</svg>' +
+    '<div class="hud-ring-center">' +
+    '<div class="hud-ring-num">' + fifthNum + '</div>' +
+    '<div class="hud-ring-lbl">' + fifthLabel + '</div>' +
+    '</div>' +
+    '</div>' +
+    '<div class="hud-ring-sub">' + (isOnline ? fifthSub : '--') + '</div>' +
+    '</div>' +
+    '</div>' + // end rings row
+
+    // Row 2: Detailed Cards Grid (2 Columns, 6 Cards)
+    '<div class="hud-cards-grid">' +
+
+    // CARD 1: CPU Architecture
+    '<div class="hud-detail-card">' +
+    '<div class="hud-detail-inner">' +
+    '<div class="hud-card-title-row">' +
+    '<span class="hud-card-heading">⚙️ CPU & Architecture</span>' +
+    '<span class="hud-card-sub-badge">' + (isOnline && telem.cpu && telem.cpu.freq_mhz ? telem.cpu.freq_mhz + ' MHz' : '') + '</span>' +
+    '</div>' +
+    '<div class="hud-model-title">' + (telem.cpu ? telem.cpu.model : 'Processor') + '</div>' +
+    '<div class="hud-spec-chips">' +
+    '<span class="hud-chip blue">' + (telem.cpu ? telem.cpu.cores + ' Cores • ' + telem.cpu.threads + ' Threads' : '') + '</span>' +
+    '<span class="hud-chip">' + (telem.cpu ? telem.cpu.arch : 'x86_64') + '</span>' +
+    (telem.cpu && telem.cpu.governor ? '<span class="hud-chip green">' + telem.cpu.governor + '</span>' : '') +
+    (telem.cpu && telem.cpu.cache_l3 ? '<span class="hud-chip">' + telem.cpu.cache_l3 + '</span>' : '') +
+    '</div>' +
+    '<div class="hud-stat-line">' +
+    '<span class="hud-stat-lbl">Utilization</span>' +
+    '<span class="hud-stat-val">' + (isOnline ? cpuPct + '%' : '--') + '</span>' +
+    '</div>' +
+    '<div class="hud-bar-container">' +
+    '<div class="hud-bar-fill' + (cpuPct >= 80 ? ' warning' : '') + '" style="width:' + cpuPct + '%;"></div>' +
+    '</div>' +
+    '</div>' +
+    '</div>' +
+
+    // CARD 2: Memory (RAM & Swap)
+    '<div class="hud-detail-card">' +
+    '<div class="hud-detail-inner">' +
+    '<div class="hud-card-title-row">' +
+    '<span class="hud-card-heading">🧠 Memory & Swap</span>' +
+    '<span class="hud-card-sub-badge">' + (isOnline ? ramPct + '%' : '--') + '</span>' +
+    '</div>' +
+    '<div class="hud-stat-line">' +
+    '<span class="hud-stat-lbl">RAM Used / Total</span>' +
+    '<span class="hud-stat-val">' + (isOnline ? telem.ram_used_gb + ' GB / ' + telem.ram_total_gb + ' GB' : '--') + '</span>' +
+    '</div>' +
+    '<div class="hud-bar-multi">' +
+    '<div class="hud-bar-seg used" style="width:' + ramPct + '%;"></div>' +
+    '<div class="hud-bar-seg cached" style="width:' + (telem.mem && telem.mem.total_mb ? Math.round((telem.mem.cached_mb / telem.mem.total_mb) * 100) : 0) + '%;"></div>' +
+    '</div>' +
+    '<div class="hud-stat-line" style="margin-top: 4px;">' +
+    '<span class="hud-stat-lbl">Swap Usage</span>' +
+    '<span class="hud-stat-val">' + (isOnline && telem.mem && telem.mem.swap_total_mb ? (telem.mem.swap_used_mb / 1024).toFixed(1) + ' / ' + (telem.mem.swap_total_mb / 1024).toFixed(1) + ' GB (' + telem.mem.swap_pct + '%)' : '0 GB (0%)') + '</span>' +
+    '</div>' +
+    '<div class="hud-bar-container">' +
+    '<div class="hud-bar-fill purple" style="width:' + (telem.mem ? telem.mem.swap_pct || 0 : 0) + '%;"></div>' +
+    '</div>' +
+    '</div>' +
+    '</div>' +
+
+    // CARD 3: GPU & Display
+    '<div class="hud-detail-card">' +
+    '<div class="hud-detail-inner">' +
+    '<div class="hud-card-title-row">' +
+    '<span class="hud-card-heading">🎮 GPU & Display Engine</span>' +
+    '<span class="hud-card-sub-badge">' + (isOnline && telem.gpu && telem.gpu.temp_c ? telem.gpu.temp_c + '°C' : '') + '</span>' +
+    '</div>' +
+    '<div class="hud-model-title">' + (telem.gpu ? telem.gpu.name : 'Graphics Adapter') + '</div>' +
+    '<div class="hud-stat-line">' +
+    '<span class="hud-stat-lbl">VRAM Utilization</span>' +
+    '<span class="hud-stat-val">' + (isOnline && telem.gpu && telem.gpu.vram_total_mb ? (telem.gpu.vram_used_mb / 1024).toFixed(1) + ' / ' + (telem.gpu.vram_total_mb / 1024).toFixed(1) + ' GB (' + telem.gpu.vram_pct + '%)' : '--') + '</span>' +
+    '</div>' +
+    '<div class="hud-bar-container">' +
+    '<div class="hud-bar-fill" style="width:' + (telem.gpu ? telem.gpu.vram_pct || 0 : 0) + '%;"></div>' +
+    '</div>' +
+    '<div class="hud-stat-line" style="margin-top: 4px;">' +
+    '<span class="hud-stat-lbl">Display Output</span>' +
+    '<span class="hud-stat-val">' + (telem.displays && telem.displays.length ? telem.displays[0] : 'Default Display') + '</span>' +
+    '</div>' +
+    '</div>' +
+    '</div>' +
+
+    // CARD 4: Storage & Filesystem
+    '<div class="hud-detail-card">' +
+    '<div class="hud-detail-inner">' +
+    '<div class="hud-card-title-row">' +
+    '<span class="hud-card-heading">💾 Storage & Drives</span>' +
+    '<span class="hud-card-sub-badge">' + (telem.storage ? telem.storage.mount || '/' : '/') + '</span>' +
+    '</div>' +
+    '<div class="hud-model-title">Root Filesystem (NVMe SSD)</div>' +
+    '<div class="hud-stat-line">' +
+    '<span class="hud-stat-lbl">Used / Total Space</span>' +
+    '<span class="hud-stat-val">' + (isOnline && telem.storage ? telem.storage.used_gb + ' GB / ' + telem.storage.total_gb + ' GB (' + telem.storage.pct + '%)' : '--') + '</span>' +
+    '</div>' +
+    '<div class="hud-bar-container">' +
+    '<div class="hud-bar-fill cyan" style="width:' + (telem.storage ? telem.storage.pct || 0 : 0) + '%;"></div>' +
+    '</div>' +
+    '<div class="hud-stat-line" style="margin-top: 4px;">' +
+    '<span class="hud-stat-lbl">Free Space</span>' +
+    '<span class="hud-stat-val">' + (isOnline && telem.storage ? telem.storage.free_gb + ' GB Available' : '--') + '</span>' +
+    '</div>' +
+    '</div>' +
+    '</div>' +
+
+    // CARD 5: Motherboard & BIOS
+    '<div class="hud-detail-card">' +
+    '<div class="hud-detail-inner">' +
+    '<div class="hud-card-title-row">' +
+    '<span class="hud-card-heading">🗄️ Motherboard & Firmware</span>' +
+    '<span class="hud-card-sub-badge">' + (telem.motherboard ? 'BIOS ' + telem.motherboard.bios : '') + '</span>' +
+    '</div>' +
+    '<div class="hud-model-title">' + (telem.motherboard ? (telem.motherboard.vendor ? telem.motherboard.vendor + ' ' : '') + telem.motherboard.board : 'Motherboard') + '</div>' +
+    '<div class="hud-spec-chips">' +
+    '<span class="hud-chip blue">' + (telem.motherboard ? 'BIOS: ' + (telem.motherboard.bios || 'UEFI') : '') + '</span>' +
+    '<span class="hud-chip">' + (telem.motherboard ? 'Kernel ' + telem.motherboard.kernel : '') + '</span>' +
+    '</div>' +
+    '<div class="hud-stat-line" style="margin-top: 4px;">' +
+    '<span class="hud-stat-lbl">Platform</span>' +
+    '<span class="hud-stat-val">' + (isLaptop ? 'Mobile Laptop' : 'Desktop Workstation') + '</span>' +
+    '</div>' +
+    '</div>' +
+    '</div>' +
+
+    // CARD 6: Network & Power
+    '<div class="hud-detail-card">' +
+    '<div class="hud-detail-inner">' +
+    '<div class="hud-card-title-row">' +
+    '<span class="hud-card-heading">🌐 Network & Power Rails</span>' +
+    '<span class="hud-card-sub-badge">' + (telem.network ? telem.network.type : 'LAN') + '</span>' +
+    '</div>' +
+    '<div class="hud-stat-line">' +
+    '<span class="hud-stat-lbl">Adapter & IP</span>' +
+    '<span class="hud-stat-val">' + (telem.network && telem.network.ip ? telem.network.iface + ': ' + telem.network.ip : '--') + '</span>' +
+    '</div>' +
+    '<div class="hud-stat-line" style="margin-top: 6px;">' +
+    '<span class="hud-stat-lbl">Power Rails</span>' +
+    '<span class="hud-stat-val">' + (isLaptop ? 'Battery (' + telem.power.pct + '% ' + telem.power.status + ')' : 'AC Mains Power') + '</span>' +
+    '</div>' +
+    '<div class="hud-stat-line" style="margin-top: 4px;">' +
+    '<span class="hud-stat-lbl">System Uptime</span>' +
+    '<span class="hud-stat-val">' + (isOnline ? telem.uptime : '--') + '</span>' +
+    '</div>' +
+    '</div>' +
+    '</div>' +
+
+    '</div>' + // end cards grid
+    '</div>';  // end cockpit
+
+  container.innerHTML = html;
 }
 
 function updateHudCard(compId, telem) {
@@ -395,30 +657,9 @@ function updateHudCard(compId, telem) {
   if (!comp) return;
   comp.telemetry = telem;
 
-  var isOnline = comp.state === 'online';
-  var cpuVal = document.getElementById('hud-cpu-val-' + compId);
-  var cpuBar = document.getElementById('hud-cpu-bar-' + compId);
-  var ramVal = document.getElementById('hud-ram-val-' + compId);
-  var ramBar = document.getElementById('hud-ram-bar-' + compId);
-  var tempVal = document.getElementById('hud-temp-val-' + compId);
-  var uptimeVal = document.getElementById('hud-uptime-val-' + compId);
-
-  if (cpuVal) cpuVal.innerHTML = isOnline ? telem.cpu_pct + '%' : '--';
-  if (cpuBar) {
-    var cpuWidth = isOnline ? Math.max(0, Math.min(100, telem.cpu_pct)) : 0;
-    cpuBar.style.width = cpuWidth + '%';
-    cpuBar.className = 'hud-bar-fill' + (cpuWidth >= 80 ? ' warning' : '');
+  if (compId === activeHudTarget) {
+    renderHud();
   }
-
-  if (ramVal) ramVal.innerHTML = isOnline ? telem.ram_used_gb + ' / ' + telem.ram_total_gb + ' GB (' + telem.ram_pct + '%)' : '--';
-  if (ramBar) {
-    var ramWidth = isOnline ? Math.max(0, Math.min(100, telem.ram_pct)) : 0;
-    ramBar.style.width = ramWidth + '%';
-    ramBar.className = 'hud-bar-fill' + (ramWidth >= 85 ? ' warning' : '');
-  }
-
-  if (tempVal) tempVal.innerHTML = isOnline && telem.temp_c > 0 ? telem.temp_c + '°C' : '--';
-  if (uptimeVal) uptimeVal.innerHTML = isOnline ? telem.uptime : '--';
 }
 
 // -------------------------------------------------------------
