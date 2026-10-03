@@ -20,12 +20,16 @@
     <!-- TOP NAVIGATION & STATUS BAR -->
     <header class="home-header">
       <div class="header-left">
-        <div class="header-time-group">
-          <span id="live-time" class="home-clock">12:00</span>
-          <span id="live-ampm" class="home-ampm">PM</span>
-        </div>
-        <div class="header-date-group">
+        <div class="header-meta-group">
           <div id="live-date" class="home-date">Saturday, October 3</div>
+          <div id="current-page-title" class="home-page-title">Home</div>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="header-time-group">
+          <span id="live-time" class="home-clock">12:00:00</span>
+          <span id="live-ampm" class="home-ampm">PM</span>
         </div>
       </div>
 
@@ -55,34 +59,6 @@
              PAGE 1: SMART HOME & ACCESSORIES
              ========================================== -->
         <div class="carousel-page" id="page-home">
-          <!-- SCENES CHIPS ROW -->
-          <div class="scenes-scroller">
-            <button class="scene-chip" onclick="triggerScene('wake_day', this)">
-              <span class="scene-chip-icon">☀️</span>
-              <span class="scene-chip-title">Wake Day</span>
-            </button>
-            <button class="scene-chip" onclick="triggerScene('wake_night', this)">
-              <span class="scene-chip-icon">🌙</span>
-              <span class="scene-chip-title">Wake Night</span>
-            </button>
-            <button class="scene-chip" onclick="triggerScene('suspend', this)">
-              <span class="scene-chip-icon">💤</span>
-              <span class="scene-chip-title">Suspend</span>
-            </button>
-            <button class="scene-chip" onclick="triggerScene('shutdown', this)">
-              <span class="scene-chip-icon">⏻</span>
-              <span class="scene-chip-title">Shutdown</span>
-            </button>
-            <button class="scene-chip" onclick="triggerScene('all_on', this)">
-              <span class="scene-chip-icon">💡</span>
-              <span class="scene-chip-title">All On</span>
-            </button>
-            <button class="scene-chip" onclick="triggerScene('all_off', this)">
-              <span class="scene-chip-icon">🌑</span>
-              <span class="scene-chip-title">All Off</span>
-            </button>
-          </div>
-
           <!-- Section: Room Accessories -->
           <section class="home-section">
             <div class="section-title-row">
@@ -101,6 +77,40 @@
             </div>
             <div id="computers-grid" class="workstations-grid">
               <!-- Rendered dynamically via app.js -->
+            </div>
+          </section>
+
+          <!-- Section: Scenes & Quick Presets -->
+          <section class="home-section scenes-section">
+            <div class="section-title-row">
+              <h2 class="section-heading">Quick Scenes</h2>
+              <span class="section-status-sub">One-Touch Atmosphere Presets</span>
+            </div>
+            <div class="scenes-grid">
+              <button class="scene-chip" onclick="triggerScene('wake_day', this)">
+                <span class="scene-chip-icon">☀️</span>
+                <span class="scene-chip-title">Wake Day</span>
+              </button>
+              <button class="scene-chip" onclick="triggerScene('wake_night', this)">
+                <span class="scene-chip-icon">🌙</span>
+                <span class="scene-chip-title">Wake Night</span>
+              </button>
+              <button class="scene-chip" onclick="triggerScene('suspend', this)">
+                <span class="scene-chip-icon">💤</span>
+                <span class="scene-chip-title">Suspend</span>
+              </button>
+              <button class="scene-chip" onclick="triggerScene('shutdown', this)">
+                <span class="scene-chip-icon">⏻</span>
+                <span class="scene-chip-title">Shutdown</span>
+              </button>
+              <button class="scene-chip" onclick="triggerScene('all_on', this)">
+                <span class="scene-chip-icon">💡</span>
+                <span class="scene-chip-title">All On</span>
+              </button>
+              <button class="scene-chip" onclick="triggerScene('all_off', this)">
+                <span class="scene-chip-icon">🌑</span>
+                <span class="scene-chip-title">All Off</span>
+              </button>
             </div>
           </section>
         </div>

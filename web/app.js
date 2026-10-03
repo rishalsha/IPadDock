@@ -60,6 +60,7 @@ function updateClock() {
   var now = new Date();
   var hours = now.getHours();
   var minutes = now.getMinutes();
+  var seconds = now.getSeconds();
 
   var ampm = 'AM';
   if (!DOCK_CONFIG.clockFormat24h) {
@@ -71,12 +72,13 @@ function updateClock() {
   }
 
   minutes = minutes < 10 ? '0' + minutes : minutes;
+  seconds = seconds < 10 ? '0' + seconds : seconds;
 
   var timeElem = document.getElementById('live-time');
   var ampmElem = document.getElementById('live-ampm');
   var dateElem = document.getElementById('live-date');
 
-  if (timeElem) timeElem.innerHTML = hours + ':' + minutes;
+  if (timeElem) timeElem.innerHTML = hours + ':' + minutes + ':' + seconds;
   if (ampmElem) ampmElem.innerHTML = DOCK_CONFIG.clockFormat24h ? '' : ampm;
 
   var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -104,6 +106,12 @@ function goToPage(index) {
     var offsetPct = index * (100 / totalPages);
     track.style.webkitTransform = 'translate3d(-' + offsetPct + '%, 0, 0)';
     track.style.transform = 'translate3d(-' + offsetPct + '%, 0, 0)';
+  }
+
+  // Update header page title text
+  var titleEl = document.getElementById('current-page-title');
+  if (titleEl && pageTitles[index]) {
+    titleEl.innerHTML = pageTitles[index];
   }
 }
 
