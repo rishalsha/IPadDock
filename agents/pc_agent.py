@@ -570,6 +570,31 @@ def execute_desktop_action(action_str: str):
             subprocess.Popen(["omarchy", "theme", "next"], env=env, start_new_session=True)
         return {"action": "next_theme", "status": "ok"}
 
+    elif action in ("launch_files", "open_files", "file_manager"):
+        if shutil.which("nautilus"):
+            subprocess.Popen(["nautilus", "--new-window", os.path.expanduser("~")], env=env, start_new_session=True)
+        elif shutil.which("thunar"):
+            subprocess.Popen(["thunar", os.path.expanduser("~")], env=env, start_new_session=True)
+        else:
+            subprocess.Popen(["xdg-open", os.path.expanduser("~")], env=env, start_new_session=True)
+        return {"action": "launch_files", "status": "ok", "message": "Opened File Manager"}
+
+    elif action in ("toggle_dnd", "dnd", "toggle_notifications"):
+        if shutil.which("omarchy-toggle-notification-silencing"):
+            subprocess.Popen(["omarchy-toggle-notification-silencing"], env=env, start_new_session=True)
+        elif shutil.which("makoctl"):
+            subprocess.Popen(["makoctl", "mode", "-t", "do-not-disturb"], env=env, start_new_session=True)
+        elif shutil.which("dunstctl"):
+            subprocess.Popen(["dunstctl", "set-paused", "toggle"], env=env, start_new_session=True)
+        return {"action": "toggle_dnd", "status": "ok", "message": "Toggled Do Not Disturb"}
+
+    elif action in ("toggle_nightlight", "nightlight"):
+        if shutil.which("omarchy-toggle-nightlight"):
+            subprocess.Popen(["omarchy-toggle-nightlight"], env=env, start_new_session=True)
+        elif shutil.which("hyprsunset"):
+            subprocess.Popen(["hyprsunset"], env=env, start_new_session=True)
+        return {"action": "toggle_nightlight", "status": "ok", "message": "Toggled Nightlight"}
+
     return {"action": action, "status": "unknown"}
 
 

@@ -67,10 +67,6 @@
         <span class="tab-text">Deck</span>
       </button>
       <button class="nav-tab" onclick="goToPage(4)" id="tab-4">
-        <span class="tab-icon">🌤️</span>
-        <span class="tab-text">Weather</span>
-      </button>
-      <button class="nav-tab" onclick="goToPage(5)" id="tab-5">
         <span class="tab-icon">⏱️</span>
         <span class="tab-text">Timer</span>
       </button>
@@ -215,8 +211,8 @@
               <div class="volume-slider-row">
                 <button class="vol-quick-btn" onclick="sendMediaCmd('mute')" id="vol-mute-btn">🔇</button>
                 <button class="vol-quick-btn" onclick="sendMediaCmd('vol_down')">🔉 -5%</button>
-                <div class="slider-container">
-                  <input type="range" min="0" max="100" value="100" class="volume-range-input" id="volume-range" oninput="onVolumeSliderChange(this.value)">
+                <div class="slider-container" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
+                  <input type="range" min="0" max="100" value="100" class="volume-range-input" id="volume-range" oninput="onVolumeSliderChange(this.value)" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
                 </div>
                 <button class="vol-quick-btn" onclick="sendMediaCmd('vol_up')">🔊 +5%</button>
               </div>
@@ -382,24 +378,24 @@
                   <div class="deck-sub">Omarchy / Grim</div>
                 </button>
 
-                <!-- Next Theme / Wallpaper Tile -->
-                <button class="deck-tile" onclick="sendDesktopAction('next_theme')">
+                <!-- File Manager Tile -->
+                <button class="deck-tile" onclick="sendDesktopAction('launch_files')">
                   <div class="deck-tile-top">
-                    <span class="deck-icon">🎨</span>
-                    <span class="deck-badge action">CYCLE</span>
+                    <span class="deck-icon">📁</span>
+                    <span class="deck-badge action">OPEN</span>
                   </div>
-                  <div class="deck-title">Next Theme</div>
-                  <div class="deck-sub">Theme & Wallpaper</div>
+                  <div class="deck-title">Files</div>
+                  <div class="deck-sub">Nautilus / Home</div>
                 </button>
 
-                <!-- Lock Screen Tile -->
-                <button class="deck-tile" onclick="sendDesktopAction('lock_screen')">
+                <!-- Silence / DND Mode Tile -->
+                <button class="deck-tile" onclick="sendDesktopAction('toggle_dnd')">
                   <div class="deck-tile-top">
-                    <span class="deck-icon">🔒</span>
-                    <span class="deck-badge warning">LOCK</span>
+                    <span class="deck-icon">🔕</span>
+                    <span class="deck-badge action">DND</span>
                   </div>
-                  <div class="deck-title">Lock Screen</div>
-                  <div class="deck-sub">Hyprlock Session</div>
+                  <div class="deck-title">Silence DND</div>
+                  <div class="deck-sub">Mute Alerts</div>
                 </button>
               </div>
             </section>
@@ -464,61 +460,7 @@
         </div>
 
         <!-- ==========================================
-             PAGE 5: WEATHER & CLIMATE HUB
-             ========================================== -->
-        <div class="carousel-page" id="page-weather">
-          <div class="weather-container">
-            <!-- Weather Hero Card -->
-            <div class="weather-hero-card">
-              <div class="weather-hero-left">
-                <div class="weather-icon-giant" id="weather-icon-giant">⛅</div>
-                <div class="weather-temp-wrap">
-                  <span class="weather-temp-number" id="weather-temp">--</span>
-                  <span class="weather-temp-unit">°C</span>
-                </div>
-              </div>
-              <div class="weather-hero-right">
-                <div class="weather-condition-text" id="weather-condition">Loading Weather...</div>
-                <div class="weather-feels-like" id="weather-feels">Feels like --°C</div>
-                <div class="weather-highlow" id="weather-highlow">H: --° • L: --°</div>
-                <div class="weather-location-chip" id="weather-location">📍 Payyanur, Kerala</div>
-              </div>
-            </div>
-
-            <!-- Hourly Forecast Strip -->
-            <div class="weather-section-title">Hourly Forecast (Next 12 Hours)</div>
-            <div class="hourly-forecast-row" id="hourly-forecast-row">
-              <!-- Rendered dynamically via app.js -->
-            </div>
-
-            <!-- 4 Environmental Metric Tiles -->
-            <div class="weather-metrics-grid">
-              <div class="weather-metric-tile">
-                <div class="metric-top"><span class="metric-icon">💧</span> Humidity</div>
-                <div class="metric-val" id="weather-humidity">--%</div>
-                <div class="metric-sub" id="weather-humidity-sub">Relative moisture</div>
-              </div>
-              <div class="weather-metric-tile">
-                <div class="metric-top"><span class="metric-icon">💨</span> Wind Speed</div>
-                <div class="metric-val" id="weather-wind">-- km/h</div>
-                <div class="metric-sub">Surface wind velocity</div>
-              </div>
-              <div class="weather-metric-tile">
-                <div class="metric-top"><span class="metric-icon">🌧️</span> Rain Probability</div>
-                <div class="metric-val" id="weather-rain">--%</div>
-                <div class="metric-sub">Precipitation forecast</div>
-              </div>
-              <div class="weather-metric-tile">
-                <div class="metric-top"><span class="metric-icon">🧭</span> Air Pressure</div>
-                <div class="metric-val" id="weather-pressure">1012 hPa</div>
-                <div class="metric-sub">Barometric pressure</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ==========================================
-             PAGE 6: DESK POMODORO & FOCUS TIMER
+             PAGE 5: DESK POMODORO & FOCUS TIMER
              ========================================== -->
         <div class="carousel-page" id="page-timer">
           <div class="timer-container">

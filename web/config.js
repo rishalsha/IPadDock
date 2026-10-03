@@ -21,14 +21,9 @@ var DOCK_CONFIG = {
   autoSyncIntervalSeconds: 15,    // Automatic background state re-polling
   checkVersionIntervalSeconds: 15, // Check for code/dashboard updates from server
 
-  // Weather Settings (Open-Meteo Global API - Free & Fast)
+  // Weather Settings (Disabled)
   weather: {
-    enabled: true,
-    city: 'Payyanur',
-    region: 'Kerala',
-    latitude: 12.0935,
-    longitude: 75.2025,
-    updateIntervalMinutes: 20
+    enabled: false
   },
 
   // Tasmota Devices (Relay 1 = Fan, Relay 2 = Light, Relay 3 = Bulb)

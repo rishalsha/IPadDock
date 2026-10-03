@@ -7,8 +7,8 @@ var reconnectTimer = null;
 
 // Page Navigation State
 var currentPage = 0;
-var totalPages = 6;
-var pageTitles = ['Home', 'Battle Station HUD', 'Media Studio', 'Stream Deck', 'Weather & Climate', 'Desk Focus Timer'];
+var totalPages = 5;
+var pageTitles = ['Home', 'Battle Station HUD', 'Media Studio', 'Stream Deck', 'Desk Focus Timer'];
 
 // Media & Deck Targets
 var activeMediaTarget = 'work_laptop';
@@ -122,11 +122,6 @@ function goToPage(index) {
   if (titleEl && pageTitles[index]) {
     titleEl.innerHTML = pageTitles[index];
   }
-
-  // Lazy fetch weather if switching to Weather page (Page 4, 0-indexed)
-  if (index === 4 && !weatherData) {
-    fetchWeather();
-  }
 }
 
 function initSwipeGestures() {
@@ -140,6 +135,26 @@ function initSwipeGestures() {
   var isSwiping = false;
 
   viewport.addEventListener('touchstart', function (e) {
+    var target = e.target;
+    // Prevent swipe gesture if touching an interactive control like range slider or textarea
+    if (target) {
+      var tag = target.tagName ? target.tagName.toLowerCase() : '';
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || tag === 'button') {
+        if (tag === 'input' && target.type === 'range') return;
+      }
+      var cur = target;
+      while (cur && cur !== viewport) {
+        if (cur.className && typeof cur.className === 'string' &&
+            (cur.className.indexOf('slider-container') !== -1 ||
+             cur.className.indexOf('volume-range-input') !== -1 ||
+             cur.className.indexOf('volume-slider-row') !== -1 ||
+             cur.className.indexOf('teleport-textarea') !== -1)) {
+          return;
+        }
+        cur = cur.parentNode;
+      }
+    }
+
     if (e.touches.length === 1) {
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
@@ -188,7 +203,7 @@ function initSwipeGestures() {
     if (tag === 'input' || tag === 'textarea') return;
     if (e.key === 'ArrowRight') goToPage(currentPage + 1);
     else if (e.key === 'ArrowLeft') goToPage(currentPage - 1);
-    else if (e.key >= '1' && e.key <= '6') goToPage(parseInt(e.key, 10) - 1);
+    else if (e.key >= '1' && e.key <= '5') goToPage(parseInt(e.key, 10) - 1);
   });
 }
 
@@ -557,6 +572,24 @@ function onVolumeSliderChange(val) {
   volDebounceTimer = setTimeout(function () {
     sendMediaCmd('vol_set:' + val);
   }, 100);
+}
+
+function initVolumeSliderProtection() {
+  var volRange = document.getElementById('volume-range');
+  var stopProp = function (e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+  };
+  if (volRange) {
+    volRange.addEventListener('touchstart', stopProp, false);
+    volRange.addEventListener('touchmove', stopProp, false);
+    volRange.addEventListener('touchend', stopProp, false);
+  }
+  var sliderCont = document.querySelector('.slider-container');
+  if (sliderCont) {
+    sliderCont.addEventListener('touchstart', stopProp, false);
+    sliderCont.addEventListener('touchmove', stopProp, false);
+    sliderCont.addEventListener('touchend', stopProp, false);
+  }
 }
 
 // -------------------------------------------------------------
@@ -1509,14 +1542,14 @@ window.onload = function () {
   // Initialize Page 4 (Stream Deck)
   renderDeckTargets();
 
-  // Initialize Page 6 (Timer)
+  // Initialize Page 5 (Timer)
   updateTimerDisplay();
+
+  // Initialize Volume Slider Touch Isolation
+  initVolumeSliderProtection();
 
   // Initialize Swipe Carousel
   initSwipeGestures();
-
-  // Initialize Weather
-  fetchWeather();
 
   // Initialize MQTT & Watchdogs
   connectMqtt();
