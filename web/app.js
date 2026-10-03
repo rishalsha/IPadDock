@@ -105,24 +105,6 @@ function goToPage(index) {
     track.style.webkitTransform = 'translate3d(-' + offsetPct + '%, 0, 0)';
     track.style.transform = 'translate3d(-' + offsetPct + '%, 0, 0)';
   }
-
-  // Update tabs
-  for (var i = 0; i < totalPages; i++) {
-    var tab = document.getElementById('tab-' + i);
-    if (tab) {
-      if (i === index) {
-        tab.className = tab.className.indexOf('active') === -1 ? tab.className + ' active' : tab.className;
-      } else {
-        tab.className = tab.className.replace(/\s*active/g, '');
-      }
-    }
-  }
-
-  // Update header title
-  var titleEl = document.getElementById('current-page-title');
-  if (titleEl && pageTitles[index]) {
-    titleEl.innerHTML = pageTitles[index];
-  }
 }
 
 function initSwipeGestures() {
