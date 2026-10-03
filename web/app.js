@@ -667,15 +667,68 @@ function sendDesktopAction(action, payload) {
   showToast(msg);
 }
 
-function beamClipboard() {
+function openOrFocusApp(appName, url) {
+  var comp = null;
+  for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
+    if (DOCK_CONFIG.computers[i].id === activeDeckTarget) {
+      comp = DOCK_CONFIG.computers[i];
+      break;
+    }
+  }
+  if (!comp) return;
+
+  var cmd = 'open_or_focus:' + appName + ':' + url;
+  publish('cmnd/' + comp.topic + '/action', cmd);
+  showToast('Opening or focusing ' + appName + ' on ' + comp.name + '...');
+}
+
+function copyFromMachine(compId) {
+  var comp = null;
+  for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
+    if (DOCK_CONFIG.computers[i].id === compId) {
+      comp = DOCK_CONFIG.computers[i];
+      break;
+    }
+  }
+  if (!comp) return;
+
+  publish('cmnd/' + comp.topic + '/action', 'get_clipboard');
+  showToast('📥 Reading clipboard from ' + comp.name + '...');
+}
+
+function pasteToMachine(compId) {
+  var comp = null;
+  for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
+    if (DOCK_CONFIG.computers[i].id === compId) {
+      comp = DOCK_CONFIG.computers[i];
+      break;
+    }
+  }
+  if (!comp) return;
+
   var input = document.getElementById('teleport-text');
-  if (!input) return;
-  var text = input.value.trim();
+  var text = input ? input.value : '';
   if (!text) {
-    showToast('⚠️ Type or paste text to beam first');
+    showToast('⚠️ Type or paste text into the box first');
     return;
   }
-  sendDesktopAction('clipboard', text);
+
+  publish('cmnd/' + comp.topic + '/action', 'clipboard:' + text);
+  showToast('📤 Pasted to ' + comp.name + ' clipboard!');
+}
+
+function syncClipboard(fromCompId, toCompId) {
+  var fromComp = null;
+  var toComp = null;
+  for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
+    if (DOCK_CONFIG.computers[i].id === fromCompId) fromComp = DOCK_CONFIG.computers[i];
+    if (DOCK_CONFIG.computers[i].id === toCompId) toComp = DOCK_CONFIG.computers[i];
+  }
+  if (!fromComp || !toComp) return;
+
+  window.clipboardSyncTarget = toCompId;
+  publish('cmnd/' + fromComp.topic + '/action', 'get_clipboard');
+  showToast('🔄 Syncing: ' + fromComp.name + ' ➔ ' + toComp.name + '...');
 }
 
 function beamUrl() {
@@ -683,15 +736,9 @@ function beamUrl() {
   if (!input) return;
   var url = input.value.trim();
   if (!url) {
-    showToast('⚠️ Type or paste a URL to open first');
+    showToast('⚠️ Type or paste a URL first');
     return;
   }
-  sendDesktopAction('open_url', url);
-}
-
-function quickBeamUrl(url) {
-  var input = document.getElementById('teleport-text');
-  if (input) input.value = url;
   sendDesktopAction('open_url', url);
 }
 
@@ -1170,10 +1217,11 @@ function subscribeAll() {
   mqttClient.subscribe('tele/+/STATE', { qos: 0 });
   mqttClient.subscribe('cmnd/ipaddock/reload', { qos: 0 });
 
-  // Telemetry & Media subscriptions
+  // Telemetry, Media & Clipboard subscriptions
   mqttClient.subscribe('stat/+/telemetry', { qos: 0 });
   mqttClient.subscribe('stat/+/media', { qos: 0 });
   mqttClient.subscribe('stat/+/action_status', { qos: 0 });
+  mqttClient.subscribe('stat/+/clipboard', { qos: 0 });
 
   for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
     var comp = DOCK_CONFIG.computers[i];
@@ -1258,10 +1306,34 @@ function handleIncomingMessage(topic, payload) {
     if (topic === 'stat/' + comp.topic + '/action_status') {
       try {
         var actRes = JSON.parse(payload);
-        if (actRes.message) {
+        if (actRes.message && actRes.action !== 'get_clipboard') {
           showToast('✓ ' + comp.name + ': ' + actRes.message);
         }
       } catch (e4) {}
+    }
+
+    // Machine Clipboard Stream
+    if (topic === 'stat/' + comp.topic + '/clipboard') {
+      var textInput = document.getElementById('teleport-text');
+      if (textInput) textInput.value = payload;
+
+      if (window.clipboardSyncTarget) {
+        var targetId = window.clipboardSyncTarget;
+        window.clipboardSyncTarget = null;
+        var toComp = null;
+        for (var m = 0; m < DOCK_CONFIG.computers.length; m++) {
+          if (DOCK_CONFIG.computers[m].id === targetId) {
+            toComp = DOCK_CONFIG.computers[m];
+            break;
+          }
+        }
+        if (toComp) {
+          publish('cmnd/' + toComp.topic + '/action', 'clipboard:' + payload);
+          showToast('✓ Synced to ' + toComp.name + ' (' + payload.length + ' chars)!');
+        }
+      } else {
+        showToast('✓ Copied from ' + comp.name + ' (' + payload.length + ' chars)');
+      }
     }
   }
 }

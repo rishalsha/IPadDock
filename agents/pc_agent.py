@@ -38,15 +38,21 @@ def get_desktop_env():
     """Builds environment variables required to launch GUI apps on Wayland/X11."""
     env = os.environ.copy()
     if IS_LINUX:
-        if "WAYLAND_DISPLAY" not in env:
-            env["WAYLAND_DISPLAY"] = "wayland-1"
-        if "DISPLAY" not in env:
-            env["DISPLAY"] = ":0"
         if "XDG_RUNTIME_DIR" not in env:
             try:
                 env["XDG_RUNTIME_DIR"] = f"/run/user/{os.getuid()}"
             except Exception:
                 pass
+        if "WAYLAND_DISPLAY" not in env:
+            runtime_dir = env.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
+            for w in ["wayland-1", "wayland-0", "wayland-2"]:
+                if os.path.exists(os.path.join(runtime_dir, w)):
+                    env["WAYLAND_DISPLAY"] = w
+                    break
+            if "WAYLAND_DISPLAY" not in env:
+                env["WAYLAND_DISPLAY"] = "wayland-1"
+        if "DISPLAY" not in env:
+            env["DISPLAY"] = ":0"
     return env
 
 
@@ -367,8 +373,117 @@ def execute_media_command(cmd: str):
 
 
 # -------------------------------------------------------------
-# Stream Deck Actions, App Launchers, Clipboard & URL Beam
+# Stream Deck Actions, App Launchers, Clipboard & Focus
 # -------------------------------------------------------------
+def get_browser_cmd():
+    """Finds the preferred browser executable."""
+    for b in [
+        "google-chrome-stable",
+        "google-chrome",
+        "/home/rishal/bin/google-chrome",
+        "chromium",
+        "brave",
+        "firefox",
+    ]:
+        path = shutil.which(b) or (b if os.path.exists(b) and os.access(b, os.X_OK) else None)
+        if path:
+            return path
+    return "xdg-open"
+
+
+def read_clipboard():
+    """Reads clipboard text from Wayland (wl-paste), X11 (xclip), or Windows."""
+    env = get_desktop_env()
+    if IS_LINUX:
+        if shutil.which("wl-paste"):
+            try:
+                return subprocess.check_output(
+                    ["wl-paste", "--no-newline"],
+                    env=env,
+                    text=True,
+                    stderr=subprocess.DEVNULL
+                )
+            except Exception:
+                pass
+        if shutil.which("xclip"):
+            try:
+                return subprocess.check_output(
+                    ["xclip", "-selection", "clipboard", "-o"],
+                    env=env,
+                    text=True,
+                    stderr=subprocess.DEVNULL
+                )
+            except Exception:
+                pass
+    elif IS_WINDOWS:
+        try:
+            res = subprocess.check_output(["powershell", "-command", "Get-Clipboard"], text=True)
+            return res.rstrip("\r\n")
+        except Exception:
+            pass
+    return ""
+
+
+def focus_or_open(url: str, app_name: str = ""):
+    """Focuses existing window in Hyprland matching app or URL domain; otherwise opens URL."""
+    env = get_desktop_env()
+    keywords = [app_name.lower()] if app_name else []
+    try:
+        domain = re.sub(r"^https?://(www\.)?", "", url).split("/")[0].lower()
+        if domain:
+            base_kw = domain.split(".")[0]
+            if base_kw not in keywords:
+                keywords.append(base_kw)
+            if domain not in keywords:
+                keywords.append(domain)
+    except Exception:
+        pass
+
+    # Try focusing in Hyprland
+    if shutil.which("hyprctl"):
+        try:
+            out = subprocess.check_output(["hyprctl", "clients", "-j"], env=env, text=True)
+            clients = json.loads(out)
+            for c in clients:
+                title = (c.get("title") or "").lower()
+                c_class = (c.get("class") or "").lower()
+                initial_title = (c.get("initialTitle") or "").lower()
+                initial_class = (c.get("initialClass") or "").lower()
+                combined = f"{title} {c_class} {initial_title} {initial_class}"
+                for kw in keywords:
+                    if kw and kw in combined:
+                        addr = c.get("address")
+                        if addr:
+                            subprocess.run(["hyprctl", "dispatch", "focuswindow", f"address:{addr}"], env=env, check=False)
+                            disp = c.get("title") or app_name or kw
+                            return {"action": "focus_app", "status": "ok", "message": f"Focused {disp}"}
+        except Exception as e:
+            print(f"[-] Hyprctl focus error: {e}")
+
+    # Try wmctrl fallback
+    if shutil.which("wmctrl"):
+        try:
+            for kw in keywords:
+                res = subprocess.run(["wmctrl", "-a", kw], env=env, check=False)
+                if res.returncode == 0:
+                    return {"action": "focus_app", "status": "ok", "message": f"Focused {kw}"}
+        except Exception:
+            pass
+
+    # Fallback: Launch browser with URL
+    if not (url.startswith("http://") or url.startswith("https://")):
+        url = "https://" + url
+
+    browser = get_browser_cmd()
+    if browser != "xdg-open":
+        subprocess.Popen([browser, url], env=env, start_new_session=True)
+    else:
+        subprocess.Popen(["xdg-open", url], env=env, start_new_session=True)
+
+    disp = app_name if app_name else url
+    return {"action": "open_url", "status": "ok", "message": f"Opened {disp}"}
+
+
 def execute_desktop_action(action_str: str):
     """Handles app launching, screenshot, lock screen, clipboard, and URL beam."""
     env = get_desktop_env()
@@ -401,14 +516,24 @@ def execute_desktop_action(action_str: str):
                 p.communicate(payload.encode("utf-8"))
             except Exception:
                 pass
-        return {"action": "clipboard", "status": "ok", "message": "Copied to PC clipboard"}
+        return {"action": "clipboard", "status": "ok", "message": f"Copied {len(payload)} chars to clipboard"}
+
+    elif action == "get_clipboard":
+        text = read_clipboard()
+        return {"action": "get_clipboard", "status": "ok", "text": text, "message": f"Copied {len(text)} chars from workstation"}
+
+    elif action == "open_or_focus":
+        app_name = ""
+        url = payload
+        if ":" in payload:
+            subparts = payload.split(":", 1)
+            if subparts[0].lower() not in ("http", "https"):
+                app_name = subparts[0]
+                url = subparts[1]
+        return focus_or_open(url, app_name)
 
     elif action == "open_url":
-        if payload:
-            if not (payload.startswith("http://") or payload.startswith("https://")):
-                payload = "https://" + payload
-            subprocess.Popen(["xdg-open", payload], env=env, start_new_session=True)
-        return {"action": "open_url", "status": "ok", "message": f"Opened {payload}"}
+        return focus_or_open(payload)
 
     elif action == "launch_terminal":
         term = shutil.which("ghostty") or shutil.which("alacritty") or shutil.which("foot") or shutil.which("kitty") or "xterm"
@@ -416,8 +541,11 @@ def execute_desktop_action(action_str: str):
         return {"action": "launch_terminal", "status": "ok"}
 
     elif action == "launch_browser":
-        browser = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("firefox") or "xdg-open"
-        subprocess.Popen([browser], env=env, start_new_session=True)
+        browser = get_browser_cmd()
+        if browser != "xdg-open":
+            subprocess.Popen([browser], env=env, start_new_session=True)
+        else:
+            subprocess.Popen(["xdg-open", "https://google.com"], env=env, start_new_session=True)
         return {"action": "launch_browser", "status": "ok"}
 
     elif action == "lock_screen":
@@ -524,6 +652,8 @@ class PCAgent:
         if topic == self.cmnd_action_topic:
             res = execute_desktop_action(payload)
             client.publish(self.stat_action_topic, payload=json.dumps(res), qos=0, retain=False)
+            if res.get("action") == "get_clipboard" and "text" in res:
+                client.publish(f"stat/{self.topic_name}/clipboard", payload=res["text"], qos=0, retain=False)
             # If mic was toggled, update media state immediately
             if payload.startswith("toggle_mic"):
                 st = get_media_state()

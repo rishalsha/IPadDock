@@ -225,7 +225,7 @@
         </div>
 
         <!-- ==========================================
-             PAGE 4: STREAM DECK & MACRO ACTIONS
+             PAGE 4: STREAM DECK, QUICK APPS & TELEPORT
              ========================================== -->
         <div class="carousel-page" id="page-deck">
           <div class="deck-container">
@@ -237,10 +237,91 @@
               </div>
             </div>
 
-            <!-- Quick Action Macros Section -->
-            <section class="home-section" style="margin-bottom: 14px;">
+            <!-- SECTION 1: QUICK APPS (LARGER ICONS - FOCUS OR OPEN) -->
+            <section class="home-section" style="margin-bottom: 16px;">
               <div class="section-title-row">
-                <h2 class="section-heading">Quick Actions</h2>
+                <h2 class="section-heading">Quick Apps</h2>
+                <span class="section-status-sub">Open or Focus if Active</span>
+              </div>
+              <div class="app-deck-grid">
+                <!-- WhatsApp -->
+                <button class="app-tile app-whatsapp" onclick="openOrFocusApp('whatsapp', 'https://web.whatsapp.com')">
+                  <div class="app-icon-wrap">
+                    <span class="app-tile-icon">💬</span>
+                  </div>
+                  <div class="app-tile-name">WhatsApp</div>
+                  <div class="app-tile-desc">Chat & Web</div>
+                </button>
+
+                <!-- Gemini -->
+                <button class="app-tile app-gemini" onclick="openOrFocusApp('gemini', 'https://gemini.google.com')">
+                  <div class="app-icon-wrap">
+                    <span class="app-tile-icon">✨</span>
+                  </div>
+                  <div class="app-tile-name">Gemini</div>
+                  <div class="app-tile-desc">Google AI</div>
+                </button>
+
+                <!-- Claude -->
+                <button class="app-tile app-claude" onclick="openOrFocusApp('claude', 'https://claude.ai')">
+                  <div class="app-icon-wrap">
+                    <span class="app-tile-icon">🧠</span>
+                  </div>
+                  <div class="app-tile-name">Claude</div>
+                  <div class="app-tile-desc">Anthropic AI</div>
+                </button>
+
+                <!-- YouTube -->
+                <button class="app-tile app-youtube" onclick="openOrFocusApp('youtube', 'https://youtube.com')">
+                  <div class="app-icon-wrap">
+                    <span class="app-tile-icon">🎬</span>
+                  </div>
+                  <div class="app-tile-name">YouTube</div>
+                  <div class="app-tile-desc">Videos & Music</div>
+                </button>
+
+                <!-- GitHub -->
+                <button class="app-tile app-github" onclick="openOrFocusApp('github', 'https://github.com')">
+                  <div class="app-icon-wrap">
+                    <span class="app-tile-icon">🐙</span>
+                  </div>
+                  <div class="app-tile-name">GitHub</div>
+                  <div class="app-tile-desc">Repositories</div>
+                </button>
+
+                <!-- ChatGPT -->
+                <button class="app-tile app-chatgpt" onclick="openOrFocusApp('chatgpt', 'https://chatgpt.com')">
+                  <div class="app-icon-wrap">
+                    <span class="app-tile-icon">🤖</span>
+                  </div>
+                  <div class="app-tile-name">ChatGPT</div>
+                  <div class="app-tile-desc">OpenAI</div>
+                </button>
+
+                <!-- Gmail -->
+                <button class="app-tile app-gmail" onclick="openOrFocusApp('gmail', 'https://mail.google.com')">
+                  <div class="app-icon-wrap">
+                    <span class="app-tile-icon">✉️</span>
+                  </div>
+                  <div class="app-tile-name">Gmail</div>
+                  <div class="app-tile-desc">Google Mail</div>
+                </button>
+
+                <!-- Spotify -->
+                <button class="app-tile app-spotify" onclick="openOrFocusApp('spotify', 'https://open.spotify.com')">
+                  <div class="app-icon-wrap">
+                    <span class="app-tile-icon">🎵</span>
+                  </div>
+                  <div class="app-tile-name">Spotify</div>
+                  <div class="app-tile-desc">Music Web</div>
+                </button>
+              </div>
+            </section>
+
+            <!-- SECTION 2: SYSTEM MACROS & ACTIONS -->
+            <section class="home-section" style="margin-bottom: 16px;">
+              <div class="section-title-row">
+                <h2 class="section-heading">System Macros</h2>
                 <span class="section-status-sub" id="deck-target-hint">Target: Desktop PC</span>
               </div>
               <div class="deck-grid">
@@ -306,19 +387,53 @@
               </div>
             </section>
 
-            <!-- Cross-Device Teleport / Beam Card -->
+            <!-- SECTION 3: CROSS-DEVICE TELEPORT (FULL CLIPBOARD SYNC SUITE) -->
             <section class="home-section">
               <div class="section-title-row">
                 <h2 class="section-heading">Cross-Device Teleport</h2>
-                <span class="section-status-sub">iPad ➔ PC Beam</span>
+                <span class="section-status-sub">Direct Clipboard Sync & Beam</span>
               </div>
               <div class="teleport-card">
                 <div class="teleport-input-wrap">
-                  <textarea id="teleport-text" class="teleport-textarea" rows="2" placeholder="Type text, links, or notes to beam to workstation..."></textarea>
+                  <textarea id="teleport-text" class="teleport-textarea" rows="2" placeholder="Type, view, or paste text/URL to beam across devices..."></textarea>
                 </div>
-                <div class="teleport-actions-row">
-                  <button class="teleport-btn primary" onclick="beamClipboard()">
-                    <span>📋</span> Copy to PC
+
+                <!-- Per-Machine Copy & Paste Controls -->
+                <div class="teleport-machines-box">
+                  <!-- Desktop PC Controls -->
+                  <div class="machine-teleport-row">
+                    <span class="machine-row-label">🖥️ Desktop PC:</span>
+                    <div class="machine-row-buttons">
+                      <button class="teleport-btn machine-btn" onclick="copyFromMachine('desktop_pc')">
+                        <span>📥</span> Copy from PC
+                      </button>
+                      <button class="teleport-btn machine-btn primary" onclick="pasteToMachine('desktop_pc')">
+                        <span>📤</span> Paste to PC
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Work Laptop Controls -->
+                  <div class="machine-teleport-row">
+                    <span class="machine-row-label">💻 Work Laptop:</span>
+                    <div class="machine-row-buttons">
+                      <button class="teleport-btn machine-btn" onclick="copyFromMachine('work_laptop')">
+                        <span>📥</span> Copy from Laptop
+                      </button>
+                      <button class="teleport-btn machine-btn primary" onclick="pasteToMachine('work_laptop')">
+                        <span>📤</span> Paste to Laptop
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 1-Tap Machine-to-Machine Quick Sync & Extra Actions -->
+                <div class="teleport-actions-row" style="margin-top: 10px; margin-bottom: 0;">
+                  <button class="teleport-btn sync-btn" onclick="syncClipboard('desktop_pc', 'work_laptop')">
+                    <span>🔄</span> PC ➔ Laptop
+                  </button>
+                  <button class="teleport-btn sync-btn" onclick="syncClipboard('work_laptop', 'desktop_pc')">
+                    <span>🔄</span> Laptop ➔ PC
                   </button>
                   <button class="teleport-btn secondary" onclick="beamUrl()">
                     <span>🌐</span> Open URL
@@ -326,15 +441,6 @@
                   <button class="teleport-btn clear" onclick="clearTeleport()">
                     <span>✕</span> Clear
                   </button>
-                </div>
-                <!-- Quick Preset URLs Chips -->
-                <div class="teleport-chips-row">
-                  <span class="teleport-chip-label">Quick Links:</span>
-                  <button class="teleport-chip" onclick="quickBeamUrl('https://youtube.com')">YouTube</button>
-                  <button class="teleport-chip" onclick="quickBeamUrl('https://github.com')">GitHub</button>
-                  <button class="teleport-chip" onclick="quickBeamUrl('https://chatgpt.com')">ChatGPT</button>
-                  <button class="teleport-chip" onclick="quickBeamUrl('https://mail.google.com')">Gmail</button>
-                  <button class="teleport-chip" onclick="quickBeamUrl('https://open.spotify.com')">Spotify</button>
                 </div>
               </div>
             </section>

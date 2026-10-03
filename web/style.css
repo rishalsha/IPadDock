@@ -1237,6 +1237,92 @@ html, body {
   color: #8e8e93;
 }
 
+/* Quick Apps Deck Grid (Large Prominent Icons) */
+.app-deck-grid {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin: -5px;
+}
+
+.app-tile {
+  width: calc(25% - 10px);
+  margin: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 16px 8px;
+  text-align: center;
+  color: #ffffff;
+  cursor: pointer;
+  -webkit-transition: all 0.22s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: all 0.22s cubic-bezier(0.25, 0.1, 0.25, 1);
+  box-sizing: border-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+.app-tile:active {
+  -webkit-transform: scale(0.92);
+  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.app-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+.app-tile-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.app-tile-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.app-tile-desc {
+  font-size: 0.70rem;
+  color: #8e8e93;
+  white-space: nowrap;
+}
+
+/* App specific brand glows */
+.app-whatsapp .app-icon-wrap { background: rgba(37, 211, 102, 0.18); border: 1px solid rgba(37, 211, 102, 0.4); }
+.app-gemini .app-icon-wrap { background: rgba(138, 92, 246, 0.22); border: 1px solid rgba(138, 92, 246, 0.45); }
+.app-claude .app-icon-wrap { background: rgba(217, 119, 6, 0.2); border: 1px solid rgba(217, 119, 6, 0.4); }
+.app-youtube .app-icon-wrap { background: rgba(255, 0, 0, 0.18); border: 1px solid rgba(255, 0, 0, 0.4); }
+.app-github .app-icon-wrap { background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.28); }
+.app-chatgpt .app-icon-wrap { background: rgba(16, 163, 127, 0.2); border: 1px solid rgba(16, 163, 127, 0.4); }
+.app-gmail .app-icon-wrap { background: rgba(234, 67, 53, 0.18); border: 1px solid rgba(234, 67, 53, 0.4); }
+.app-spotify .app-icon-wrap { background: rgba(30, 215, 96, 0.18); border: 1px solid rgba(30, 215, 96, 0.4); }
+
 /* Teleport Card */
 .teleport-card {
   background: rgba(255, 255, 255, 0.08);
@@ -1270,6 +1356,69 @@ html, body {
   box-shadow: 0 0 10px rgba(10, 132, 255, 0.4);
 }
 
+/* Teleport Multi-Machine Clipboard Box */
+.teleport-machines-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.machine-teleport-row {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.machine-teleport-row:last-child {
+  border-bottom: none;
+}
+
+.machine-row-label {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #e5e5ea;
+  white-space: nowrap;
+  margin-right: 10px;
+}
+
+.machine-row-buttons {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.teleport-btn.machine-btn {
+  padding: 7px 12px;
+  font-size: 0.80rem;
+  margin-left: 8px;
+  margin-right: 0;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.teleport-btn.machine-btn.primary {
+  background: #0a84ff;
+  border-color: #0a84ff;
+}
+
+.teleport-btn.sync-btn {
+  -webkit-flex: 2;
+  flex: 2;
+  background: -webkit-linear-gradient(135deg, #0a84ff 0%, #5e5ce6 100%);
+  background: linear-gradient(135deg, #0a84ff 0%, #5e5ce6 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(94, 92, 230, 0.4);
+}
+
 .teleport-actions-row {
   display: -webkit-flex;
   display: flex;
@@ -1298,17 +1447,9 @@ html, body {
   margin-right: 0;
 }
 
-.teleport-btn.primary {
-  -webkit-flex: 2;
-  flex: 2;
-  background: #0a84ff;
-  color: #ffffff;
-  box-shadow: 0 2px 10px rgba(10, 132, 255, 0.4);
-}
-
 .teleport-btn.secondary {
-  -webkit-flex: 2;
-  flex: 2;
+  -webkit-flex: 1.5;
+  flex: 1.5;
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.18);
   color: #ffffff;
@@ -1322,44 +1463,6 @@ html, body {
 }
 
 .teleport-btn:active {
-  -webkit-transform: scale(0.95);
-  transform: scale(0.95);
-}
-
-.teleport-chips-row {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-align-items: center;
-  align-items: center;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-top: 4px;
-}
-
-.teleport-chip-label {
-  font-size: 0.76rem;
-  color: #8e8e93;
-  margin-right: 8px;
-  white-space: nowrap;
-}
-
-.teleport-chip {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #e5e5ea;
-  border-radius: 12px;
-  padding: 5px 10px;
-  font-size: 0.76rem;
-  font-weight: 500;
-  margin-right: 6px;
-  white-space: nowrap;
-  cursor: pointer;
-  -webkit-transition: all 0.2s;
-  transition: all 0.2s;
-}
-
-.teleport-chip:active {
-  background: rgba(255, 255, 255, 0.2);
   -webkit-transform: scale(0.95);
   transform: scale(0.95);
 }
