@@ -187,13 +187,15 @@
             <!-- Transport Controls -->
             <div class="media-controls-row">
               <button class="media-ctrl-btn" onclick="sendMediaCmd('prev')" title="Previous Track">
-                <span>⏮</span>
+                <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
               </button>
               <button class="media-ctrl-btn primary-play-btn" onclick="sendMediaCmd('play_pause')" id="media-play-btn" title="Play / Pause">
-                <span id="media-play-icon">▶</span>
+                <span id="media-play-icon">
+                  <svg viewBox="0 0 24 24" class="media-svg-icon play-svg"><path d="M8 5v14l11-7z"/></svg>
+                </span>
               </button>
               <button class="media-ctrl-btn" onclick="sendMediaCmd('next')" title="Next Track">
-                <span>⏭</span>
+                <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
               </button>
             </div>
 
