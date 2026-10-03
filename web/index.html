@@ -12,7 +12,7 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#000000">
 
-  <link rel="stylesheet" href="style.css?v=1791037240">
+  <link rel="stylesheet" href="style.css?v=1791037895">
 </head>
 <body>
   <div class="home-app">
@@ -157,8 +157,8 @@
               </div>
             </div>
 
-            <!-- Now Playing Hero Card -->
-            <div class="media-card">
+            <!-- Now Playing Hero Card (Acts as Hidden Mute Toggle) -->
+            <div class="media-card" id="media-card" onclick="sendMediaCmd('mute')" title="Tap to Mute / Unmute">
               <div class="media-vinyl-wrap">
                 <div class="media-vinyl" id="media-vinyl">
                   <div class="vinyl-center" id="vinyl-center">
@@ -182,6 +182,11 @@
                   <span class="eq-bar"></span>
                   <span class="eq-bar"></span>
                 </div>
+              </div>
+
+              <!-- Opposite End Mute Indicator (Hidden when unmuted) -->
+              <div class="media-card-right">
+                <span class="media-card-mute-badge" id="vol-mute-btn" style="display: none;">🔇 MUTED</span>
               </div>
             </div>
 
@@ -207,7 +212,6 @@
                 <span class="volume-val" id="volume-val-label">100%</span>
               </div>
               <div class="volume-slider-row">
-                <button class="vol-quick-btn" onclick="sendMediaCmd('mute')" id="vol-mute-btn">🔇</button>
                 <button class="vol-quick-btn" onclick="sendMediaCmd('vol_down')">🔉 -5%</button>
                 <div class="slider-container" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
                   <input type="range" min="0" max="100" value="100" class="volume-range-input" id="volume-range" oninput="onVolumeSliderChange(this.value)" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
@@ -607,6 +611,6 @@
   <!-- Scripts -->
   <script src="paho-mqtt.js"></script>
   <script src="config.js"></script>
-  <script src="app.js?v=1791037240"></script>
+  <script src="app.js?v=1791037895"></script>
 </body>
 </html>

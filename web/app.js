@@ -807,9 +807,25 @@ function updateMediaCard(media) {
   if (volLabel && media.volume !== undefined) {
     volLabel.innerHTML = media.volume + '%';
   }
+  var mediaCard = document.getElementById('media-card');
+  if (mediaCard) {
+    if (media.muted) {
+      if (mediaCard.className.indexOf('muted') === -1) {
+        mediaCard.className = mediaCard.className + ' muted';
+      }
+    } else {
+      mediaCard.className = mediaCard.className.replace(/\s*muted/g, '');
+    }
+  }
+
   if (muteBtn) {
-    muteBtn.innerHTML = media.muted ? '🔊' : '🔇';
-    muteBtn.style.background = media.muted ? 'rgba(255, 69, 58, 0.4)' : '';
+    if (media.muted) {
+      muteBtn.innerHTML = '🔇 MUTED';
+      muteBtn.style.display = 'inline-block';
+    } else {
+      muteBtn.innerHTML = '';
+      muteBtn.style.display = 'none';
+    }
   }
 
   // Live Album Artwork inside Vinyl
@@ -857,6 +873,25 @@ function sendMediaCmd(action) {
       var SVG_PLAY = '<svg viewBox="0 0 24 24" class="media-svg-icon play-svg"><path d="M8 5v14l11-7z"/></svg>';
       var SVG_PAUSE = '<svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
       playIcon.innerHTML = playIcon.innerHTML.indexOf('M6 19') !== -1 ? SVG_PLAY : SVG_PAUSE;
+    }
+  } else if (action === 'mute') {
+    var card = document.getElementById('media-card');
+    var btn = document.getElementById('vol-mute-btn');
+    if (card) {
+      var wasMuted = card.className.indexOf('muted') !== -1;
+      if (!wasMuted) {
+        card.className = card.className + ' muted';
+        if (btn) {
+          btn.innerHTML = '🔇 MUTED';
+          btn.style.display = 'inline-block';
+        }
+      } else {
+        card.className = card.className.replace(/\s*muted/g, '');
+        if (btn) {
+          btn.innerHTML = '';
+          btn.style.display = 'none';
+        }
+      }
     }
   }
 }
