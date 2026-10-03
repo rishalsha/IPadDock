@@ -177,34 +177,37 @@
               </div>
             </div>
 
-            <!-- Transport Controls -->
-            <div class="media-controls-row">
-              <button class="media-ctrl-btn" onclick="sendMediaCmd('prev')" title="Previous Track">
-                <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-              </button>
-              <button class="media-ctrl-btn primary-play-btn" onclick="sendMediaCmd('play_pause')" id="media-play-btn" title="Play / Pause">
-                <span id="media-play-icon">
-                  <svg viewBox="0 0 24 24" class="media-svg-icon play-svg"><path d="M8 5v14l11-7z"/></svg>
-                </span>
-              </button>
-              <button class="media-ctrl-btn" onclick="sendMediaCmd('next')" title="Next Track">
-                <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-              </button>
-            </div>
-
-            <!-- Volume Slider & Quick Controls -->
-            <div class="volume-panel">
-              <div class="volume-header">
-                <span class="volume-title">Master Output Volume</span>
-                <span class="volume-val" id="volume-val-label">100%</span>
+            <!-- Bottom Anchored Controls -->
+            <div class="media-bottom-controls">
+              <!-- Transport Controls -->
+              <div class="media-controls-row">
+                <button class="media-ctrl-btn" onclick="sendMediaCmd('prev')" title="Previous Track">
+                  <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                </button>
+                <button class="media-ctrl-btn primary-play-btn" onclick="sendMediaCmd('play_pause')" id="media-play-btn" title="Play / Pause">
+                  <span id="media-play-icon">
+                    <svg viewBox="0 0 24 24" class="media-svg-icon play-svg"><path d="M8 5v14l11-7z"/></svg>
+                  </span>
+                </button>
+                <button class="media-ctrl-btn" onclick="sendMediaCmd('next')" title="Next Track">
+                  <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </button>
               </div>
-              <div class="volume-slider-row">
-                <button class="vol-quick-btn" onclick="sendMediaCmd('mute')" id="vol-mute-btn">🔇</button>
-                <button class="vol-quick-btn" onclick="sendMediaCmd('vol_down')">🔉 -5%</button>
-                <div class="slider-container" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
-                  <input type="range" min="0" max="100" value="100" class="volume-range-input" id="volume-range" oninput="onVolumeSliderChange(this.value)" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
+
+              <!-- Volume Slider & Quick Controls -->
+              <div class="volume-panel">
+                <div class="volume-header">
+                  <span class="volume-title">Master Output Volume</span>
+                  <span class="volume-val" id="volume-val-label">100%</span>
                 </div>
-                <button class="vol-quick-btn" onclick="sendMediaCmd('vol_up')">🔊 +5%</button>
+                <div class="volume-slider-row">
+                  <button class="vol-quick-btn" onclick="sendMediaCmd('mute')" id="vol-mute-btn">🔇</button>
+                  <button class="vol-quick-btn" onclick="sendMediaCmd('vol_down')">🔉 -5%</button>
+                  <div class="slider-container" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
+                    <input type="range" min="0" max="100" value="100" class="volume-range-input" id="volume-range" oninput="onVolumeSliderChange(this.value)" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
+                  </div>
+                  <button class="vol-quick-btn" onclick="sendMediaCmd('vol_up')">🔊 +5%</button>
+                </div>
               </div>
             </div>
           </div>
