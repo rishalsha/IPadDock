@@ -526,8 +526,8 @@ html, body {
    PAGE 2: BATTLE STATION HUD (TELEMETRY COCKPIT)
    ------------------------------------------------------------- */
 .hud-container {
-  padding: 0 4px;
-  max-width: 960px;
+  padding: 4px 6px 14px 6px;
+  max-width: 980px;
   margin: 0 auto;
 }
 
@@ -539,10 +539,10 @@ html, body {
   -webkit-justify-content: space-between;
   justify-content: space-between;
   background: rgba(255, 255, 255, 0.06);
-  padding: 4px 12px;
-  border-radius: 14px;
+  padding: 7px 16px;
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .hud-live-tag {
@@ -550,22 +550,22 @@ html, body {
   display: inline-flex;
   -webkit-align-items: center;
   align-items: center;
-  font-size: 0.74rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: #30d158;
   letter-spacing: 0.08em;
   background: rgba(48, 209, 88, 0.14);
-  padding: 3px 9px;
+  padding: 4px 10px;
   border-radius: 12px;
   border: 1px solid rgba(48, 209, 88, 0.3);
 }
 
 .hud-live-pulse {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: #30d158;
-  margin-right: 6px;
+  margin-right: 7px;
   box-shadow: 0 0 8px #30d158;
   -webkit-animation: hudPulse 1.6s infinite ease-in-out;
   animation: hudPulse 1.6s infinite ease-in-out;
@@ -593,9 +593,9 @@ html, body {
   justify-content: space-between;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 14px;
-  padding: 6px 12px;
-  margin-bottom: 8px;
+  border-radius: 16px;
+  padding: 9px 16px;
+  margin-bottom: 12px;
 }
 
 .hud-station-left {
@@ -606,22 +606,22 @@ html, body {
 }
 
 .hud-station-icon {
-  font-size: 1.4rem;
-  margin-right: 8px;
-}
-
-.hud-station-name {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #ffffff;
+  font-size: 1.55rem;
   margin-right: 10px;
 }
 
+.hud-station-name {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-right: 12px;
+}
+
 .hud-station-ip {
-  font-size: 0.76rem;
+  font-size: 0.80rem;
   color: #8e8e93;
   background: rgba(255, 255, 255, 0.08);
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: 8px;
   margin-left: 8px;
   font-family: monospace;
@@ -632,15 +632,15 @@ html, body {
   display: flex;
   -webkit-align-items: center;
   align-items: center;
-  font-size: 0.76rem;
+  font-size: 0.80rem;
   color: #a1a1aa;
 }
 
 .hud-pill {
   background: rgba(255, 255, 255, 0.08);
-  padding: 2px 8px;
-  border-radius: 8px;
-  margin-left: 6px;
+  padding: 3px 9px;
+  border-radius: 9px;
+  margin-left: 8px;
   white-space: nowrap;
 }
 
@@ -650,17 +650,17 @@ html, body {
   display: flex;
   -webkit-justify-content: space-between;
   justify-content: space-between;
-  margin: 0 -3px 8px -3px;
+  margin: 0 -4px 12px -4px;
 }
 
 .hud-ring-card {
   -webkit-flex: 1;
   flex: 1;
-  margin: 0 3px;
+  margin: 0 4px;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 8px 4px 6px 4px;
+  border-radius: 16px;
+  padding: 10px 6px 8px 6px;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
@@ -673,14 +673,14 @@ html, body {
 
 .hud-ring-svg-wrap {
   position: relative;
-  width: 78px;
-  height: 78px;
-  margin-bottom: 2px;
+  width: 86px;
+  height: 86px;
+  margin-bottom: 4px;
 }
 
 .hud-ring-svg {
-  width: 78px;
-  height: 78px;
+  width: 86px;
+  height: 86px;
   -webkit-transform: rotate(-90deg);
   transform: rotate(-90deg);
 }
@@ -725,30 +725,30 @@ html, body {
 }
 
 .hud-ring-num {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #ffffff;
   line-height: 1;
 }
 
 .hud-ring-lbl {
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: #8e8e93;
-  letter-spacing: 0.06em;
-  margin-top: 2px;
+  letter-spacing: 0.07em;
+  margin-top: 3px;
   text-transform: uppercase;
 }
 
 .hud-ring-sub {
-  font-size: 0.70rem;
+  font-size: 0.76rem;
   color: #d1d1d6;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 /* Detailed Telemetry Cards Grid (2 Columns) */
@@ -757,20 +757,20 @@ html, body {
   display: flex;
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin: -4px;
+  margin: -5px;
 }
 
 .hud-detail-card {
   width: 50%;
-  padding: 4px;
+  padding: 5px;
   box-sizing: border-box;
 }
 
 .hud-detail-inner {
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 8px 10px;
+  border-radius: 16px;
+  padding: 11px 14px;
   height: 100%;
   box-sizing: border-box;
 }
@@ -782,26 +782,26 @@ html, body {
   align-items: center;
   -webkit-justify-content: space-between;
   justify-content: space-between;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 
 .hud-card-heading {
-  font-size: 0.84rem;
+  font-size: 0.92rem;
   font-weight: 700;
   color: #ffffff;
 }
 
 .hud-card-sub-badge {
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: #8e8e93;
 }
 
 .hud-model-title {
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   font-weight: 600;
   color: #e5e5ea;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -812,19 +812,19 @@ html, body {
   display: flex;
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 
 .hud-chip {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 6px;
+  padding: 2px 7px;
+  border-radius: 7px;
   background: rgba(255, 255, 255, 0.08);
   color: #d1d1d6;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-right: 4px;
-  margin-bottom: 3px;
+  margin-right: 5px;
+  margin-bottom: 4px;
   white-space: nowrap;
 }
 
@@ -845,8 +845,8 @@ html, body {
   display: flex;
   -webkit-justify-content: space-between;
   justify-content: space-between;
-  font-size: 0.78rem;
-  margin-bottom: 2px;
+  font-size: 0.82rem;
+  margin-bottom: 3px;
 }
 
 .hud-stat-lbl {
@@ -860,17 +860,17 @@ html, body {
 
 .hud-bar-container {
   width: 100%;
-  height: 6px;
+  height: 8px;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  border-radius: 5px;
   overflow: hidden;
-  margin-top: 2px;
-  margin-bottom: 6px;
+  margin-top: 3px;
+  margin-bottom: 7px;
 }
 
 .hud-bar-fill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 5px;
   background: -webkit-linear-gradient(left, #0a84ff, #30d158);
   background: linear-gradient(to right, #0a84ff, #30d158);
   -webkit-transition: width 0.4s ease;
@@ -896,12 +896,12 @@ html, body {
   display: -webkit-flex;
   display: flex;
   width: 100%;
-  height: 6px;
+  height: 8px;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  border-radius: 5px;
   overflow: hidden;
-  margin-top: 2px;
-  margin-bottom: 6px;
+  margin-top: 3px;
+  margin-bottom: 7px;
 }
 
 .hud-bar-seg {
