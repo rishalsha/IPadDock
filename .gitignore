@@ -20,3 +20,9 @@ Thumbs.db
 *.pem
 *.key
 .env
+secrets.h
+
+# PlatformIO & Embedded
+.pio/
+.pioenvs/
+.piolibdeps/
