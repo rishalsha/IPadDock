@@ -36,6 +36,15 @@ WebServer server(80);
 unsigned long lastMqttRetry = 0;
 unsigned long lastHeartbeat = 0;
 
+void blinkStatusLed(int count, int onMs, int offMs) {
+  for (int i = 0; i < count; i++) {
+    digitalWrite(STATUS_LED, HIGH);
+    delay(onMs);
+    digitalWrite(STATUS_LED, LOW);
+    if (i < count - 1) delay(offMs);
+  }
+}
+
 // ==========================================
 // WAKE-ON-LAN LOGIC
 // ==========================================
@@ -66,10 +75,8 @@ bool sendWOL(const char* macStr) {
   udp.write(magicPacket, sizeof(magicPacket));
   udp.endPacket();
 
-  // Blink LED to confirm transmission
-  digitalWrite(STATUS_LED, HIGH);
-  delay(100);
-  digitalWrite(STATUS_LED, LOW);
+  // Blink built-in LED thrice to confirm transmission
+  blinkStatusLed(3, 100, 100);
 
   Serial.printf("[+] Broadcasted WoL Magic Packet for MAC: %s\n", macStr);
   return true;
