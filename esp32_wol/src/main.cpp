@@ -213,7 +213,7 @@ void setup() {
   // Setup MQTT
   mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
   mqttClient.setCallback(onMqttMessage);
-  mqttClient.setKeepAlive(15);
+  mqttClient.setKeepAlive(5);
 }
 
 void loop() {
@@ -223,8 +223,8 @@ void loop() {
     }
     mqttClient.loop();
 
-    // Periodic heartbeat every 15 seconds
-    if (mqttClient.connected() && (millis() - lastHeartbeat > 15000)) {
+    // Periodic snappy heartbeat every 3 seconds
+    if (mqttClient.connected() && (millis() - lastHeartbeat > 3000)) {
       lastHeartbeat = millis();
       mqttClient.publish("tele/esp32_wol/STATE", "ONLINE");
     }

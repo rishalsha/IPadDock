@@ -1512,8 +1512,11 @@ function triggerScene(sceneName, chipEl) {
 // MQTT Handlers (Paho MQTT)
 // -------------------------------------------------------------
 var lastEsp32Heartbeat = 0;
+var currentEsp32Online = null;
 
 function updateEsp32Status(isOnline) {
+  if (currentEsp32Online === isOnline) return;
+  currentEsp32Online = isOnline;
   var dot = document.getElementById('esp32-dot');
   if (!dot) return;
   if (isOnline) {
@@ -1818,15 +1821,15 @@ function initWatchdogs() {
     }, refreshMs);
   }
 
-  // ESP32 Heartbeat watchdog (check every 15s)
+  // ESP32 Heartbeat watchdog (check every 3s, timeout after 8s)
   setInterval(function () {
     if (lastEsp32Heartbeat > 0) {
       var now = new Date().getTime();
-      if (now - lastEsp32Heartbeat > 45000) {
+      if (now - lastEsp32Heartbeat > 8000) {
         updateEsp32Status(false);
       }
     }
-  }, 15000);
+  }, 3000);
 
   // Wake recovery
   document.addEventListener('visibilitychange', function () {
