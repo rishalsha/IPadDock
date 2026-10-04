@@ -34,6 +34,7 @@ WiFiUDP udp;
 WebServer server(80);
 
 unsigned long lastMqttRetry = 0;
+unsigned long lastHeartbeat = 0;
 
 // ==========================================
 // WAKE-ON-LAN LOGIC
@@ -153,13 +154,17 @@ void reconnectMqtt() {
   if (millis() - lastMqttRetry > 5000) {
     lastMqttRetry = millis();
     Serial.print("[*] Connecting to MQTT broker...");
-    if (mqttClient.connect(MQTT_CLIENT_ID)) {
+    // Connect with Last Will & Testament (LWT) topic retained as OFFLINE
+    if (mqttClient.connect(MQTT_CLIENT_ID, "tele/esp32_wol/LWT", 0, true, "OFFLINE")) {
       Serial.println(" connected!");
       // Listen to iPad Dock wake commands
       mqttClient.subscribe("cmnd/+/wake");
       mqttClient.subscribe("cmnd/room_light/WakeOnLan");
       mqttClient.subscribe("cmnd/esp32_wol/#");
+      // Publish retained ONLINE LWT and telemetry state
+      mqttClient.publish("tele/esp32_wol/LWT", "ONLINE", true);
       mqttClient.publish("tele/esp32_wol/STATE", "ONLINE");
+      lastHeartbeat = millis();
     } else {
       Serial.printf(" failed (rc=%d), will retry.\n", mqttClient.state());
     }
@@ -201,6 +206,7 @@ void setup() {
   // Setup MQTT
   mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
   mqttClient.setCallback(onMqttMessage);
+  mqttClient.setKeepAlive(15);
 }
 
 void loop() {
@@ -209,6 +215,12 @@ void loop() {
       reconnectMqtt();
     }
     mqttClient.loop();
+
+    // Periodic heartbeat every 15 seconds
+    if (mqttClient.connected() && (millis() - lastHeartbeat > 15000)) {
+      lastHeartbeat = millis();
+      mqttClient.publish("tele/esp32_wol/STATE", "ONLINE");
+    }
   } else {
     Serial.println("[-] Wi-Fi lost, reconnecting...");
     WiFi.reconnect();

@@ -12,7 +12,7 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#000000">
 
-  <link rel="stylesheet" href="style.css?v=1791037895">
+  <link rel="stylesheet" href="style.css?v=1791091268">
 </head>
 <body>
   <div class="home-app">
@@ -41,6 +41,7 @@
         <div class="home-status-chip">
           <span class="status-indicator-dot" id="mqtt-dot"></span>
           <span id="mqtt-label" class="status-chip-text">Connecting...</span>
+          <span class="status-indicator-dot esp32-dot disconnected" id="esp32-dot" title="ESP32 Relay: Offline"></span>
         </div>
         <button class="settings-circle-btn hidden-touch-btn" onclick="toggleFullscreen()" title="Fullscreen" style="opacity: 0; margin-right: 6px;">
           <span>⛶</span>
@@ -611,6 +612,6 @@
   <!-- Scripts -->
   <script src="paho-mqtt.js"></script>
   <script src="config.js"></script>
-  <script src="app.js?v=1791037895"></script>
+  <script src="app.js?v=1791091268"></script>
 </body>
 </html>

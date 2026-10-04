@@ -191,6 +191,11 @@ html, body {
   box-shadow: 0 0 8px #ff453a;
 }
 
+.status-indicator-dot.esp32-dot {
+  margin-right: 0;
+  margin-left: 9px;
+}
+
 .settings-circle-btn {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);

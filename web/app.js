@@ -1511,6 +1511,20 @@ function triggerScene(sceneName, chipEl) {
 // -------------------------------------------------------------
 // MQTT Handlers (Paho MQTT)
 // -------------------------------------------------------------
+var lastEsp32Heartbeat = 0;
+
+function updateEsp32Status(isOnline) {
+  var dot = document.getElementById('esp32-dot');
+  if (!dot) return;
+  if (isOnline) {
+    dot.className = 'status-indicator-dot esp32-dot connected';
+    dot.setAttribute('title', 'ESP32 WoL Relay: Online');
+  } else {
+    dot.className = 'status-indicator-dot esp32-dot disconnected';
+    dot.setAttribute('title', 'ESP32 WoL Relay: Offline');
+  }
+}
+
 function setStatus(status, text) {
   var dot = document.getElementById('mqtt-dot');
   var label = document.getElementById('mqtt-label');
@@ -1535,6 +1549,7 @@ function connectMqtt() {
   mqttClient.onConnectionLost = function (responseObject) {
     isConnected = false;
     setStatus('disconnected', 'Disconnected');
+    updateEsp32Status(false);
     console.warn('MQTT Connection lost:', responseObject.errorMessage);
     clearTimeout(reconnectTimer);
     reconnectTimer = setTimeout(connectMqtt, 4000);
@@ -1558,6 +1573,7 @@ function connectMqtt() {
     onFailure: function (err) {
       isConnected = false;
       setStatus('disconnected', 'Failed');
+      updateEsp32Status(false);
       console.error('MQTT Connect failed:', err);
       clearTimeout(reconnectTimer);
       reconnectTimer = setTimeout(connectMqtt, 5000);
@@ -1589,6 +1605,10 @@ function subscribeAll() {
   mqttClient.subscribe('stat/+/action_status', { qos: 0 });
   mqttClient.subscribe('stat/+/clipboard', { qos: 0 });
 
+  // ESP32 WoL Relay Telemetry & Status
+  mqttClient.subscribe('tele/esp32_wol/#', { qos: 0 });
+  mqttClient.subscribe('stat/esp32_wol/#', { qos: 0 });
+
   for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
     var comp = DOCK_CONFIG.computers[i];
     mqttClient.subscribe('stat/' + comp.topic + '/status', { qos: 0 });
@@ -1616,6 +1636,19 @@ function publish(topic, message) {
 function handleIncomingMessage(topic, payload) {
   if (topic === 'cmnd/ipaddock/reload') {
     window.location.reload(true);
+    return;
+  }
+
+  // ESP32 WoL Relay Status & Heartbeat
+  if (topic === 'tele/esp32_wol/STATE' || topic === 'tele/esp32_wol/LWT' || topic === 'stat/esp32_wol/STATUS') {
+    var p = payload ? payload.toUpperCase().trim() : '';
+    if (p === 'ONLINE' || p === '1' || p === 'ON') {
+      lastEsp32Heartbeat = new Date().getTime();
+      updateEsp32Status(true);
+    } else if (p === 'OFFLINE' || p === '0' || p === 'OFF') {
+      lastEsp32Heartbeat = 0;
+      updateEsp32Status(false);
+    }
     return;
   }
 
@@ -1784,6 +1817,16 @@ function initWatchdogs() {
       window.location.reload(true);
     }, refreshMs);
   }
+
+  // ESP32 Heartbeat watchdog (check every 15s)
+  setInterval(function () {
+    if (lastEsp32Heartbeat > 0) {
+      var now = new Date().getTime();
+      if (now - lastEsp32Heartbeat > 45000) {
+        updateEsp32Status(false);
+      }
+    }
+  }, 15000);
 
   // Wake recovery
   document.addEventListener('visibilitychange', function () {
