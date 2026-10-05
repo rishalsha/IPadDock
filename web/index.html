@@ -12,7 +12,7 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#000000">
 
-  <link rel="stylesheet" href="style.css?v=1791092207">
+  <link rel="stylesheet" href="style.css?v=1791176466">
 </head>
 <body>
   <div class="home-app">
@@ -112,6 +112,80 @@
                 <span class="scene-chip-icon">🌑</span>
                 <span class="scene-chip-title">All Off</span>
               </button>
+            </div>
+          </section>
+
+          <!-- Section: Now Playing Music Player -->
+          <section class="home-section home-media-section">
+            <div class="section-title-row">
+              <div class="home-media-title-group">
+                <h2 class="section-heading">Now Playing</h2>
+                <span class="home-media-status-badge" id="home-media-status-badge">STOPPED</span>
+              </div>
+              <div class="media-target-buttons" id="home-media-target-buttons">
+                <!-- Dynamically generated computer selector tabs in sync with Page 3 -->
+              </div>
+            </div>
+
+            <!-- Home Music Card (Tap anywhere on card body to Mute/Unmute) -->
+            <div class="home-music-card" id="home-media-card" onclick="sendMediaCmd('mute')" title="Tap to Mute / Unmute">
+              <!-- Left side: Album Art / Spinning Vinyl & Track Info -->
+              <div class="home-music-left">
+                <div class="home-vinyl-wrap">
+                  <div class="home-vinyl" id="home-media-vinyl">
+                    <div class="home-vinyl-center" id="home-vinyl-center">
+                      <img id="home-media-art-img" class="vinyl-art-img" src="" alt="Album Art" style="display: none;" onerror="onHomeArtError()">
+                      <span class="home-vinyl-icon" id="home-vinyl-icon-fallback">🎵</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="home-music-details">
+                  <div class="home-track-title" id="home-media-title">No Media Playing</div>
+                  <div class="home-track-artist" id="home-media-artist">Open Spotify, YouTube, or Music Player</div>
+                  <div class="home-track-album" id="home-media-album"></div>
+
+                  <div class="home-music-meta-row">
+                    <!-- Equalizer Bars -->
+                    <div class="equalizer-bars" id="home-equalizer-bars">
+                      <span class="eq-bar"></span>
+                      <span class="eq-bar"></span>
+                      <span class="eq-bar"></span>
+                      <span class="eq-bar"></span>
+                      <span class="eq-bar"></span>
+                    </div>
+                    <span class="media-card-mute-badge" id="home-vol-mute-btn" style="display: none;">🔇 MUTED</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right side: Transport Controls & Volume (Stops propagation so buttons/slider don't trigger mute) -->
+              <div class="home-music-right" onclick="event.stopPropagation()">
+                <!-- Transport buttons row -->
+                <div class="home-controls-row">
+                  <button class="home-ctrl-btn" onclick="sendMediaCmd('prev')" title="Previous Track">
+                    <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                  </button>
+                  <button class="home-ctrl-btn home-primary-play-btn" onclick="sendMediaCmd('play_pause')" id="home-media-play-btn" title="Play / Pause">
+                    <span id="home-media-play-icon">
+                      <svg viewBox="0 0 24 24" class="media-svg-icon play-svg"><path d="M8 5v14l11-7z"/></svg>
+                    </span>
+                  </button>
+                  <button class="home-ctrl-btn" onclick="sendMediaCmd('next')" title="Next Track">
+                    <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                  </button>
+                </div>
+
+                <!-- Volume slider & Quick controls row -->
+                <div class="home-volume-row">
+                  <button class="home-vol-btn" onclick="sendMediaCmd('vol_down')" title="Volume Down (-5%)">🔉</button>
+                  <div class="slider-container home-slider-cont" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
+                    <input type="range" min="0" max="100" value="100" class="volume-range-input home-vol-input" id="home-volume-range" oninput="onHomeVolumeSliderChange(this.value)" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
+                  </div>
+                  <button class="home-vol-btn" onclick="sendMediaCmd('vol_up')" title="Volume Up (+5%)">🔊</button>
+                  <span class="home-vol-label" id="home-volume-val-label">100%</span>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -612,6 +686,6 @@
   <!-- Scripts -->
   <script src="paho-mqtt.js"></script>
   <script src="config.js"></script>
-  <script src="app.js?v=1791092207"></script>
+  <script src="app.js?v=1791176466"></script>
 </body>
 </html>

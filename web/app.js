@@ -723,20 +723,27 @@ function updateHudCard(compId, telem) {
 // PAGE 3: MEDIA & AUDIO STUDIO
 // -------------------------------------------------------------
 function renderMediaTargets() {
-  var container = document.getElementById('media-target-buttons');
-  if (!container) return;
-  container.innerHTML = '';
+  var containers = [
+    document.getElementById('media-target-buttons'),
+    document.getElementById('home-media-target-buttons')
+  ];
 
-  for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
-    var comp = DOCK_CONFIG.computers[i];
-    var btn = document.createElement('button');
-    btn.className = 'media-tab-btn' + (comp.id === activeMediaTarget ? ' active' : '');
-    btn.id = 'media-target-' + comp.id;
-    btn.onclick = (function (id) {
-      return function () { selectMediaTarget(id); };
-    })(comp.id);
-    btn.innerHTML = comp.icon + ' ' + comp.name;
-    container.appendChild(btn);
+  for (var c = 0; c < containers.length; c++) {
+    var container = containers[c];
+    if (!container) continue;
+    container.innerHTML = '';
+
+    for (var i = 0; i < DOCK_CONFIG.computers.length; i++) {
+      var comp = DOCK_CONFIG.computers[i];
+      var btn = document.createElement('button');
+      btn.className = 'media-tab-btn' + (comp.id === activeMediaTarget ? ' active' : '');
+      btn.id = (container.id === 'home-media-target-buttons' ? 'home-media-target-' : 'media-target-') + comp.id;
+      btn.onclick = (function (id) {
+        return function () { selectMediaTarget(id); };
+      })(comp.id);
+      btn.innerHTML = comp.icon + ' ' + comp.name;
+      container.appendChild(btn);
+    }
   }
 }
 
@@ -756,92 +763,161 @@ function selectMediaTarget(compId) {
 }
 
 function updateMediaCard(media) {
-  var titleEl = document.getElementById('media-title');
-  var artistEl = document.getElementById('media-artist');
-  var albumEl = document.getElementById('media-album');
-  var badgeEl = document.getElementById('media-status-badge');
-  var vinylEl = document.getElementById('media-vinyl');
-  var eqEl = document.getElementById('equalizer-bars');
-  var playIcon = document.getElementById('media-play-icon');
-  var volRange = document.getElementById('volume-range');
-  var volLabel = document.getElementById('volume-val-label');
-  var muteBtn = document.getElementById('vol-mute-btn');
-
   var isPlaying = media.status === 'Playing';
+  var titleText = media.title ? media.title : (isPlaying ? 'Playing Audio' : 'No Media Playing');
+  var artistText = media.artist ? media.artist : (isPlaying ? 'Desktop Player' : 'Open Spotify, YouTube, or Music Player');
+  var albumText = media.album ? media.album : '';
+  var statusText = (media.status || 'STOPPED').toUpperCase();
 
-  if (titleEl) titleEl.innerHTML = media.title ? media.title : (isPlaying ? 'Playing Audio' : 'No Media Playing');
-  if (artistEl) artistEl.innerHTML = media.artist ? media.artist : (isPlaying ? 'Desktop Player' : 'Open Spotify, YouTube, or Music Player');
-  if (albumEl) albumEl.innerHTML = media.album ? media.album : '';
+  // Track titles
+  var titleEl = document.getElementById('media-title');
+  var homeTitleEl = document.getElementById('home-media-title');
+  if (titleEl) titleEl.innerHTML = titleText;
+  if (homeTitleEl) homeTitleEl.innerHTML = titleText;
 
+  // Track artists
+  var artistEl = document.getElementById('media-artist');
+  var homeArtistEl = document.getElementById('home-media-artist');
+  if (artistEl) artistEl.innerHTML = artistText;
+  if (homeArtistEl) homeArtistEl.innerHTML = artistText;
+
+  // Track albums
+  var albumEl = document.getElementById('media-album');
+  var homeAlbumEl = document.getElementById('home-media-album');
+  if (albumEl) albumEl.innerHTML = albumText;
+  if (homeAlbumEl) homeAlbumEl.innerHTML = albumText;
+
+  // Status badges
+  var badgeEl = document.getElementById('media-status-badge');
+  var homeBadgeEl = document.getElementById('home-media-status-badge');
   if (badgeEl) {
     badgeEl.className = 'media-status-badge' + (isPlaying ? ' playing' : '');
-    badgeEl.innerHTML = media.status.toUpperCase();
+    badgeEl.innerHTML = statusText;
+  }
+  if (homeBadgeEl) {
+    homeBadgeEl.className = 'home-media-status-badge' + (isPlaying ? ' playing' : '');
+    homeBadgeEl.innerHTML = statusText;
   }
 
-  if (vinylEl) {
-    if (isPlaying) {
-      if (vinylEl.className.indexOf('spinning') === -1) vinylEl.className = vinylEl.className + ' spinning';
-    } else {
-      vinylEl.className = vinylEl.className.replace(/\s*spinning/g, '');
+  // Spinning vinyl records
+  var vinyls = [
+    document.getElementById('media-vinyl'),
+    document.getElementById('home-media-vinyl')
+  ];
+  for (var v = 0; v < vinyls.length; v++) {
+    var vinylEl = vinyls[v];
+    if (vinylEl) {
+      if (isPlaying) {
+        if (vinylEl.className.indexOf('spinning') === -1) vinylEl.className = vinylEl.className + ' spinning';
+      } else {
+        vinylEl.className = vinylEl.className.replace(/\s*spinning/g, '');
+      }
     }
   }
 
-  if (eqEl) {
-    if (isPlaying) {
-      if (eqEl.className.indexOf('active') === -1) eqEl.className = eqEl.className + ' active';
-    } else {
-      eqEl.className = eqEl.className.replace(/\s*active/g, '');
+  // Equalizer bars
+  var eqEls = [
+    document.getElementById('equalizer-bars'),
+    document.getElementById('home-equalizer-bars')
+  ];
+  for (var e = 0; e < eqEls.length; e++) {
+    var eqEl = eqEls[e];
+    if (eqEl) {
+      if (isPlaying) {
+        if (eqEl.className.indexOf('active') === -1) eqEl.className = eqEl.className + ' active';
+      } else {
+        eqEl.className = eqEl.className.replace(/\s*active/g, '');
+      }
     }
   }
 
+  // Play / Pause Icons
   var SVG_PLAY = '<svg viewBox="0 0 24 24" class="media-svg-icon play-svg"><path d="M8 5v14l11-7z"/></svg>';
   var SVG_PAUSE = '<svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-
-  if (playIcon) {
-    playIcon.innerHTML = isPlaying ? SVG_PAUSE : SVG_PLAY;
-  }
-
-  if (volRange && media.volume !== undefined) {
-    volRange.value = media.volume;
-  }
-  if (volLabel && media.volume !== undefined) {
-    volLabel.innerHTML = media.volume + '%';
-  }
-  var mediaCard = document.getElementById('media-card');
-  if (mediaCard) {
-    if (media.muted) {
-      if (mediaCard.className.indexOf('muted') === -1) {
-        mediaCard.className = mediaCard.className + ' muted';
-      }
-    } else {
-      mediaCard.className = mediaCard.className.replace(/\s*muted/g, '');
+  var playIcons = [
+    document.getElementById('media-play-icon'),
+    document.getElementById('home-media-play-icon')
+  ];
+  for (var p = 0; p < playIcons.length; p++) {
+    var playIcon = playIcons[p];
+    if (playIcon) {
+      playIcon.innerHTML = isPlaying ? SVG_PAUSE : SVG_PLAY;
     }
   }
 
-  if (muteBtn) {
-    if (media.muted) {
-      muteBtn.innerHTML = '🔇 MUTED';
-      muteBtn.style.display = 'inline-block';
-    } else {
-      muteBtn.innerHTML = '';
-      muteBtn.style.display = 'none';
+  // Volume sliders and labels
+  if (media.volume !== undefined) {
+    var volRanges = [
+      document.getElementById('volume-range'),
+      document.getElementById('home-volume-range')
+    ];
+    for (var r = 0; r < volRanges.length; r++) {
+      if (volRanges[r]) volRanges[r].value = media.volume;
+    }
+    var volLabels = [
+      document.getElementById('volume-val-label'),
+      document.getElementById('home-volume-val-label')
+    ];
+    for (var l = 0; l < volLabels.length; l++) {
+      if (volLabels[l]) volLabels[l].innerHTML = media.volume + '%';
     }
   }
 
-  // Live Album Artwork inside Vinyl
-  var artImg = document.getElementById('media-art-img');
-  var fallbackIcon = document.getElementById('vinyl-icon-fallback');
-  if (artImg && fallbackIcon) {
-    if (media.art_url && (media.art_url.indexOf('http://') === 0 || media.art_url.indexOf('https://') === 0)) {
-      if (artImg.src !== media.art_url) {
-        artImg.src = media.art_url;
+  // Cards and Mute states
+  var cards = [
+    document.getElementById('media-card'),
+    document.getElementById('home-media-card')
+  ];
+  for (var cIdx = 0; cIdx < cards.length; cIdx++) {
+    var card = cards[cIdx];
+    if (card) {
+      if (media.muted) {
+        if (card.className.indexOf('muted') === -1) card.className = card.className + ' muted';
+      } else {
+        card.className = card.className.replace(/\s*muted/g, '');
       }
-      artImg.style.display = 'block';
-      fallbackIcon.style.display = 'none';
-    } else {
-      artImg.src = '';
-      artImg.style.display = 'none';
-      fallbackIcon.style.display = 'inline-block';
+    }
+  }
+
+  // Mute Badges
+  var muteBtns = [
+    document.getElementById('vol-mute-btn'),
+    document.getElementById('home-vol-mute-btn')
+  ];
+  for (var mIdx = 0; mIdx < muteBtns.length; mIdx++) {
+    var mBtn = muteBtns[mIdx];
+    if (mBtn) {
+      if (media.muted) {
+        mBtn.innerHTML = '🔇 MUTED';
+        mBtn.style.display = 'inline-block';
+      } else {
+        mBtn.innerHTML = '';
+        mBtn.style.display = 'none';
+      }
+    }
+  }
+
+  // Live Album Artwork inside Vinyl (Page 3 & Home Page)
+  var arts = [
+    { img: document.getElementById('media-art-img'), fallback: document.getElementById('vinyl-icon-fallback') },
+    { img: document.getElementById('home-media-art-img'), fallback: document.getElementById('home-vinyl-icon-fallback') }
+  ];
+  var hasArt = media.art_url && (media.art_url.indexOf('http://') === 0 || media.art_url.indexOf('https://') === 0);
+  for (var a = 0; a < arts.length; a++) {
+    var artImg = arts[a].img;
+    var fallbackIcon = arts[a].fallback;
+    if (artImg && fallbackIcon) {
+      if (hasArt) {
+        if (artImg.src !== media.art_url) {
+          artImg.src = media.art_url;
+        }
+        artImg.style.display = 'block';
+        fallbackIcon.style.display = 'none';
+      } else {
+        artImg.src = '';
+        artImg.style.display = 'none';
+        fallbackIcon.style.display = 'inline-block';
+      }
     }
   }
 }
@@ -849,6 +925,13 @@ function updateMediaCard(media) {
 function onArtError() {
   var artImg = document.getElementById('media-art-img');
   var fallbackIcon = document.getElementById('vinyl-icon-fallback');
+  if (artImg) artImg.style.display = 'none';
+  if (fallbackIcon) fallbackIcon.style.display = 'inline-block';
+}
+
+function onHomeArtError() {
+  var artImg = document.getElementById('home-media-art-img');
+  var fallbackIcon = document.getElementById('home-vinyl-icon-fallback');
   if (artImg) artImg.style.display = 'none';
   if (fallbackIcon) fallbackIcon.style.display = 'inline-block';
 }
@@ -868,28 +951,44 @@ function sendMediaCmd(action) {
 
   // Optimistic UI updates
   if (action === 'play_pause') {
-    var playIcon = document.getElementById('media-play-icon');
-    if (playIcon) {
-      var SVG_PLAY = '<svg viewBox="0 0 24 24" class="media-svg-icon play-svg"><path d="M8 5v14l11-7z"/></svg>';
-      var SVG_PAUSE = '<svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-      playIcon.innerHTML = playIcon.innerHTML.indexOf('M6 19') !== -1 ? SVG_PLAY : SVG_PAUSE;
+    var playIcons = [
+      document.getElementById('media-play-icon'),
+      document.getElementById('home-media-play-icon')
+    ];
+    var SVG_PLAY = '<svg viewBox="0 0 24 24" class="media-svg-icon play-svg"><path d="M8 5v14l11-7z"/></svg>';
+    var SVG_PAUSE = '<svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+    for (var k = 0; k < playIcons.length; k++) {
+      var pIcon = playIcons[k];
+      if (pIcon) {
+        pIcon.innerHTML = pIcon.innerHTML.indexOf('M6 19') !== -1 ? SVG_PLAY : SVG_PAUSE;
+      }
     }
   } else if (action === 'mute') {
-    var card = document.getElementById('media-card');
-    var btn = document.getElementById('vol-mute-btn');
-    if (card) {
-      var wasMuted = card.className.indexOf('muted') !== -1;
-      if (!wasMuted) {
-        card.className = card.className + ' muted';
-        if (btn) {
-          btn.innerHTML = '🔇 MUTED';
-          btn.style.display = 'inline-block';
-        }
-      } else {
-        card.className = card.className.replace(/\s*muted/g, '');
-        if (btn) {
-          btn.innerHTML = '';
-          btn.style.display = 'none';
+    var cards = [
+      document.getElementById('media-card'),
+      document.getElementById('home-media-card')
+    ];
+    var btns = [
+      document.getElementById('vol-mute-btn'),
+      document.getElementById('home-vol-mute-btn')
+    ];
+    for (var m = 0; m < cards.length; m++) {
+      var cCard = cards[m];
+      var cBtn = btns[m];
+      if (cCard) {
+        var wasMuted = cCard.className.indexOf('muted') !== -1;
+        if (!wasMuted) {
+          cCard.className = cCard.className + ' muted';
+          if (cBtn) {
+            cBtn.innerHTML = '🔇 MUTED';
+            cBtn.style.display = 'inline-block';
+          }
+        } else {
+          cCard.className = cCard.className.replace(/\s*muted/g, '');
+          if (cBtn) {
+            cBtn.innerHTML = '';
+            cBtn.style.display = 'none';
+          }
         }
       }
     }
@@ -900,6 +999,24 @@ var volDebounceTimer = null;
 function onVolumeSliderChange(val) {
   var volLabel = document.getElementById('volume-val-label');
   if (volLabel) volLabel.innerHTML = val + '%';
+  var homeLabel = document.getElementById('home-volume-val-label');
+  if (homeLabel) homeLabel.innerHTML = val + '%';
+  var homeRange = document.getElementById('home-volume-range');
+  if (homeRange) homeRange.value = val;
+
+  clearTimeout(volDebounceTimer);
+  volDebounceTimer = setTimeout(function () {
+    sendMediaCmd('vol_set:' + val);
+  }, 100);
+}
+
+function onHomeVolumeSliderChange(val) {
+  var homeLabel = document.getElementById('home-volume-val-label');
+  if (homeLabel) homeLabel.innerHTML = val + '%';
+  var volLabel = document.getElementById('volume-val-label');
+  if (volLabel) volLabel.innerHTML = val + '%';
+  var volRange = document.getElementById('volume-range');
+  if (volRange) volRange.value = val;
 
   clearTimeout(volDebounceTimer);
   volDebounceTimer = setTimeout(function () {
@@ -908,20 +1025,29 @@ function onVolumeSliderChange(val) {
 }
 
 function initVolumeSliderProtection() {
-  var volRange = document.getElementById('volume-range');
+  var volRanges = [
+    document.getElementById('volume-range'),
+    document.getElementById('home-volume-range')
+  ];
   var stopProp = function (e) {
     if (e && e.stopPropagation) e.stopPropagation();
   };
-  if (volRange) {
-    volRange.addEventListener('touchstart', stopProp, false);
-    volRange.addEventListener('touchmove', stopProp, false);
-    volRange.addEventListener('touchend', stopProp, false);
+  for (var i = 0; i < volRanges.length; i++) {
+    var vRange = volRanges[i];
+    if (vRange) {
+      vRange.addEventListener('touchstart', stopProp, false);
+      vRange.addEventListener('touchmove', stopProp, false);
+      vRange.addEventListener('touchend', stopProp, false);
+    }
   }
-  var sliderCont = document.querySelector('.slider-container');
-  if (sliderCont) {
-    sliderCont.addEventListener('touchstart', stopProp, false);
-    sliderCont.addEventListener('touchmove', stopProp, false);
-    sliderCont.addEventListener('touchend', stopProp, false);
+  var sliderConts = document.querySelectorAll('.slider-container');
+  for (var j = 0; j < sliderConts.length; j++) {
+    var sCont = sliderConts[j];
+    if (sCont) {
+      sCont.addEventListener('touchstart', stopProp, false);
+      sCont.addEventListener('touchmove', stopProp, false);
+      sCont.addEventListener('touchend', stopProp, false);
+    }
   }
 }
 
