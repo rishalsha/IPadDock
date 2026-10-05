@@ -27,7 +27,7 @@ html, body {
 .home-app {
   width: 100%;
   height: 100%;
-  padding: 10px 18px;
+  padding: 14px 22px;
   background: -webkit-radial-gradient(50% 0%, circle, #162032 0%, #0a0e17 60%, #03060a 100%);
   background: radial-gradient(circle at 50% 0%, #162032 0%, #0a0e17 60%, #03060a 100%);
   display: -webkit-flex;
@@ -47,7 +47,7 @@ html, body {
   justify-content: space-between;
   -webkit-align-items: center;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
 }
@@ -239,14 +239,14 @@ html, body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
-  padding: 0 4px 6px 4px;
+  padding: 0 4px 8px 4px;
 }
 
 /* -------------------------------------------------------------
    PAGE 1: SCENES & SECTIONS
    ------------------------------------------------------------- */
 .scenes-section {
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .scenes-grid {
@@ -269,9 +269,9 @@ html, body {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 14px;
-  padding: 10px 12px;
+  padding: 16px 14px;
   color: #ffffff;
-  font-size: 0.94rem;
+  font-size: 0.98rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
@@ -281,13 +281,13 @@ html, body {
 }
 
 .scene-chip-icon {
-  margin-right: 6px;
-  font-size: 1.15rem;
+  margin-right: 7px;
+  font-size: 1.25rem;
   line-height: 1;
 }
 
 .scene-chip-title {
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   font-weight: 600;
 }
 
@@ -302,8 +302,8 @@ html, body {
    PAGE 1: HOME NOW PLAYING MUSIC WIDGET
    ------------------------------------------------------------- */
 .home-media-section {
-  margin-top: 6px;
-  margin-bottom: 4px;
+  margin-top: 10px;
+  margin-bottom: 6px;
 }
 
 .home-media-title-group {
@@ -316,14 +316,14 @@ html, body {
 .home-media-status-badge {
   display: -webkit-inline-flex;
   display: inline-flex;
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  padding: 2px 6px;
-  border-radius: 6px;
+  padding: 2px 7px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
   color: #8e8e93;
-  margin-left: 8px;
+  margin-left: 10px;
 }
 
 .home-media-status-badge.playing {
@@ -334,15 +334,15 @@ html, body {
 .home-music-card {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 16px;
-  padding: 8px 12px;
+  border-radius: 18px;
+  padding: 12px 16px;
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: center;
   align-items: center;
   -webkit-justify-content: space-between;
   justify-content: space-between;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   -webkit-user-select: none;
   user-select: none;
@@ -359,7 +359,7 @@ html, body {
 .home-music-card.muted {
   border-color: rgba(255, 69, 58, 0.45);
   background: rgba(255, 69, 58, 0.08);
-  box-shadow: 0 4px 16px rgba(255, 69, 58, 0.18);
+  box-shadow: 0 4px 18px rgba(255, 69, 58, 0.18);
 }
 
 .home-music-left {
@@ -370,23 +370,23 @@ html, body {
   -webkit-flex: 1;
   flex: 1;
   min-width: 0;
-  margin-right: 12px;
+  margin-right: 14px;
 }
 
 .home-vinyl-wrap {
-  margin-right: 10px;
+  margin-right: 12px;
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
 }
 
 .home-vinyl {
-  width: 50px;
-  height: 50px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   background: -webkit-radial-gradient(circle, #2c2c2e 0%, #1c1c1e 60%, #000000 100%);
   background: radial-gradient(circle, #2c2c2e 0%, #1c1c1e 60%, #000000 100%);
-  border: 2px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+  border: 3px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: center;
@@ -403,8 +403,8 @@ html, body {
 }
 
 .home-vinyl-center {
-  width: 25px;
-  height: 25px;
+  width: 29px;
+  height: 29px;
   border-radius: 50%;
   overflow: hidden;
   display: -webkit-flex;
@@ -414,9 +414,9 @@ html, body {
   -webkit-justify-content: center;
   justify-content: center;
   background: #1c1c1e;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
-  font-size: 0.95rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+  font-size: 1.05rem;
 }
 
 .home-vinyl-icon {
@@ -430,31 +430,31 @@ html, body {
 }
 
 .home-track-title {
-  font-size: 0.95rem;
+  font-size: 1.02rem;
   font-weight: 700;
   color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 1px;
+  margin-bottom: 2px;
 }
 
 .home-track-artist {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: #8e8e93;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .home-track-album {
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   color: #636366;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .home-track-album:empty {
@@ -469,9 +469,9 @@ html, body {
 }
 
 .home-music-meta-row .media-card-mute-badge {
-  margin-left: 8px;
-  padding: 2px 6px;
-  font-size: 0.65rem;
+  margin-left: 10px;
+  padding: 3px 7px;
+  font-size: 0.68rem;
 }
 
 .home-music-right {
@@ -483,7 +483,7 @@ html, body {
   align-items: flex-end;
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
-  width: 290px;
+  width: 320px;
 }
 
 .home-controls-row {
@@ -494,14 +494,14 @@ html, body {
   -webkit-justify-content: center;
   justify-content: center;
   width: 100%;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .home-ctrl-btn {
   padding: 0;
-  margin: 0 6px;
-  width: 32px;
-  height: 32px;
+  margin: 0 7px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: rgba(255, 255, 255, 0.09);
@@ -521,22 +521,22 @@ html, body {
 }
 
 .home-ctrl-btn .media-svg-icon {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
 }
 
 .home-ctrl-btn.home-primary-play-btn {
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   background: -webkit-linear-gradient(135deg, #0a84ff 0%, #0066cc 100%);
   background: linear-gradient(135deg, #0a84ff 0%, #0066cc 100%);
   border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 3px 10px rgba(10, 132, 255, 0.45);
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.45);
 }
 
 .home-ctrl-btn.home-primary-play-btn .media-svg-icon {
-  width: 17px;
-  height: 17px;
+  width: 19px;
+  height: 19px;
 }
 
 .home-ctrl-btn.home-primary-play-btn .play-svg {
@@ -560,11 +560,11 @@ html, body {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #ffffff;
-  padding: 3px 6px;
-  border-radius: 6px;
-  font-size: 0.72rem;
+  padding: 4px 8px;
+  border-radius: 7px;
+  font-size: 0.76rem;
   cursor: pointer;
-  margin: 0 2px;
+  margin: 0 3px;
   line-height: 1;
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
@@ -577,24 +577,24 @@ html, body {
 .home-slider-cont {
   -webkit-flex: 1;
   flex: 1;
-  padding: 0 5px;
+  padding: 0 6px;
 }
 
 .home-vol-input {
   width: 100%;
-  height: 5px;
+  height: 6px;
 }
 
 .home-vol-input::-webkit-slider-thumb {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 .home-vol-label {
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: #8e8e93;
-  width: 36px;
+  width: 38px;
   text-align: right;
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
@@ -609,7 +609,7 @@ html, body {
   }
   .home-music-left {
     margin-right: 0;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .home-music-right {
     width: 100%;
@@ -624,17 +624,17 @@ html, body {
   display: flex;
   -webkit-justify-content: center;
   justify-content: center;
-  margin-top: 6px;
-  margin-bottom: 2px;
+  margin-top: 10px;
+  margin-bottom: 4px;
 }
 
 .autocycle-btn {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.07);
   color: #636366;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 0.65rem;
+  padding: 4px 12px;
+  border-radius: 14px;
+  font-size: 0.68rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   cursor: pointer;
@@ -677,7 +677,7 @@ html, body {
 }
 
 .home-section {
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .section-title-row {
@@ -687,19 +687,19 @@ html, body {
   justify-content: space-between;
   -webkit-align-items: baseline;
   align-items: baseline;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   padding: 0 2px;
 }
 
 .section-heading {
-  font-size: 1.0rem;
+  font-size: 1.08rem;
   font-weight: 600;
   color: #ffffff;
   letter-spacing: -0.2px;
 }
 
 .section-status-sub {
-  font-size: 0.76rem;
+  font-size: 0.80rem;
   font-weight: 500;
   color: #8e8e93;
 }
@@ -710,22 +710,22 @@ html, body {
   display: flex;
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin-left: -4px;
-  margin-right: -4px;
+  margin-left: -5px;
+  margin-right: -5px;
 }
 
 .homekit-card {
   width: 33.333%;
-  padding: 4px;
+  padding: 5px;
   box-sizing: border-box;
 }
 
 .card-inner {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 10px 12px;
-  height: 94px;
+  border-radius: 16px;
+  padding: 14px 16px;
+  height: 108px;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
@@ -760,8 +760,8 @@ html, body {
 }
 
 .device-icon-wrap {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.12);
   display: -webkit-flex;
@@ -770,7 +770,7 @@ html, body {
   align-items: center;
   -webkit-justify-content: center;
   justify-content: center;
-  font-size: 1.05rem;
+  font-size: 1.18rem;
 }
 
 .is-on .device-icon-wrap {
@@ -778,12 +778,12 @@ html, body {
 }
 
 .device-state-pill {
-  font-size: 0.68rem;
+  font-size: 0.70rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  padding: 2px 7px;
-  border-radius: 10px;
+  padding: 3px 8px;
+  border-radius: 11px;
   background: rgba(255, 255, 255, 0.1);
   color: #8e8e93;
 }
@@ -801,15 +801,15 @@ html, body {
 }
 
 .device-name {
-  font-size: 0.92rem;
+  font-size: 0.98rem;
   font-weight: 600;
   line-height: 1.2;
 }
 
 .device-sub {
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   color: #8e8e93;
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
 .is-on .device-sub {
@@ -822,21 +822,21 @@ html, body {
   display: flex;
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin-left: -4px;
-  margin-right: -4px;
+  margin-left: -5px;
+  margin-right: -5px;
 }
 
 .workstation-card {
   width: 50%;
-  padding: 4px;
+  padding: 5px;
   box-sizing: border-box;
 }
 
 .ws-inner {
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 10px 12px;
+  border-radius: 16px;
+  padding: 14px 16px;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
@@ -852,20 +852,20 @@ html, body {
   justify-content: space-between;
   -webkit-align-items: center;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
 
 .ws-icon {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
 }
 
 .ws-status-badge {
-  font-size: 0.68rem;
+  font-size: 0.70rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  padding: 2px 7px;
-  border-radius: 10px;
+  padding: 3px 8px;
+  border-radius: 11px;
   background: rgba(255, 255, 255, 0.1);
   color: #8e8e93;
 }
@@ -883,15 +883,15 @@ html, body {
 }
 
 .ws-name {
-  font-size: 0.94rem;
+  font-size: 1.02rem;
   font-weight: 600;
   color: #ffffff;
 }
 
 .ws-sub {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: #8e8e93;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
 
 .ws-action-bar {
@@ -902,13 +902,13 @@ html, body {
 .ws-btn {
   -webkit-flex: 1;
   flex: 1;
-  padding: 7px 6px;
+  padding: 10px 8px;
   margin-right: 6px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.09);
   color: #ffffff;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   -webkit-transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
