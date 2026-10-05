@@ -479,10 +479,12 @@ html, body {
   display: flex;
   -webkit-align-items: center;
   align-items: center;
-  -webkit-flex: 0 0 290px;
-  flex: 0 0 290px;
+  -webkit-flex: 0 1 480px;
+  flex: 0 1 480px;
+  width: 480px;
+  max-width: 500px;
   margin-right: 18px;
-  padding: 6px 10px;
+  padding: 6px 12px;
   background: rgba(0, 0, 0, 0.22);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
@@ -511,7 +513,7 @@ html, body {
 .home-slider-cont {
   -webkit-flex: 1;
   flex: 1;
-  padding: 0 6px;
+  padding: 0 8px;
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: center;
@@ -525,8 +527,8 @@ html, body {
 }
 
 .home-vol-input::-webkit-slider-thumb {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
 .home-vol-label {
