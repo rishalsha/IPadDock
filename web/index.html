@@ -12,7 +12,7 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#000000">
 
-  <link rel="stylesheet" href="style.css?v=1791183212">
+  <link rel="stylesheet" href="style.css?v=1791183918">
 </head>
 <body>
   <div class="home-app">
@@ -159,32 +159,29 @@
                 </div>
               </div>
 
-              <!-- Right side: Transport Controls & Volume (Stops propagation so buttons/slider don't trigger mute) -->
-              <div class="home-music-right" onclick="event.stopPropagation()">
-                <!-- Transport buttons row -->
-                <div class="home-controls-row">
-                  <button class="home-ctrl-btn" onclick="sendMediaCmd('prev')" title="Previous Track">
-                    <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-                  </button>
-                  <button class="home-ctrl-btn home-primary-play-btn" onclick="sendMediaCmd('play_pause')" id="home-media-play-btn" title="Play / Pause">
-                    <span id="home-media-play-icon">
-                      <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M7 5v14l11-7z"/></svg>
-                    </span>
-                  </button>
-                  <button class="home-ctrl-btn" onclick="sendMediaCmd('next')" title="Next Track">
-                    <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-                  </button>
+              <!-- Middle: Volume Bar (Stops propagation so slider doesn't trigger mute) -->
+              <div class="home-music-middle" onclick="event.stopPropagation()">
+                <button class="home-vol-btn" onclick="sendMediaCmd('vol_down')" title="Volume Down (-5%)">🔉</button>
+                <div class="slider-container home-slider-cont" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
+                  <input type="range" min="0" max="100" value="100" class="volume-range-input home-vol-input" id="home-volume-range" oninput="onHomeVolumeSliderChange(this.value)" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
                 </div>
+                <button class="home-vol-btn" onclick="sendMediaCmd('vol_up')" title="Volume Up (+5%)">🔊</button>
+                <span class="home-vol-label" id="home-volume-val-label">100%</span>
+              </div>
 
-                <!-- Volume slider & Quick controls row -->
-                <div class="home-volume-row">
-                  <button class="home-vol-btn" onclick="sendMediaCmd('vol_down')" title="Volume Down (-5%)">🔉</button>
-                  <div class="slider-container home-slider-cont" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
-                    <input type="range" min="0" max="100" value="100" class="volume-range-input home-vol-input" id="home-volume-range" oninput="onHomeVolumeSliderChange(this.value)" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()" ontouchend="event.stopPropagation()">
-                  </div>
-                  <button class="home-vol-btn" onclick="sendMediaCmd('vol_up')" title="Volume Up (+5%)">🔊</button>
-                  <span class="home-vol-label" id="home-volume-val-label">100%</span>
-                </div>
+              <!-- Right: Transport Controls (Stops propagation so buttons don't trigger mute) -->
+              <div class="home-music-right" onclick="event.stopPropagation()">
+                <button class="home-ctrl-btn" onclick="sendMediaCmd('prev')" title="Previous Track">
+                  <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                </button>
+                <button class="home-ctrl-btn home-primary-play-btn" onclick="sendMediaCmd('play_pause')" id="home-media-play-btn" title="Play / Pause">
+                  <span id="home-media-play-icon">
+                    <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M7 5v14l11-7z"/></svg>
+                  </span>
+                </button>
+                <button class="home-ctrl-btn" onclick="sendMediaCmd('next')" title="Next Track">
+                  <svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </button>
               </div>
             </div>
           </section>
@@ -685,6 +682,6 @@
   <!-- Scripts -->
   <script src="paho-mqtt.js"></script>
   <script src="config.js"></script>
-  <script src="app.js?v=1791183212"></script>
+  <script src="app.js?v=1791183918"></script>
 </body>
 </html>
