@@ -832,7 +832,7 @@ function updateMediaCard(media) {
   }
 
   // Play / Pause Icons
-  var SVG_PLAY = '<svg viewBox="0 0 24 24" class="media-svg-icon play-svg"><path d="M8 5v14l11-7z"/></svg>';
+  var SVG_PLAY = '<svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M7 5v14l11-7z"/></svg>';
   var SVG_PAUSE = '<svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
   var playIcons = [
     document.getElementById('media-play-icon'),
@@ -955,7 +955,7 @@ function sendMediaCmd(action) {
       document.getElementById('media-play-icon'),
       document.getElementById('home-media-play-icon')
     ];
-    var SVG_PLAY = '<svg viewBox="0 0 24 24" class="media-svg-icon play-svg"><path d="M8 5v14l11-7z"/></svg>';
+    var SVG_PLAY = '<svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M7 5v14l11-7z"/></svg>';
     var SVG_PAUSE = '<svg viewBox="0 0 24 24" class="media-svg-icon"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
     for (var k = 0; k < playIcons.length; k++) {
       var pIcon = playIcons[k];
