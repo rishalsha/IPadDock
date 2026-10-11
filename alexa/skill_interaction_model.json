@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "workstation",
+      "invocationName": "work station",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
