@@ -1,0 +1,304 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "workstation",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": [
+            "cancel",
+            "never mind"
+          ]
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": [
+            "help",
+            "what can you do",
+            "how do I use this"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": [
+            "stop",
+            "exit",
+            "bye",
+            "goodbye"
+          ]
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "GetTelemetryIntent",
+          "slots": [],
+          "samples": [
+            "what is my status",
+            "what is the status",
+            "status",
+            "pc status",
+            "workstation status",
+            "how is my pc doing",
+            "what is my cpu",
+            "cpu percentage",
+            "check cpu",
+            "check memory",
+            "what is my ram usage",
+            "check temperatures",
+            "pc temperature",
+            "system stats",
+            "stats"
+          ]
+        },
+        {
+          "name": "LaunchAppIntent",
+          "slots": [
+            {
+              "name": "appName",
+              "type": "APP_NAME_TYPE"
+            }
+          ],
+          "samples": [
+            "open {appName}",
+            "launch {appName}",
+            "focus {appName}",
+            "switch to {appName}",
+            "open up {appName}",
+            "start {appName}",
+            "bring up {appName}"
+          ]
+        },
+        {
+          "name": "MediaControlIntent",
+          "slots": [
+            {
+              "name": "command",
+              "type": "MEDIA_CMD_TYPE"
+            }
+          ],
+          "samples": [
+            "{command}",
+            "{command} music",
+            "{command} playback",
+            "{command} track",
+            "{command} the song",
+            "turn volume {command}",
+            "turn the volume {command}",
+            "make it {command}"
+          ]
+        },
+        {
+          "name": "VolumeSetIntent",
+          "slots": [
+            {
+              "name": "volume",
+              "type": "AMAZON.NUMBER"
+            }
+          ],
+          "samples": [
+            "set volume to {volume}",
+            "set volume to {volume} percent",
+            "volume {volume}",
+            "volume {volume} percent",
+            "change volume to {volume}"
+          ]
+        },
+        {
+          "name": "SystemControlIntent",
+          "slots": [
+            {
+              "name": "action",
+              "type": "SYSTEM_ACTION_TYPE"
+            }
+          ],
+          "samples": [
+            "{action}",
+            "put pc to {action}",
+            "turn {action}",
+            "take a {action}",
+            "send a {action}",
+            "{action} the pc",
+            "{action} desktop"
+          ]
+        },
+        {
+          "name": "SmartHomeIntent",
+          "slots": [
+            {
+              "name": "device",
+              "type": "DEVICE_NAME_TYPE"
+            },
+            {
+              "name": "state",
+              "type": "POWER_STATE_TYPE"
+            }
+          ],
+          "samples": [
+            "turn {device} {state}",
+            "turn the {device} {state}",
+            "switch {device} {state}",
+            "switch the {device} {state}",
+            "set {device} {state}",
+            "{device} {state}"
+          ]
+        },
+        {
+          "name": "QuickScenesIntent",
+          "slots": [
+            {
+              "name": "scene",
+              "type": "SCENE_NAME_TYPE"
+            }
+          ],
+          "samples": [
+            "activate {scene} scene",
+            "activate {scene} mode",
+            "start {scene} mode",
+            "set {scene} scene",
+            "{scene} mode",
+            "{scene} scene"
+          ]
+        },
+        {
+          "name": "ClipboardSyncIntent",
+          "slots": [
+            {
+              "name": "target",
+              "type": "TARGET_DEVICE_TYPE"
+            }
+          ],
+          "samples": [
+            "copy to {target}",
+            "sync clipboard to {target}",
+            "send clipboard to {target}",
+            "beam clipboard to {target}",
+            "copy clipboard to {target}"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "APP_NAME_TYPE",
+          "values": [
+            {
+              "name": {
+                "value": "gemini",
+                "synonyms": ["google gemini"]
+              }
+            },
+            {
+              "name": {
+                "value": "claude",
+                "synonyms": ["anthropic"]
+              }
+            },
+            {
+              "name": {
+                "value": "whatsapp",
+                "synonyms": ["whats app"]
+              }
+            },
+            {
+              "name": {
+                "value": "chatgpt",
+                "synonyms": ["chat gpt", "gpt", "open ai"]
+              }
+            },
+            {
+              "name": {
+                "value": "youtube",
+                "synonyms": ["you tube"]
+              }
+            },
+            {
+              "name": {
+                "value": "github",
+                "synonyms": ["git hub", "git"]
+              }
+            },
+            {
+              "name": {
+                "value": "gmail",
+                "synonyms": ["google mail", "mail", "email"]
+              }
+            },
+            {
+              "name": {
+                "value": "spotify",
+                "synonyms": ["music app"]
+              }
+            },
+            {
+              "name": {
+                "value": "terminal",
+                "synonyms": ["console", "command line", "ghostty", "shell"]
+              }
+            },
+            {
+              "name": {
+                "value": "browser",
+                "synonyms": ["google chrome", "chrome", "web browser"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "MEDIA_CMD_TYPE",
+          "values": [
+            { "name": { "value": "play", "synonyms": ["resume", "start", "unpause"] } },
+            { "name": { "value": "pause", "synonyms": ["stop", "freeze"] } },
+            { "name": { "value": "next", "synonyms": ["skip", "next song", "next track"] } },
+            { "name": { "value": "previous", "synonyms": ["back", "previous track", "last track"] } },
+            { "name": { "value": "mute", "synonyms": ["silence", "unmute"] } },
+            { "name": { "value": "up", "synonyms": ["louder", "higher"] } },
+            { "name": { "value": "down", "synonyms": ["lower", "softer", "quieter"] } }
+          ]
+        },
+        {
+          "name": "SYSTEM_ACTION_TYPE",
+          "values": [
+            { "name": { "value": "mute mic", "synonyms": ["mute microphone", "unmute mic", "toggle mic", "toggle microphone"] } },
+            { "name": { "value": "sleep", "synonyms": ["suspend", "sleep pc", "standby"] } },
+            { "name": { "value": "shutdown", "synonyms": ["power off", "shut down", "turn off pc"] } },
+            { "name": { "value": "restart", "synonyms": ["reboot", "reboot pc"] } },
+            { "name": { "value": "screenshot", "synonyms": ["screen shot", "capture screen"] } },
+            { "name": { "value": "wake", "synonyms": ["wake pc", "boot pc", "turn on pc"] } }
+          ]
+        },
+        {
+          "name": "DEVICE_NAME_TYPE",
+          "values": [
+            { "name": { "value": "fan", "synonyms": ["room fan", "ceiling fan"] } },
+            { "name": { "value": "light", "synonyms": ["room light", "overhead light"] } },
+            { "name": { "value": "bulb", "synonyms": ["desk bulb", "lamp", "desk lamp"] } },
+            { "name": { "value": "all", "synonyms": ["everything", "all devices", "all lights"] } }
+          ]
+        },
+        {
+          "name": "POWER_STATE_TYPE",
+          "values": [
+            { "name": { "value": "on", "synonyms": ["start", "enable"] } },
+            { "name": { "value": "off", "synonyms": ["stop", "disable"] } }
+          ]
+        },
+        {
+          "name": "SCENE_NAME_TYPE",
+          "values": [
+            { "name": { "value": "focus", "synonyms": ["studio", "work", "code", "coding"] } },
+            { "name": { "value": "ambient", "synonyms": ["relax", "chill"] } },
+            { "name": { "value": "night", "synonyms": ["nightstand", "bed", "bedtime", "goodnight"] } }
+          ]
+        },
+        {
+          "name": "TARGET_DEVICE_TYPE",
+          "values": [
+            { "name": { "value": "laptop", "synonyms": ["lap", "macbook", "notebook"] } },
+            { "name": { "value": "pc", "synonyms": ["desktop", "computer"] } }
+          ]
+        }
+      ]
+    }
+  }
+}
