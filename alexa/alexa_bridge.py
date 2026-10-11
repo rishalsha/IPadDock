@@ -298,32 +298,38 @@ def handle_volume_set(intent: dict):
 def handle_system_control(intent: dict):
     action = (get_slot_value(intent, "action") or "").lower()
 
+    # Determine target: laptop vs pc
+    is_laptop = any(w in action for w in ["laptop", "lap", "macbook"])
+    target_topic = "work_laptop" if is_laptop else "desktop_pc"
+    target_mac = LAP_MAC if is_laptop else PC_MAC
+    target_name = "laptop" if is_laptop else "desktop PC"
+
     if any(w in action for w in ["mic", "microphone"]):
-        pub_mqtt("cmnd/desktop_pc/action", "toggle_mic")
-        return build_alexa_response("Microphone toggled.")
+        pub_mqtt(f"cmnd/{target_topic}/action", "toggle_mic")
+        return build_alexa_response(f"Microphone toggled on {target_name}.")
 
     elif any(w in action for w in ["sleep", "suspend"]):
-        pub_mqtt("cmnd/desktop_pc/power", "sleep")
-        return build_alexa_response("Putting your PC to sleep.")
+        pub_mqtt(f"cmnd/{target_topic}/power", "sleep")
+        return build_alexa_response(f"Putting your {target_name} to sleep.")
 
     elif any(w in action for w in ["shutdown", "turn off", "power off"]):
-        pub_mqtt("cmnd/desktop_pc/power", "shutdown")
-        return build_alexa_response("Shutting down your desktop PC.")
+        pub_mqtt(f"cmnd/{target_topic}/power", "shutdown")
+        return build_alexa_response(f"Shutting down your {target_name}.")
 
     elif any(w in action for w in ["restart", "reboot"]):
-        pub_mqtt("cmnd/desktop_pc/power", "restart")
-        return build_alexa_response("Restarting your desktop PC.")
+        pub_mqtt(f"cmnd/{target_topic}/power", "restart")
+        return build_alexa_response(f"Restarting your {target_name}.")
 
     elif any(w in action for w in ["screenshot", "screen shot", "capture"]):
-        pub_mqtt("cmnd/desktop_pc/action", "screenshot")
-        return build_alexa_response("Screenshot captured on PC.")
+        pub_mqtt(f"cmnd/{target_topic}/action", "screenshot")
+        return build_alexa_response(f"Screenshot captured on {target_name}.")
 
     elif any(w in action for w in ["wake", "turn on", "power on", "boot"]):
-        pub_mqtt("cmnd/room_light/WakeOnLan", PC_MAC)
-        return build_alexa_response("Waking up your PC via network magic packet.")
+        pub_mqtt("cmnd/room_light/WakeOnLan", target_mac)
+        return build_alexa_response(f"Sending wake on LAN magic packet to your {target_name}.")
 
     else:
-        return build_alexa_response("System action executed.")
+        return build_alexa_response(f"System action executed on {target_name}.")
 
 
 def handle_smart_home(intent: dict):

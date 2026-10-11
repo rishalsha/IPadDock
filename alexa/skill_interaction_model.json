@@ -260,11 +260,11 @@
           "name": "SYSTEM_ACTION_TYPE",
           "values": [
             { "name": { "value": "mute mic", "synonyms": ["mute microphone", "unmute mic", "toggle mic", "toggle microphone"] } },
-            { "name": { "value": "sleep", "synonyms": ["suspend", "sleep pc", "standby"] } },
-            { "name": { "value": "shutdown", "synonyms": ["power off", "shut down", "turn off pc"] } },
-            { "name": { "value": "restart", "synonyms": ["reboot", "reboot pc"] } },
+            { "name": { "value": "sleep", "synonyms": ["suspend", "sleep pc", "sleep laptop", "suspend pc", "suspend laptop", "standby"] } },
+            { "name": { "value": "shutdown", "synonyms": ["power off", "shut down", "turn off pc", "turn off laptop", "shutdown pc", "shutdown laptop"] } },
+            { "name": { "value": "restart", "synonyms": ["reboot", "reboot pc", "reboot laptop", "restart pc", "restart laptop"] } },
             { "name": { "value": "screenshot", "synonyms": ["screen shot", "capture screen"] } },
-            { "name": { "value": "wake", "synonyms": ["wake pc", "boot pc", "turn on pc"] } }
+            { "name": { "value": "wake", "synonyms": ["wake pc", "wake laptop", "boot pc", "boot laptop", "turn on pc", "turn on laptop"] } }
           ]
         },
         {
